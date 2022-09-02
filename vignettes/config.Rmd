@@ -29,7 +29,7 @@ This adds `envsetup:paths` to your search path which contains all of the relevan
 
 This might not be relevant to you, most everyone would only work in the prod area of your compute environment.  For those setting up environments with dev, qa, and prod, you can use this to address any configuration needs.
 
-```{r eval = FALSE}
+```yaml
 default:
 
 dev:
@@ -42,7 +42,7 @@ prod:
 
 ## Level 2 of config, paths and autos
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
   autos:
@@ -64,7 +64,7 @@ prod:
 
 For this example, we will now just focus on setting up one environment, the default configuration.  If you wish to have different configurations based off your infrastructure environment, you would need to expand this to fit your needs.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
   autos:
@@ -72,7 +72,7 @@ default:
 
 For this example, we will need to read in data, write out results and save the script for future reference for a project we'll call project1.  So we will need an object to point to each of these locations, so we add the data, output and programs objects to level 3 of our config.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
     data: "/demo/DEV/username/project1/data"
@@ -120,7 +120,7 @@ Half way through programming, the data was considered production ready and the d
 
 Let's create a config to keep Tidy McVerse happy and focused on the results, not data locations.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
@@ -128,7 +128,6 @@ default:
     programs: '/demo/DEV/username/project1/programs'
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
 ```
-
 
 ```{r}
 dir <- fs::file_temp()

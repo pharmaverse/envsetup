@@ -68,12 +68,12 @@ jobs:
       # Note that if you have multiple versions of docs,
       # your URL links are likely to break due to path changes
       skip-multiversion-docs: false
-  linter:
-    name: Lint
-    uses: pharmaverse/admiralci/.github/workflows/lintr.yml@main
-    if: github.event_name == 'pull_request'
-    with:
-      r-version: $R_VERSION
+  # linter:
+  #   name: Lint
+  #   uses: pharmaverse/admiralci/.github/workflows/lintr.yml@main
+  #   if: github.event_name == 'pull_request'
+  #   with:
+  #     r-version: $R_VERSION
   links:
     name: Links
     uses: pharmaverse/admiralci/.github/workflows/links.yml@main

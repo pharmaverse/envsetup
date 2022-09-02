@@ -7,3 +7,4 @@
 ^.lycheeignore$
 ^.github$
 ^pkgdown$
+^_pkgdown\.yml$
