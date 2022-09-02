@@ -35,5 +35,6 @@ Suggests:
     fs,
     usethis,
     lintr,
-    styler
+    styler,
+    renv
 VignetteBuilder: knitr
