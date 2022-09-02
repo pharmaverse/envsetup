@@ -3,5 +3,8 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^docs$
-^archive$
-^requirements$
+^.lintr$
+^.lycheeignore$
+^.github$
+^pkgdown$
+^_pkgdown\.yml$

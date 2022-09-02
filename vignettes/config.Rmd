@@ -29,20 +29,20 @@ This adds `envsetup:paths` to your search path which contains all of the relevan
 
 This might not be relevant to you, most everyone would only work in the prod area of your compute environment.  For those setting up environments with dev, qa, and prod, you can use this to address any configuration needs.
 
-```{r eval = FALSE}
+```yaml
 default:
 
 dev:
 
 qa:
-  
+
 prod:
 ```
 
 
 ## Level 2 of config, paths and autos
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
   autos:
@@ -54,7 +54,7 @@ dev:
 qa:
   paths:
   autos:
-  
+
 prod:
   paths:
   autos:
@@ -64,7 +64,7 @@ prod:
 
 For this example, we will now just focus on setting up one environment, the default configuration.  If you wish to have different configurations based off your infrastructure environment, you would need to expand this to fit your needs.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
   autos:
@@ -72,12 +72,12 @@ default:
 
 For this example, we will need to read in data, write out results and save the script for future reference for a project we'll call project1.  So we will need an object to point to each of these locations, so we add the data, output and programs objects to level 3 of our config.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
-    data: '/demo/DEV/username/project1/data'
-    output: '/demo/DEV/username/project1/output'
-    programs: '/demo/DEV/username/project1/programs'
+    data: "/demo/DEV/username/project1/data"
+    output: "/demo/DEV/username/project1/output"
+    programs: "/demo/DEV/username/project1/programs"
 ```
 
 Let's create a temporary directory and store this config file as _envsetup.yml.  We can then call `envsetup::profile()` and point to this configuration.
@@ -89,20 +89,20 @@ dir <- fs::file_temp()
 dir.create(dir)
 config_path <- file.path(dir, "_envsetup.yml")
 
-fileConn <- file(config_path)
+file_conn <- file(config_path)
 writeLines(
 "default:
   paths:
     data: '/demo/DEV/username/project1/data'
     output: '/demo/DEV/username/project1/output'
-    programs: '/demo/DEV/username/project1/programs'", fileConn)
-close(fileConn)
+    programs: '/demo/DEV/username/project1/programs'", file_conn)
+close(file_conn)
 
 envsetup_config <- config::get(file = config_path)
 
 rprofile(envsetup_config)
 
-unlink(dir, recursive=TRUE)
+unlink(dir, recursive = TRUE)
 ```
 
 We now have data, output and programs available to us in our search path within `envsetup:paths`.
@@ -120,15 +120,14 @@ Half way through programming, the data was considered production ready and the d
 
 Let's create a config to keep Tidy McVerse happy and focused on the results, not data locations.
 
-```{r eval = FALSE}
+```yaml
 default:
   paths:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
 ```
-
 
 ```{r}
 dir <- fs::file_temp()
@@ -143,7 +142,7 @@ writeLines(
     data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
     output: '",dir,"/demo/DEV/username/project1/output'
     programs: '",dir,"/demo/DEV/username/project1/programs'
-    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ"
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"
   ), fileConn)
 close(fileConn)
 
@@ -152,7 +151,7 @@ envsetup_config <- config::get(file = config_path)
 rprofile(envsetup_config)
 ```
 
-Again we have data, output and programs available to us in our search path within `envsetup:paths`, but data is now a named list with two locations.  We also now have `environ` which, we will get into more details later, just accept it exists for now.
+Again we have data, output and programs available to us in our search path within `envsetup:paths`, but data is now a named list with two locations.  We also now have `envsetup_environ` which, we will get into more details later, just accept it exists for now.
 
 ```{r echo = TRUE}
 objects("envsetup:paths")
@@ -160,7 +159,7 @@ objects("envsetup:paths")
 data
 output
 programs
-environ
+envsetup_environ
 ```
 
 We can use `envsetup::read_path()` to help us find where the data is we would like to read.  So we will create the directories and add the `mtcars` data to the PROD data directory, "/demo/PROD/project1/data".
@@ -188,7 +187,7 @@ read_path(data, "mtcars.RDS")
 
 So we see the path to DEV now instead of the path to PROD.
 
-So now we can talk about then environ variable we set in the config!  When we have multiple paths, as we do here with data, this controls which paths should be checked.  This is just an index, wherever the environment is found in the list, only from here to the end is checked.  So DEV is first, meaning all locations are checked until the object is found or nothing is found.
+So now we can talk about then envsetup_environ variable we set in the config!  When we have multiple paths, as we do here with data, this controls which paths should be checked.  This is just an index, wherever the environment is found in the list, only from here to the end is checked.  So DEV is first, meaning all locations are checked until the object is found or nothing is found.
 
 ```{r eval = FALSE}
 default:
@@ -196,10 +195,10 @@ default:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
 ```
 
-Let's now add an environment for PROD.  We cannot simply change environ from DEV to PROD, or DEV wouldn't work.  We need to add a configuration to PROD.
+Let's now add an environment for PROD.  We cannot simply change `envsetup_environ` from DEV to PROD, or DEV wouldn't work.  We need to add a configuration to PROD.
 
 ```{r eval = FALSE}
 default:
@@ -207,11 +206,11 @@ default:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
-    
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
+
 prod:
   paths:
-    environ: !expr environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'
 ```
 
 So we will write this new config out and use it.
@@ -225,11 +224,11 @@ writeLines(
     data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
     output: '",dir,"/demo/DEV/username/project1/output'
     programs: '",dir,"/demo/DEV/username/project1/programs'
-    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
-    
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
+
 prod:
   paths:
-    environ: !expr environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ"
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'"
   ), fileConn)
 close(fileConn)
 
@@ -238,10 +237,10 @@ envsetup_config <- config::get(file = config_path)
 rprofile(envsetup_config)
 ```
 
-Let's write out the environ variable and check that is now PROD.
+Let's write out the `envsetup_environ` variable and check that is now PROD.
 
 ```{r}
-environ
+envsetup_environ
 ```
 What!  It isn't PROD.  
 
@@ -253,7 +252,7 @@ envsetup_config <- config::get(file = config_path, config = "prod")
 
 rprofile(envsetup_config)
 
-environ
+envsetup_environ
 ```
 
 Now lets see what has changed now when we call `read_path()` for `mtcars.RDS` when using the PROD configuration.
@@ -386,4 +385,3 @@ objects("autos:prod_script_library")
 
 test()
 ```
-

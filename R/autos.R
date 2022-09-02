@@ -7,7 +7,7 @@
 #' incorporated into a package.
 #'
 #' @param ... named vector of directories
-#' @param environ name of the environment you would like to read from;
+#' @param envsetup_environ name of the environment you would like to read from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
@@ -21,8 +21,7 @@
 #' \dontrun{
 #' set_autos(envsetup_config$autos)
 #' }
-set_autos <- function(..., environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-
+set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   autos_paths <- unlist(list(...))
 
   # Check the autos before they're set
@@ -33,15 +32,15 @@ set_autos <- function(..., environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # If there are any existing autos then reset them
   detach_autos(paste0("autos:", names(autos_paths)))
 
-  if (environ %in% names(autos_paths)) {
+  if (envsetup_environ %in% names(autos_paths)) {
     autos_paths <-
-      autos_paths[which(names(autos_paths) == environ):length(autos_paths)]
+      autos_paths[which(names(autos_paths) == envsetup_environ):length(autos_paths)]
   }
 
   # Check that the directories and/or files actually exist
   walk(autos_paths, {
     function(p) {
-      if (!dir.exists(p) & !file.exists(p)) {
+      if (!dir.exists(p) && !file.exists(p)) {
         warning(paste("Directory or file", p, "does not exist!"))
       }
     }
@@ -75,33 +74,33 @@ set_autos <- function(..., environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 #'
 #' @examples
 #' \dontrun{
-#' attach_auto('./my_funcs', "my_autos")
-#'}
+#' attach_auto("./my_funcs", "my_autos")
+#' }
 attach_auto <- function(path, name) {
-
   name_with_prefix <- paste0("autos:", name)
 
 
   # if file, source it
-  if (file.exists(path) & !dir.exists(path)) {
+  if (file.exists(path) && !dir.exists(path)) {
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
     message("Attaching functions from", path, " to ", name_with_prefix)
   } else {
     # Find all the R files in the given path
     r_scripts <- list.files(path,
-                            pattern = ".r$",
-                            ignore.case = TRUE,
-                            full.names = TRUE)
+      pattern = ".r$",
+      ignore.case = TRUE,
+      full.names = TRUE
+    )
 
     if (!identical(r_scripts, character(0))) {
       walk(r_scripts,
-                  sys.source,
-                  envir = attach(NULL, name = name_with_prefix))
+        sys.source,
+        envir = attach(NULL, name = name_with_prefix)
+      )
       message("Attaching functions from", path, " to ", name_with_prefix)
     }
   }
-
 }
 
 #' Detach the autos from the current session
@@ -116,7 +115,7 @@ attach_auto <- function(path, name) {
 #' @examples
 #' \dontrun{
 #' detach_autos()
-#'}
+#' }
 detach_autos <- function(names) {
 
   # find auto names in search
@@ -132,8 +131,11 @@ detach_autos <- function(names) {
 
 #' Wrapper around library to re-set autos
 #'
-#' Autos need to immediately follow the global environment.  This wrapper around `base::library()` will reset the autos after each new library is attached to ensure this behavior is followed.
+#' Autos need to immediately follow the global environment.
+#' This wrapper around `base::library()` will reset the autos after each new
+#' library is attached to ensure this behavior is followed.
 #'
+#' @usage NULL
 #' @param ... pass directly through to base::library
 #'
 #' @return returns (invisibly) the list of attached packages
@@ -142,9 +144,8 @@ detach_autos <- function(names) {
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#'}
+#' }
 library <- function(...) {
-
   tmp <- base::library(...)
 
   # Reset autos back if any are present

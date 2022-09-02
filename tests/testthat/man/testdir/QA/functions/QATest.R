@@ -1,4 +1,4 @@
-Test_QA <- function() {
+test_qa <- function() {
   return("Test of qa autos")
 }
 

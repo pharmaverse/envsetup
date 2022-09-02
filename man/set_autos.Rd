@@ -4,12 +4,12 @@
 \alias{set_autos}
 \title{Set the R autos}
 \usage{
-set_autos(..., environ = Sys.getenv("ENVSETUP_ENVIRON"))
+set_autos(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"))
 }
 \arguments{
 \item{...}{named vector of directories}
 
-\item{environ}{name of the environment you would like to read from;
+\item{envsetup_environ}{name of the environment you would like to read from;
 default values comes from the value in the system variable ENVSETUP_ENVIRON
 which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")}
 }
