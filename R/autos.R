@@ -22,7 +22,6 @@
 #' set_autos(envsetup_config$autos)
 #' }
 set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-
   autos_paths <- unlist(list(...))
 
   # Check the autos before they're set
@@ -41,7 +40,7 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # Check that the directories and/or files actually exist
   walk(autos_paths, {
     function(p) {
-      if (!dir.exists(p) & !file.exists(p)) {
+      if (!dir.exists(p) && !file.exists(p)) {
         warning(paste("Directory or file", p, "does not exist!"))
       }
     }
@@ -75,10 +74,9 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 #'
 #' @examples
 #' \dontrun{
-#' attach_auto('./my_funcs', "my_autos")
-#'}
+#' attach_auto("./my_funcs", "my_autos")
+#' }
 attach_auto <- function(path, name) {
-
   name_with_prefix <- paste0("autos:", name)
 
 
@@ -90,18 +88,19 @@ attach_auto <- function(path, name) {
   } else {
     # Find all the R files in the given path
     r_scripts <- list.files(path,
-                            pattern = ".r$",
-                            ignore.case = TRUE,
-                            full.names = TRUE)
+      pattern = ".r$",
+      ignore.case = TRUE,
+      full.names = TRUE
+    )
 
     if (!identical(r_scripts, character(0))) {
       walk(r_scripts,
-                  sys.source,
-                  envir = attach(NULL, name = name_with_prefix))
+        sys.source,
+        envir = attach(NULL, name = name_with_prefix)
+      )
       message("Attaching functions from", path, " to ", name_with_prefix)
     }
   }
-
 }
 
 #' Detach the autos from the current session
@@ -116,7 +115,7 @@ attach_auto <- function(path, name) {
 #' @examples
 #' \dontrun{
 #' detach_autos()
-#'}
+#' }
 detach_autos <- function(names) {
 
   # find auto names in search
@@ -145,9 +144,8 @@ detach_autos <- function(names) {
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#'}
+#' }
 library <- function(...) {
-
   tmp <- base::library(...)
 
   # Reset autos back if any are present

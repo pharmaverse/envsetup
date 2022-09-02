@@ -44,7 +44,7 @@ test_that("2.1", {
 
   withr::defer(detach(envsetup:paths))
 
-  expect_equal(c(Test_Dev()), c("Test of dev autos"))
+  expect_equal(c(test_dev()), c("Test of dev autos"))
 })
 
 
@@ -53,13 +53,13 @@ test_that("2.1", {
 test_that("3.1", {
   envsetup_config <- config::get(
     file = testthat::test_path("man/_envsetup_testthat.yml")
-    )
+  )
 
   rprofile(envsetup_config)
 
   readin <- readr::read_csv(
     read_path(data, "iris.csv", full.path = TRUE, envsetup_environ = "DEV")
-    )
+  )
 
   withr::defer(detach(envsetup:paths))
 

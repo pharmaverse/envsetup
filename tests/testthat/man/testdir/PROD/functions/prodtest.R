@@ -1,3 +1,3 @@
-Test_Prod <- function() {
+test_prod <- function() {
   return("Test of prod autos")
 }

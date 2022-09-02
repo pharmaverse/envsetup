@@ -23,6 +23,6 @@ use \code{set_autos()}.
 }
 \examples{
 \dontrun{
-attach_auto('./my_funcs', "my_autos")
+attach_auto("./my_funcs", "my_autos")
 }
 }

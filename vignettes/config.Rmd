@@ -75,9 +75,9 @@ For this example, we will need to read in data, write out results and save the s
 ```{r eval = FALSE}
 default:
   paths:
-    data: '/demo/DEV/username/project1/data'
-    output: '/demo/DEV/username/project1/output'
-    programs: '/demo/DEV/username/project1/programs'
+    data: "/demo/DEV/username/project1/data"
+    output: "/demo/DEV/username/project1/output"
+    programs: "/demo/DEV/username/project1/programs"
 ```
 
 Let's create a temporary directory and store this config file as _envsetup.yml.  We can then call `envsetup::profile()` and point to this configuration.
@@ -386,4 +386,3 @@ objects("autos:prod_script_library")
 
 test()
 ```
-

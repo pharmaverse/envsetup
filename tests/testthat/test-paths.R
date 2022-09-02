@@ -17,9 +17,10 @@ rprofile(envsetup_config)
 #' @editDate 2022-05-12
 test_that("1.1", {
   readin <- readr::read_csv(read_path(data,
-                                      "iris.csv",
-                                      full.path = TRUE,
-                                      envsetup_environ = "DEV"))
+    "iris.csv",
+    full.path = TRUE,
+    envsetup_environ = "DEV"
+  ))
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })
 
@@ -27,28 +28,33 @@ test_that("1.1", {
 #' @editDate 2022-05-12
 test_that("1.2", {
   expect_error(readr::read_csv(read_path(data,
-                                         "iris.csv",
-                                         full.path = TRUE,
-                                         envsetup_environ = "PROD")))
+    "iris.csv",
+    full.path = TRUE,
+    envsetup_environ = "PROD"
+  )))
 })
 
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.3", {
-  expect_equal(read_path(data,
-                         "iris.csv",
-                         full.path = FALSE,
-                         envsetup_environ = "DEV"),
-               paste0(tmpdir, "/DEV/data"))
+  expect_equal(
+    read_path(data,
+      "iris.csv",
+      full.path = FALSE,
+      envsetup_environ = "DEV"
+    ),
+    paste0(tmpdir, "/DEV/data")
+  )
 })
 
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.4", {
   readin <- readr::read_csv(read_path(data,
-                                      "iris2.csv",
-                                      full.path = TRUE,
-                                      envsetup_environ = "DEV"))
+    "iris2.csv",
+    full.path = TRUE,
+    envsetup_environ = "DEV"
+  ))
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })
 

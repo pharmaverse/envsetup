@@ -17,7 +17,7 @@ envsetup_config <- config::get(
 #' @editDate 2022-05-12
 test_that("1.1", {
   set_autos(envsetup_config$autos)
-  expect_equal(c(Test_Dev()), c("Test of dev autos"))
+  expect_equal(c(test_dev()), c("Test of dev autos"))
 })
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
@@ -31,9 +31,9 @@ test_that("1.3", {
   envsetup_config_tmp <- envsetup_config
   envsetup_config_tmp$autos[2] <- envsetup_config$autos[1]
   set_autos(envsetup_config_tmp$autos)
-  expect_equal(c(Test_Dev(), Test_Prod()),
+  expect_equal(c(test_dev(), test_prod()),
                c("Test of dev autos", "Test of prod autos"))
-  expect_error(Test_QA())
+  expect_error(test_qa())
 })
 
 
@@ -49,8 +49,8 @@ test_that("1.4", {
 #' @editDate 2022-05-12
 test_that("1.5", {
   set_autos(envsetup_config$autos)
-  expect_equal(Test_Prod(), "Test of prod autos")
-  expect_equal(Test_Prod2(), "Test of prod autos second")
+  expect_equal(test_prod(), "Test of prod autos")
+  expect_equal(test_prod2(), "Test of prod autos second")
 })
 
 #' @editor Aidan Ceney
@@ -66,10 +66,10 @@ test_that("1.6", {
 test_that("1.7", {
   Sys.setenv(ENVSETUP_ENVIRON = "QA")
   set_autos(envsetup_config$autos)
-  expect_error(Test_DEV())
+  expect_error(test_dev())
   Sys.setenv(ENVSETUP_ENVIRON = "PROD")
   set_autos(envsetup_config$autos)
-  expect_error(Test_DEV())
+  expect_error(test_dev())
 })
 
 #' @editor Aidan Ceney
@@ -77,8 +77,8 @@ test_that("1.7", {
 test_that("1.8", {
   Sys.setenv(ENVSETUP_ENVIRON = "QA")
   set_autos(envsetup_config$autos)
-  expect_error(Test_Dev())
-  expect_equal(c(Test_QA(), Test_Prod()),
+  expect_error(test_dev())
+  expect_equal(c(test_qa(), test_prod()),
                c("Test of qa autos", "Test of prod autos"))
 })
 
@@ -87,8 +87,6 @@ test_that("1.8", {
 #' @editDate 2022-05-12
 test_that("2.1", {
   detach_autos(c("autos:QA", "autos:PROD"))
-  expect_error(Test_QA())
-  expect_error(Test_Prod())
+  expect_error(test_qa())
+  expect_error(test_prod())
 })
-
-
