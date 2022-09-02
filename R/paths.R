@@ -10,7 +10,7 @@
 #' @param lib object containing the paths for all environments of a directory
 #' @param filename name of the file you would like to read
 #' @param full.path logical to return the path including the file name
-#' @param environ name of the environment you would like to read the file from;
+#' @param envsetup_environ name of the environment you would like to read the file from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
@@ -24,8 +24,8 @@
 read_path <- function(lib,
                       filename,
                       full.path = TRUE,
-                      environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  restricted_paths <- lib[which(names(lib) == environ):length(lib)]
+                      envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+  restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
 
   # find which paths have the object
   path_has_object <-
@@ -57,7 +57,7 @@ read_path <- function(lib,
 #' Write path
 #'
 #' @param lib object containing the paths for all environments of a directory
-#' @param environ name of the environment you would like to write to
+#' @param envsetup_environ name of the environment you would like to write to
 #'
 #' @return path to write
 #' @export
@@ -66,8 +66,8 @@ read_path <- function(lib,
 #' \dontrun{
 #' write_path(a_in, "PROD")
 #' }
-write_path <- function(lib, environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  path <- lib[[environ]]
+write_path <- function(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+  path <- lib[[envsetup_environ]]
   message("Write Path:", path, "\n")
   path
 }

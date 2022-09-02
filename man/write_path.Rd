@@ -4,12 +4,12 @@
 \alias{write_path}
 \title{Write path}
 \usage{
-write_path(lib, environ = Sys.getenv("ENVSETUP_ENVIRON"))
+write_path(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"))
 }
 \arguments{
 \item{lib}{object containing the paths for all environments of a directory}
 
-\item{environ}{name of the environment you would like to write to}
+\item{envsetup_environ}{name of the environment you would like to write to}
 }
 \value{
 path to write

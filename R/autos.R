@@ -7,7 +7,7 @@
 #' incorporated into a package.
 #'
 #' @param ... named vector of directories
-#' @param environ name of the environment you would like to read from;
+#' @param envsetup_environ name of the environment you would like to read from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
@@ -21,7 +21,7 @@
 #' \dontrun{
 #' set_autos(envsetup_config$autos)
 #' }
-set_autos <- function(..., environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   autos_paths <- unlist(list(...))
 
@@ -33,9 +33,9 @@ set_autos <- function(..., environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # If there are any existing autos then reset them
   detach_autos(paste0("autos:", names(autos_paths)))
 
-  if (environ %in% names(autos_paths)) {
+  if (envsetup_environ %in% names(autos_paths)) {
     autos_paths <-
-      autos_paths[which(names(autos_paths) == environ):length(autos_paths)]
+      autos_paths[which(names(autos_paths) == envsetup_environ):length(autos_paths)]
   }
 
   # Check that the directories and/or files actually exist
@@ -132,7 +132,9 @@ detach_autos <- function(names) {
 
 #' Wrapper around library to re-set autos
 #'
-#' Autos need to immediately follow the global environment.  This wrapper around `base::library()` will reset the autos after each new library is attached to ensure this behavior is followed.
+#' Autos need to immediately follow the global environment.
+#' This wrapper around `base::library()` will reset the autos after each new
+#' library is attached to ensure this behavior is followed.
 #'
 #' @usage NULL
 #'

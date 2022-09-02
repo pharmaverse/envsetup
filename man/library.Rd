@@ -14,7 +14,9 @@ Normally \code{library} returns (invisibly) the list of attached
   package is available.
 }
 \description{
-Autos need to immediately follow the global environment.  This wrapper around \code{base::library()} will reset the autos after each new library is attached to ensure this behavior is followed.
+Autos need to immediately follow the global environment.
+This wrapper around \code{base::library()} will reset the autos after each new
+library is attached to ensure this behavior is followed.
 }
 \details{
 \code{library(package)} and \code{require(package)} both load the

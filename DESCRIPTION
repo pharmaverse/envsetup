@@ -31,5 +31,7 @@ Suggests:
     tidyr,
     withr,
     fs,
-    usethis
+    usethis,
+    lintr,
+    styler
 VignetteBuilder: knitr

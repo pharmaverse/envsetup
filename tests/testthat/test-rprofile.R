@@ -58,7 +58,7 @@ test_that("3.1", {
   rprofile(envsetup_config)
 
   readin <- readr::read_csv(
-    read_path(data, "iris.csv", full.path = TRUE, environ = "DEV")
+    read_path(data, "iris.csv", full.path = TRUE, envsetup_environ = "DEV")
     )
 
   withr::defer(detach(envsetup:paths))

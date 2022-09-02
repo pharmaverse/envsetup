@@ -19,7 +19,7 @@ test_that("1.1", {
   readin <- readr::read_csv(read_path(data,
                                       "iris.csv",
                                       full.path = TRUE,
-                                      environ = "DEV"))
+                                      envsetup_environ = "DEV"))
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })
 
@@ -29,7 +29,7 @@ test_that("1.2", {
   expect_error(readr::read_csv(read_path(data,
                                          "iris.csv",
                                          full.path = TRUE,
-                                         environ = "PROD")))
+                                         envsetup_environ = "PROD")))
 })
 
 #' @editor Aidan Ceney
@@ -38,7 +38,7 @@ test_that("1.3", {
   expect_equal(read_path(data,
                          "iris.csv",
                          full.path = FALSE,
-                         environ = "DEV"),
+                         envsetup_environ = "DEV"),
                paste0(tmpdir, "/DEV/data"))
 })
 
@@ -48,13 +48,13 @@ test_that("1.4", {
   readin <- readr::read_csv(read_path(data,
                                       "iris2.csv",
                                       full.path = TRUE,
-                                      environ = "DEV"))
+                                      envsetup_environ = "DEV"))
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })
 
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("2.1", {
-  readin <- write_path(data, environ = "DEV")
+  readin <- write_path(data, envsetup_environ = "DEV")
   expect_equal(readin, paste0(tmpdir, "/DEV/data"))
 })
