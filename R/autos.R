@@ -137,8 +137,15 @@ detach_autos <- function(names) {
 #' library is attached to ensure this behavior is followed.
 #'
 #' @usage NULL
+#' @param ... pass directly through to base::library
 #'
-#' @inherit base::library
+#' @return returns (invisibly) the list of attached packages
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#'}
 library <- function(...) {
 
   tmp <- base::library(...)

@@ -143,7 +143,7 @@ writeLines(
     data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
     output: '",dir,"/demo/DEV/username/project1/output'
     programs: '",dir,"/demo/DEV/username/project1/programs'
-    envsetup_environ: !expr envsetup_environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ"
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"
   ), fileConn)
 close(fileConn)
 
@@ -196,7 +196,7 @@ default:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    envsetup_environ: !expr envsetup_environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
 ```
 
 Let's now add an environment for PROD.  We cannot simply change `envsetup_environ` from DEV to PROD, or DEV wouldn't work.  We need to add a configuration to PROD.
@@ -207,11 +207,11 @@ default:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    envsetup_environ: !expr envsetup_environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
     
 prod:
   paths:
-    envsetup_environ: !expr envsetup_environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'
 ```
 
 So we will write this new config out and use it.
@@ -225,11 +225,11 @@ writeLines(
     data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
     output: '",dir,"/demo/DEV/username/project1/output'
     programs: '",dir,"/demo/DEV/username/project1/programs'
-    envsetup_environ: !expr envsetup_environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
     
 prod:
   paths:
-    envsetup_environ: !expr envsetup_environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ"
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'"
   ), fileConn)
 close(fileConn)
 
