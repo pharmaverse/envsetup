@@ -1,0 +1,389 @@
+---
+title: "Create Your Config"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{config}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Update _envsetup.yml to meet your needs.
+
+The configuration is currently setup to address:
+
+1. paths
+2. autos
+
+# PATHS
+
+This adds `envsetup:paths` to your search path which contains all of the relevant objects needed to point to different directories in your environment.
+
+## Level 1 of config, the infrastructure environment (ex. dev, qa or prod)
+
+This might not be relevant to you, most everyone would only work in the prod area of your compute environment.  For those setting up environments with dev, qa, and prod, you can use this to address any configuration needs.
+
+```{r eval = FALSE}
+default:
+
+dev:
+
+qa:
+  
+prod:
+```
+
+
+## Level 2 of config, paths and autos
+
+```{r eval = FALSE}
+default:
+  paths:
+  autos:
+
+dev:
+  paths:
+  autos:
+
+qa:
+  paths:
+  autos:
+  
+prod:
+  paths:
+  autos:
+```
+
+## Level 3 of config, custom configurations
+
+For this example, we will now just focus on setting up one environment, the default configuration.  If you wish to have different configurations based off your infrastructure environment, you would need to expand this to fit your needs.
+
+```{r eval = FALSE}
+default:
+  paths:
+  autos:
+```
+
+For this example, we will need to read in data, write out results and save the script for future reference for a project we'll call project1.  So we will need an object to point to each of these locations, so we add the data, output and programs objects to level 3 of our config.
+
+```{r eval = FALSE}
+default:
+  paths:
+    data: '/demo/DEV/username/project1/data'
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'
+```
+
+Let's create a temporary directory and store this config file as _envsetup.yml.  We can then call `envsetup::profile()` and point to this configuration.
+
+```{r}
+library(envsetup)
+
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+fileConn <- file(config_path)
+writeLines(
+"default:
+  paths:
+    data: '/demo/DEV/username/project1/data'
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'", fileConn)
+close(fileConn)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+
+unlink(dir, recursive=TRUE)
+```
+
+We now have data, output and programs available to us in our search path within `envsetup:paths`.
+
+```{r echo = TRUE}
+objects("envsetup:paths")
+
+data
+output
+programs
+```
+Alright!  Now let's go one step further and imagine a programmer, we'll call them Tidy McVerse.  Miss McVerse needs to read in some data and this data is in the development area when she started programming.  This is great!  We already have the object data that points to "/demo/DEV/username/project1/data".
+
+Half way through programming, the data was considered production ready and the data moved from "/demo/DEV/username/project1/data" to "/demo/PROD/project1/data".  Miss McVerse should not need to change her programs now, she needs a way to read data that is smarter than the average bear.  The same object she uses to read in the data should work if the data is in "/demo/DEV/username/project1/data" or "/demo/PROD/project1/data".
+
+Let's create a config to keep Tidy McVerse happy and focused on the results, not data locations.
+
+```{r eval = FALSE}
+default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'
+    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+```
+
+
+```{r}
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+fileConn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  paths:
+    data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
+    output: '",dir,"/demo/DEV/username/project1/output'
+    programs: '",dir,"/demo/DEV/username/project1/programs'
+    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ"
+  ), fileConn)
+close(fileConn)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+```
+
+Again we have data, output and programs available to us in our search path within `envsetup:paths`, but data is now a named list with two locations.  We also now have `environ` which, we will get into more details later, just accept it exists for now.
+
+```{r echo = TRUE}
+objects("envsetup:paths")
+
+data
+output
+programs
+environ
+```
+
+We can use `envsetup::read_path()` to help us find where the data is we would like to read.  So we will create the directories and add the `mtcars` data to the PROD data directory, "/demo/PROD/project1/data".
+
+```{r}
+dir.create(file.path(dir, "/demo/DEV/username/project1/data"), recursive = TRUE)
+dir.create(file.path(dir, "/demo/PROD/project1/data"), recursive = TRUE)
+
+saveRDS(mtcars, file.path(dir, "/demo/PROD/project1/data/mtcars.RDS"))
+```
+
+Now we can use `read_path()`, passing in the path object `data` to find where to read `mtcars.RDS`.  The data is only in PROD so the function returns the path to PROD `mtcars.RDS`.
+
+```{r}
+read_path(data, "mtcars.RDS")
+```
+
+Let's keep going!  What if the data was in DEV and PROD?
+
+```{r}
+saveRDS(mtcars, file.path(dir, "/demo/DEV/username/project1/data/mtcars.RDS"))
+
+read_path(data, "mtcars.RDS")
+```
+
+So we see the path to DEV now instead of the path to PROD.
+
+So now we can talk about then environ variable we set in the config!  When we have multiple paths, as we do here with data, this controls which paths should be checked.  This is just an index, wherever the environment is found in the list, only from here to the end is checked.  So DEV is first, meaning all locations are checked until the object is found or nothing is found.
+
+```{r eval = FALSE}
+default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'
+    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+```
+
+Let's now add an environment for PROD.  We cannot simply change environ from DEV to PROD, or DEV wouldn't work.  We need to add a configuration to PROD.
+
+```{r eval = FALSE}
+default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'
+    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+    
+prod:
+  paths:
+    environ: !expr environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+```
+
+So we will write this new config out and use it.
+
+```{r}
+fileConn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  paths:
+    data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
+    output: '",dir,"/demo/DEV/username/project1/output'
+    programs: '",dir,"/demo/DEV/username/project1/programs'
+    environ: !expr environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ
+    
+prod:
+  paths:
+    environ: !expr environ <- 'PROD'; Sys.setenv(ENVSETUP_ENVIRON = environ); environ"
+  ), fileConn)
+close(fileConn)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+```
+
+Let's write out the environ variable and check that is now PROD.
+
+```{r}
+environ
+```
+What!  It isn't PROD.  
+
+We must pass the configuration to `config:get()` telling it to use PROD.
+
+
+```{r}
+envsetup_config <- config::get(file = config_path, config = "prod")
+
+rprofile(envsetup_config)
+
+environ
+```
+
+Now lets see what has changed now when we call `read_path()` for `mtcars.RDS` when using the PROD configuration.
+
+```{r}
+read_path(data, "mtcars.RDS")
+```
+We see the path to PROD, even though data exists in both DEV and PROD.  This is because data was indexed starting with the location of PROD, which is the last element in data, so only this location was checked, excluding DEV.
+
+
+```{r echo = FALSE}
+unlink(dir, recursive=TRUE)
+```
+
+
+# AUTOS
+
+This adds multiple environments to your search path, each of which containing the objects that are automatically sourced.
+
+```{r eval = FALSE}
+default:
+  autos:
+```
+
+So let's go back to Tidy McVerse.  She has created a custom, one off function and stored this in `/demo/DEV/username/project1/script_library`. 
+
+We will add this path to the autos config.
+
+```{r eval = FALSE}
+default:
+  autos:
+    dev_script_library: '/demo/DEV/username/project1/script_library'
+```
+
+So let's look at a working example.  We will create the directory, config, place a script into the folder, and call `rprofile()` passing in this config file.
+
+```{r}
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+dir.create(file.path(dir, "/demo/DEV/username/project1/script_library"), recursive = TRUE)
+
+# write a function to the folder
+fileConn <- file(file.path(dir, "/demo/DEV/username/project1/script_library/test.R"))
+writeLines(
+"test <- function(){print('test')}", fileConn)
+close(fileConn)
+
+# write the config
+fileConn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'"
+  ), fileConn)
+close(fileConn)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+
+unlink(dir, recursive=TRUE)
+```
+
+Now we can see `dev_script_library` was added to the search path, the function `test()` is available within this environment, and we can execute this function without a need for sourcing.
+
+```{r}
+search()
+
+objects("autos:dev_script_library")
+
+test()
+```
+Why on earth would we need this?
+
+Just as with our previous data example, these scripts can be in multiple locations during their qualification lifecycle.  
+
+So let's say Tidy McVerse's custom, one off function is found useful for others in this specific project.  This function needs to move from her dev folder, `/demo/DEV/username/project1/script_library`, to the central prod location, `/demo/PROD/project1/script_library`.
+
+If each program that used this function had a hard-coded `source()` of this function, multiple program would need updated as function move through their lifecycle.
+
+So let's add the prod script library to our config.
+
+```{r eval = FALSE}
+default:
+  autos:
+    dev_script_library: '/demo/DEV/username/project1/script_library'
+    prod_script_library: '/demo/PROD/project1/script_library'
+```
+
+```{r}
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+dir.create(file.path(dir, "/demo/DEV/username/project1/script_library"), recursive = TRUE)
+dir.create(file.path(dir, "/demo/PROD/project1/script_library"), recursive = TRUE)
+
+# write a function to the folder
+fileConn <- file(file.path(dir, "/demo/PROD/project1/script_library/test.R"))
+writeLines(
+"test <- function(){print('test')}", fileConn)
+close(fileConn)
+
+# write the config
+fileConn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'
+    prod_script_library: '", dir,"/demo/PROD/project1/script_library'"
+  ), fileConn)
+close(fileConn)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+
+unlink(dir, recursive=TRUE)
+```
+Now we can see `prod_script_library` was added to the search path, the function `test()` is available within this environment, and we can execute this function without a need for sourcing.
+
+```{r}
+search()
+
+objects("autos:prod_script_library")
+
+test()
+```
+

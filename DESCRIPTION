@@ -1,0 +1,35 @@
+Package: envsetup
+Title: Support the Setup of the R Environment for Clinical Trial Programming Workflows
+Version: 0.0.1
+Authors@R: c(
+    person("Nicholas", "Masel", email = "nmasel@its.jnj.com", role = c("aut", "cre")),
+    person("Mike", "Stackhouse", email = "mike.stackhouse@atorusresearch.com", role = c("aut"), comment = c(ORCID = "0000-0001-6030-723X")),
+    person("Aidan", "Ceney", email = "aidan.ceney@atorusresearch.com", role = "aut"),
+    person("Janssen R&D", role = c("cph", "fnd")),
+    person("Atorus Research LLC", role = "cph")
+  )
+Description: What the package does (one paragraph).
+License: Apache License 2.0 | file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Imports: 
+    assertthat,
+    purrr,
+    renv,
+    rstudioapi
+Suggests: 
+    rmarkdown,
+    testthat,
+    knitr,
+    kableExtra,
+    magrittr,
+    devtools,
+    valtools,
+    config,
+    readr,
+    tidyr,
+    withr,
+    fs,
+    usethis
+VignetteBuilder: knitr
