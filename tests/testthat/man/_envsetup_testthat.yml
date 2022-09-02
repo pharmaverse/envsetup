@@ -1,7 +1,6 @@
 default:
-  project_path: !expr project_path <- Sys.getenv("testpath");
-                      Sys.setenv(ENVSETUP_PROJECT_PATH = project_path);
-                      project_path
+  project_path: !expr Sys.setenv(ENVSETUP_PROJECT_PATH = Sys.getenv("testpath"));
+                      Sys.getenv("testpath")
   paths:
     data: !expr list(
       DEV = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "data"),
