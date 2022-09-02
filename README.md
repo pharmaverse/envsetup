@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# envsetup <a><img src='man/figures/logo.png' align="right" height="139" /></a>
+# envsetup <img src='man/figures/logo.png' align="right" height="200" style="float:right; height:200px;" />
 
 ## Overview
 

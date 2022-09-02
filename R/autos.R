@@ -134,15 +134,9 @@ detach_autos <- function(names) {
 #'
 #' Autos need to immediately follow the global environment.  This wrapper around `base::library()` will reset the autos after each new library is attached to ensure this behavior is followed.
 #'
-#' @param ... pass directly through to base::library
+#' @usage NULL
 #'
-#' @return returns (invisibly) the list of attached packages
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#'}
+#' @inherit base::library
 library <- function(...) {
 
   tmp <- base::library(...)

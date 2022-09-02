@@ -3,20 +3,188 @@
 \name{library}
 \alias{library}
 \title{Wrapper around library to re-set autos}
-\usage{
-library(...)
-}
-\arguments{
-\item{...}{pass directly through to base::library}
-}
 \value{
-returns (invisibly) the list of attached packages
+Normally \code{library} returns (invisibly) the list of attached
+  packages, but \code{TRUE} or \code{FALSE} if \code{logical.return} is
+  \code{TRUE}.  When called as \code{library()} it returns an object of
+  class \code{"libraryIQR"}, and for \code{library(help=)}, one of
+  class \code{"packageInfo"}.
+
+  \code{require} returns (invisibly) a logical indicating whether the required
+  package is available.
 }
 \description{
 Autos need to immediately follow the global environment.  This wrapper around \code{base::library()} will reset the autos after each new library is attached to ensure this behavior is followed.
 }
-\examples{
-\dontrun{
-library(dplyr)
+\details{
+\code{library(package)} and \code{require(package)} both load the
+  namespace of the package with name \code{package} and attach it on the
+  search list.  \code{require} is designed for use inside other
+  functions; it returns \code{FALSE} and gives a warning (rather than an
+  error as \code{library()} does by default) if the package does not
+  exist.  Both functions check and update the list of currently attached
+  packages and do not reload a namespace which is already loaded.  (If
+  you want to reload such a package, call \code{\link[base]{detach}(unload =
+  TRUE)} or \code{\link[base]{unloadNamespace}} first.)  If you want to load a
+  package without attaching it on the search list, see
+  \code{\link[base]{requireNamespace}}.
+
+  To suppress messages during the loading of packages use
+  \code{\link[base]{suppressPackageStartupMessages}}: this will suppress all
+  messages from \R itself but not necessarily all those from package
+  authors.
+
+  If \code{library} is called with no \code{package} or \code{help}
+  argument, it lists all available packages in the libraries specified
+  by \code{lib.loc}, and returns the corresponding information in an
+  object of class \code{"libraryIQR"}.  (The structure of this class may
+  change in future versions.)  Use \code{.packages(all = TRUE)} to
+  obtain just the names of all available packages, and
+  \code{\link{installed.packages}()} for even more information.
+
+  \code{library(help = somename)} computes basic information about the
+  package \pkg{somename}, and returns this in an object of class
+  \code{"packageInfo"}.  (The structure of this class may change in
+  future versions.)  When used with the default value (\code{NULL}) for
+  \code{lib.loc}, the attached packages are searched before the libraries.
 }
+\note{
+\code{library} and \code{require} can only load/attach an
+  \emph{installed} package, and this is detected by having a
+  \file{DESCRIPTION} file containing a \samp{Built:} field.
+
+  Under Unix-alikes, the code checks that the package was installed
+  under a similar operating system as given by \code{R.version$platform}
+  (the canonical name of the platform under which R was compiled),
+  provided it contains compiled code.  Packages which do not contain
+  compiled code can be shared between Unix-alikes, but not to other OSes
+  because of potential problems with line endings and OS-specific help
+  files.  If sub-architectures are used, the OS similarity is not
+  checked since the OS used to build may differ
+  (e.g.\ifelse{latex}{\out{~}}{ }{}\code{i386-pc-linux-gnu} code can be built on an
+  \code{x86_64-unknown-linux-gnu} OS).
+
+  The package name given to \code{library} and \code{require} must match
+  the name given in the package's \file{DESCRIPTION} file exactly, even
+  on case-insensitive file systems such as are common on Windows and
+  macOS.
+}
+\section{Conflicts}{
+
+  Handling of conflicts depends on the setting of the
+  \code{conflicts.policy} option. If this option is not set, then
+  conflicts result in warning messages if the argument
+  \code{warn.conflicts} is \code{TRUE}. If the option is set to the
+  character string \code{"strict"}, then all unresolved conflicts signal
+  errors.  Conflicts can be resolved using the \code{mask.ok},
+  \code{exclude}, and \code{include.only} arguments to \code{library} and
+  \code{require}. Defaults for \code{mask.ok} and \code{exclude} can be
+  specified using \code{conflictRules}.
+
+  If the \code{conflicts.policy} option is set to the string
+  \code{"depends.ok"} then conflicts resulting from attaching declared
+  dependencies will not produce errors, but other conflicts will.
+  This is likely to be the best setting for most users wanting some
+  additional protection against unexpected conflicts.
+
+  The policy can be tuned further by specifying the
+  \code{conflicts.policy} option as a named list with the following
+  fields:
+  \describe{
+    \item{\code{error}:}{logical; if \code{TRUE} treat unresolved
+      conflicts as errors.}
+    \item{\code{warn}:}{logical; unless \code{FALSE} issue a warning
+      message when conflicts are found.}
+    \item{\code{generics.ok}:}{logical; if \code{TRUE} ignore conflicts
+      created by defining S4 generics for functions on the search path.}
+    \item{\code{depends.ok}:}{logical; if \code{TRUE} do not treat
+      conflicts with required packages as errors.}
+    \item{\code{can.mask}:}{character vector of names of packages that
+      are allowed to be masked. These would typically be base packages
+      attached by default.}
+  }
+
+}
+
+\section{Licenses}{
+
+  Some packages have restrictive licenses, and there is a mechanism to
+  allow users to be aware of such licenses.  If
+  \code{\link[base]{getOption}("checkPackageLicense") == TRUE}, then at first
+  use of a package with a not-known-to-be-FOSS (see below) license the
+  user is asked to view and accept the license: a list of accepted
+  licenses is stored in file \file{~/.R/licensed}.  In a non-interactive
+  session it is an error to use such a package whose license has not
+  already been recorded as accepted.
+
+  As from \R 3.4.0 the license check is done when the namespace is loaded.
+
+  Free or Open Source Software (FOSS,
+  e.g.\ifelse{latex}{\out{~}}{ }{}\url{https://en.wikipedia.org/wiki/FOSS}) packages are
+  determined by the same filters used by
+  \code{\link{available.packages}} but applied to just the current
+  package, not its dependencies.
+
+  There can also be a site-wide file \file{R_HOME/etc/licensed.site} of
+  packages (one per line).
+
+}
+
+\section{Formal methods}{
+
+  \code{library} takes some further actions when package \pkg{methods}
+  is attached (as it is by default).  Packages may define formal generic
+  functions as well as re-defining functions in other packages (notably
+  \pkg{base}) to be generic, and this information is cached whenever
+  such a namespace is loaded after \pkg{methods} and re-defined functions
+  (\link{implicit generic}s) are excluded from the list of conflicts.
+  The caching and check for conflicts require looking for a pattern of
+  objects; the search may be avoided by defining an object
+  \code{.noGenerics} (with any value) in the namespace.  Naturally, if the
+  package \emph{does} have any such methods, this will prevent them from
+  being used.
+
+}
+
+\examples{
+library()                   # list all available packages
+library(lib.loc = .Library) # list all packages in the default library
+\donttest{library(help = splines)     # documentation on package 'splines'}
+library(splines)            # attach package 'splines'
+require(splines)            # the same
+search()                    # "splines", too
+detach("package:splines")
+
+# if the package name is in a character vector, use
+pkg <- "splines"
+library(pkg, character.only = TRUE)
+detach(pos = match(paste("package", pkg, sep = ":"), search()))
+
+require(pkg, character.only = TRUE)
+detach(pos = match(paste("package", pkg, sep = ":"), search()))
+
+require(nonexistent)        # FALSE
+\dontrun{
+## if you want to mask as little as possible, use
+library(mypkg, pos = "package:base")
+}
+}
+\references{
+Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988)
+  \emph{The New S Language}.
+  Wadsworth & Brooks/Cole.
+}
+\seealso{
+\code{\link[base]{.libPaths}}, \code{\link[base]{.packages}}.
+
+  \code{\link[base]{attach}}, \code{\link[base]{detach}}, \code{\link[base]{search}},
+  \code{\link[base]{objects}}, \code{\link[base]{autoload}},
+  \code{\link[base]{requireNamespace}},
+  \code{\link[base]{library.dynam}}, \code{\link{data}},
+  \code{\link{install.packages}} and
+  \code{\link{installed.packages}};
+  \code{\link{INSTALL}}, \code{\link{REMOVE}}.
+
+  The initial set of packages attached is set by
+  \code{\link[base]{options}(defaultPackages=)}: see also \code{\link[base]{Startup}}.
 }
