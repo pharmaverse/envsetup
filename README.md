@@ -3,6 +3,9 @@
 
 # envsetup <img src='man/figures/logo.png' align="right" height="200" style="float:right; height:200px;" />
 
+<!-- badges: start -->
+<!-- badges: end -->
+
 ## Overview
 
 The purpose of this package is to support the setup the R environment.

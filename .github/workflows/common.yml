@@ -58,12 +58,6 @@ jobs:
     if: github.event_name == 'push'
     with:
       r-version: $R_VERSION
-  validation:
-    name: Validation
-    uses: pharmaverse/admiralci/.github/workflows/r-pkg-validation.yml@main
-    if: github.event_name == 'release'
-    with:
-      r-version: $R_VERSION
   check:
     name: Check
     uses: pharmaverse/admiralci/.github/workflows/r-cmd-check.yml@main
