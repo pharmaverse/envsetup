@@ -35,7 +35,7 @@ default:
 dev:
 
 qa:
-  
+
 prod:
 ```
 
@@ -54,7 +54,7 @@ dev:
 qa:
   paths:
   autos:
-  
+
 prod:
   paths:
   autos:
@@ -89,20 +89,20 @@ dir <- fs::file_temp()
 dir.create(dir)
 config_path <- file.path(dir, "_envsetup.yml")
 
-fileConn <- file(config_path)
+file_conn <- file(config_path)
 writeLines(
 "default:
   paths:
     data: '/demo/DEV/username/project1/data'
     output: '/demo/DEV/username/project1/output'
-    programs: '/demo/DEV/username/project1/programs'", fileConn)
-close(fileConn)
+    programs: '/demo/DEV/username/project1/programs'", file_conn)
+close(file_conn)
 
 envsetup_config <- config::get(file = config_path)
 
 rprofile(envsetup_config)
 
-unlink(dir, recursive=TRUE)
+unlink(dir, recursive = TRUE)
 ```
 
 We now have data, output and programs available to us in our search path within `envsetup:paths`.
@@ -126,7 +126,7 @@ default:
     data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
-    envsetup_environ: !expr envsetup_environ <- 'DEV'; Sys.setenv(ENVSETUP_ENVIRON = envsetup_environ); envsetup_environ
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
 ```
 
 
@@ -208,7 +208,7 @@ default:
     output: '/demo/DEV/username/project1/output'
     programs: '/demo/DEV/username/project1/programs'
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
-    
+
 prod:
   paths:
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'
@@ -226,7 +226,7 @@ writeLines(
     output: '",dir,"/demo/DEV/username/project1/output'
     programs: '",dir,"/demo/DEV/username/project1/programs'
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
-    
+
 prod:
   paths:
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'"

@@ -58,10 +58,6 @@ jobs:
     if: github.event_name == 'push'
     with:
       r-version: $R_VERSION
-  check:
-    name: Check
-    uses: pharmaverse/admiralci/.github/workflows/r-cmd-check.yml@main
-    if: github.event_name == 'pull_request'
   docs:
     name: Documentation
     uses: pharmaverse/admiralci/.github/workflows/pkgdown.yml@main

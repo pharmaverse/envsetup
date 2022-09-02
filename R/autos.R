@@ -81,7 +81,7 @@ attach_auto <- function(path, name) {
 
 
   # if file, source it
-  if (file.exists(path) & !dir.exists(path)) {
+  if (file.exists(path) && !dir.exists(path)) {
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
     message("Attaching functions from", path, " to ", name_with_prefix)

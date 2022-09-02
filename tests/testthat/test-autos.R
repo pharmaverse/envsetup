@@ -10,7 +10,7 @@ system(paste0("cp ", testthat::test_path("man/testdir/*"), " ", tmpdir, " -r"))
 
 envsetup_config <- config::get(
   file = testthat::test_path("man/_envsetup_testthat.yml")
-  )
+)
 
 
 #' @editor Aidan Ceney
@@ -31,8 +31,10 @@ test_that("1.3", {
   envsetup_config_tmp <- envsetup_config
   envsetup_config_tmp$autos[2] <- envsetup_config$autos[1]
   set_autos(envsetup_config_tmp$autos)
-  expect_equal(c(test_dev(), test_prod()),
-               c("Test of dev autos", "Test of prod autos"))
+  expect_equal(
+    c(test_dev(), test_prod()),
+    c("Test of dev autos", "Test of prod autos")
+  )
   expect_error(test_qa())
 })
 
@@ -78,8 +80,10 @@ test_that("1.8", {
   Sys.setenv(ENVSETUP_ENVIRON = "QA")
   set_autos(envsetup_config$autos)
   expect_error(test_dev())
-  expect_equal(c(test_qa(), test_prod()),
-               c("Test of qa autos", "Test of prod autos"))
+  expect_equal(
+    c(test_qa(), test_prod()),
+    c("Test of qa autos", "Test of prod autos")
+  )
 })
 
 
