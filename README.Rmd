@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The purpose of this package is to support the setup the R environment.  The two main features are:
+The purpose of this package is to support the setup of the R environment.  The two main features are:
 
 
 -   `autos` to automatically source files and/or directories into your environment
@@ -42,7 +42,7 @@ devtools::install_github("pharmaverse/envsetup")
 
 ## Usage
 
-1.  Create the _envsetup.yml configuration file to specify your autos and paths and store centrally.
+1.  Create the _envsetup.yml configuration file to specify your autos and paths and store centrally.See `vignette("config")` for more details in how to create your config.
 2.  Create or update your `.Rprofile` to read in the config and call `rprofile()`
 
 ```{r eval = FALSE}
