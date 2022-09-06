@@ -54,13 +54,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -214,14 +207,14 @@
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; $DEV</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/DEV/username/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/DEV/username/project1/data"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $PROD</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/PROD/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/PROD/project1/data"</span></span>
 <span><span class="va">output</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/DEV/username/project1/output"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/DEV/username/project1/output"</span></span>
 <span><span class="va">programs</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/DEV/username/project1/programs"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/DEV/username/project1/programs"</span></span>
 <span><span class="va">envsetup_environ</span></span>
 <span><span class="co">#&gt; [1] "DEV"</span></span></code></pre></div>
 <p>We can use <code><a href="../reference/read_path.html">envsetup::read_path()</a></code> to help us find where the data is we would like to read. So we will create the directories and add the <code>mtcars</code> data to the PROD data directory, “/demo/PROD/project1/data”.</p>
@@ -233,15 +226,15 @@
 <p>Now we can use <code><a href="../reference/read_path.html">read_path()</a></code>, passing in the path object <code>data</code> to find where to read <code>mtcars.RDS</code>. The data is only in PROD so the function returns the path to PROD <code>mtcars.RDS</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpeqBz67/filedf1d588f1544/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp4u8zJn/filede4d23dced41/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>Let’s keep going! What if the data was in DEV and PROD?</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/data/mtcars.RDS"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpeqBz67/filedf1d588f1544/demo/DEV/username/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp4u8zJn/filede4d23dced41/demo/DEV/username/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>So we see the path to DEV now instead of the path to PROD.</p>
 <p>So now we can talk about then envsetup_environ variable we set in the config! When we have multiple paths, as we do here with data, this controls which paths should be checked. This is just an index, wherever the environment is found in the list, only from here to the end is checked. So DEV is first, meaning all locations are checked until the object is found or nothing is found.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>default<span class="op">:</span></span>
@@ -298,8 +291,8 @@
 <p>Now lets see what has changed now when we call <code><a href="../reference/read_path.html">read_path()</a></code> for <code>mtcars.RDS</code> when using the PROD configuration.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpeqBz67/filedf1d588f1544/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpeqBz67/filedf1d588f1544/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp4u8zJn/filede4d23dced41/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp4u8zJn/filede4d23dced41/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>We see the path to PROD, even though data exists in both DEV and PROD. This is because data was indexed starting with the location of PROD, which is the last element in data, so only this location was checked, excluding DEV.</p>
 </div>
 </div>
@@ -342,7 +335,7 @@
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attaching functions from/tmp/RtmpeqBz67/filedf1d7d65055/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span>
+<span><span class="co">#&gt; Attaching functions from/tmp/Rtmp4u8zJn/filede4d7fe1c309/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">dir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can see <code>dev_script_library</code> was added to the search path, the function <code>test()</code> is available within this environment, and we can execute this function without a need for sourcing.</p>
@@ -399,7 +392,7 @@
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attaching functions from/tmp/RtmpeqBz67/filedf1d2c23af41/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
+<span><span class="co">#&gt; Attaching functions from/tmp/Rtmp4u8zJn/filede4d20a32453/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">dir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can see <code>prod_script_library</code> was added to the search path, the function <code>test()</code> is available within this environment, and we can execute this function without a need for sourcing.</p>
