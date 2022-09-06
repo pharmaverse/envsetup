@@ -54,13 +54,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -93,8 +86,7 @@
 
     
     
-<p>Update _envsetup.yml to meet your needs.</p>
-<p>The configuration is currently setup to address:</p>
+<p>Here we will walk-through how to update _envsetup.yml to meet your needs. The configuration is currently setup to address:</p>
 <ol style="list-style-type: decimal">
 <li>paths</li>
 <li>autos</li>
@@ -104,9 +96,9 @@
 </h2>
 <p>This adds <code>envsetup:paths</code> to your search path which contains all of the relevant objects needed to point to different directories in your environment.</p>
 <div class="section level3">
-<h3 id="level-1-of-config-the-infrastructure-environment-ex--dev-qa-or-prod">Level 1 of config, the infrastructure environment (ex. dev, qa or prod)<a class="anchor" aria-label="anchor" href="#level-1-of-config-the-infrastructure-environment-ex--dev-qa-or-prod"></a>
+<h3 id="level-1-of-config-the-execution-environment-ex--dev-qa-or-prod">Level 1 of config: the execution environment (ex. dev, qa or prod)<a class="anchor" aria-label="anchor" href="#level-1-of-config-the-execution-environment-ex--dev-qa-or-prod"></a>
 </h3>
-<p>This might not be relevant to you, most everyone would only work in the prod area of your compute environment. For those setting up environments with dev, qa, and prod, you can use this to address any configuration needs.</p>
+<p>Scripts typically execute in different environments depending on your workflow. Here we have a workflow where multiple developers work in dev making scripts, they move to qa for some quality checks and sign off, then move to prod where they are executed for delivery.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="fu">dev</span><span class="kw">:</span></span>
@@ -116,8 +108,9 @@
 <span id="cb1-7"><a href="#cb1-7"></a><span class="fu">prod</span><span class="kw">:</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="level-2-of-config-paths-and-autos">Level 2 of config, paths and autos<a class="anchor" aria-label="anchor" href="#level-2-of-config-paths-and-autos"></a>
+<h3 id="level-2-of-config-paths-and-autos">Level 2 of config: paths and autos<a class="anchor" aria-label="anchor" href="#level-2-of-config-paths-and-autos"></a>
 </h3>
+<p>Each execution environment might have slightly different configurations. This allows us to change the configuration to meet the needs of each environment.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="at">  </span><span class="fu">paths</span><span class="kw">:</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="at">  </span><span class="fu">autos</span><span class="kw">:</span></span>
@@ -135,19 +128,24 @@
 <span id="cb2-15"><a href="#cb2-15"></a><span class="at">  </span><span class="fu">autos</span><span class="kw">:</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="level-3-of-config-custom-configurations">Level 3 of config, custom configurations<a class="anchor" aria-label="anchor" href="#level-3-of-config-custom-configurations"></a>
+<h3 id="level-3-of-config-configure-the-environment">Level 3 of config: configure the environment<a class="anchor" aria-label="anchor" href="#level-3-of-config-configure-the-environment"></a>
 </h3>
-<p>For this example, we will now just focus on setting up one environment, the default configuration. If you wish to have different configurations based off your infrastructure environment, you would need to expand this to fit your needs.</p>
+<p>This is best illustrated with an example. For this example, we will focus on setting up one environment, the default configuration.</p>
+<p>If you wish to have different configurations based off your environment, you would need to expand this to fit your needs.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="at">  </span><span class="fu">paths</span><span class="kw">:</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="at">  </span><span class="fu">autos</span><span class="kw">:</span></span></code></pre></div>
-<p>For this example, we will need to read in data, write out results and save the script for future reference for a project we’ll call project1. So we will need an object to point to each of these locations, so we add the data, output and programs objects to level 3 of our config.</p>
+</div>
+<div class="section level3">
+<h3 id="a-working-example">A working example<a class="anchor" aria-label="anchor" href="#a-working-example"></a>
+</h3>
+<p>First we will need to read in data, write out results and save the script for future reference for a project we’ll call <strong>project1</strong>. So we need an object to point to each of these locations, and we add the <code>data</code>, <code>output</code> and <code>programs</code> objects to our config.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="at">  </span><span class="fu">paths</span><span class="kw">:</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="at">    </span><span class="fu">data</span><span class="kw">:</span><span class="at"> </span><span class="st">"/demo/DEV/username/project1/data"</span></span>
 <span id="cb4-4"><a href="#cb4-4"></a><span class="at">    </span><span class="fu">output</span><span class="kw">:</span><span class="at"> </span><span class="st">"/demo/DEV/username/project1/output"</span></span>
 <span id="cb4-5"><a href="#cb4-5"></a><span class="at">    </span><span class="fu">programs</span><span class="kw">:</span><span class="at"> </span><span class="st">"/demo/DEV/username/project1/programs"</span></span></code></pre></div>
-<p>Let’s create a temporary directory and store this config file as _envsetup.yml. We can then call <code><a href="https://rdrr.io/r/stats/profile.html" class="external-link">envsetup::profile()</a></code> and point to this configuration.</p>
+<p>A working example is even better, so let’s create a temporary directory and store this config file as <code>_envsetup.yml</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="../reference/library.html">library</a></span><span class="op">(</span><span class="va">envsetup</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -156,10 +154,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     library</span></span>
 <span></span>
+<span><span class="co"># create temporary directory</span></span>
 <span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_temp.html" class="external-link">file_temp</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span>
 <span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"_envsetup.yml"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># write a config file to it</span></span>
 <span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
 <span><span class="st">"default:</span></span>
@@ -167,15 +167,15 @@
 <span><span class="st">    data: '/demo/DEV/username/project1/data'</span></span>
 <span><span class="st">    output: '/demo/DEV/username/project1/output'</span></span>
 <span><span class="st">    programs: '/demo/DEV/username/project1/programs'"</span>, <span class="va">file_conn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span>
-<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>We can then call <code><a href="../reference/rprofile.html">rprofile()</a></code>, passing in this configuration.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set up the project</span></span>
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>We now have data, output and programs available to us in our search path within <code>envsetup:paths</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre></div>
+<p>We now have data, output and programs available to us in our search path within <code>envsetup:paths</code>. Let’s take a look:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">objects</a></span><span class="op">(</span><span class="st">"envsetup:paths"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "data"     "output"   "programs"</span></span>
 <span></span>
@@ -185,21 +185,22 @@
 <span><span class="co">#&gt; [1] "/demo/DEV/username/project1/output"</span></span>
 <span><span class="va">programs</span></span>
 <span><span class="co">#&gt; [1] "/demo/DEV/username/project1/programs"</span></span></code></pre></div>
-<p>Alright! Now let’s go one step further and imagine a programmer, we’ll call them Tidy McVerse. Miss McVerse needs to read in some data and this data is in the development area when she started programming. This is great! We already have the object data that points to “/demo/DEV/username/project1/data”.</p>
-<p>Half way through programming, the data was considered production ready and the data moved from “/demo/DEV/username/project1/data” to “/demo/PROD/project1/data”. Miss McVerse should not need to change her programs now, she needs a way to read data that is smarter than the average bear. The same object she uses to read in the data should work if the data is in “/demo/DEV/username/project1/data” or “/demo/PROD/project1/data”.</p>
+<p>Alright!</p>
+<p>Now let’s go one step further and imagine a programmer, we’ll call them Tidy McVerse. Miss McVerse needs to read in some data and this data is in the development area when she started programming.</p>
+<p>This is great! We already have the object data that points to “/demo/DEV/username/project1/data”.</p>
+<p>Half way through programming, the data was considered production ready and the data moved from “/demo/DEV/username/project1/data” to “/demo/PROD/project1/data”. Miss McVerse should not need to change her programs now, she needs a way to read data that is smarter than the average bear.</p>
+<p>The same object she uses to read in the data should work if the data is in “/demo/DEV/username/project1/data” or “/demo/PROD/project1/data”.</p>
 <p>Let’s create a config to keep Tidy McVerse happy and focused on the results, not data locations.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">default</span><span class="kw">:</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="at">  </span><span class="fu">paths</span><span class="kw">:</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="at">    </span><span class="fu">data</span><span class="kw">:</span><span class="at"> !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="at">    </span><span class="fu">output</span><span class="kw">:</span><span class="at"> </span><span class="st">'/demo/DEV/username/project1/output'</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="at">    </span><span class="fu">programs</span><span class="kw">:</span><span class="at"> </span><span class="st">'/demo/DEV/username/project1/programs'</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="at">    </span><span class="fu">envsetup_environ</span><span class="kw">:</span><span class="at"> !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_temp.html" class="external-link">file_temp</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span>
-<span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"_envsetup.yml"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
+<p>Here we have a configuration where we execute some R code to build a list for our possible data sources, <a href="https://rstudio.github.io/config/articles/introduction.html#r-code" class="external-link">see the config package for details</a>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="at">  </span><span class="fu">paths</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="at">    </span><span class="fu">data</span><span class="kw">:</span><span class="at"> !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="at">    </span><span class="fu">output</span><span class="kw">:</span><span class="at"> </span><span class="st">'/demo/DEV/username/project1/output'</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="at">    </span><span class="fu">programs</span><span class="kw">:</span><span class="at"> </span><span class="st">'/demo/DEV/username/project1/programs'</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="at">    </span><span class="fu">envsetup_environ</span><span class="kw">:</span><span class="at"> !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'</span></span></code></pre></div>
+<p>Once again, we have a working example if you would like to code along. We will overwrite the previous config file with our new config.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span><span class="st">"default:</span></span>
@@ -208,69 +209,79 @@
 <span><span class="st">    output: '"</span>,<span class="va">dir</span>,<span class="st">"/demo/DEV/username/project1/output'</span></span>
 <span><span class="st">    programs: '"</span>,<span class="va">dir</span>,<span class="st">"/demo/DEV/username/project1/programs'</span></span>
 <span><span class="st">    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"</span></span>
-<span>  <span class="op">)</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
-<span></span>
+<span>  <span class="op">)</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>Now we can re-setup the project.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set up the project</span></span>
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre></div>
-<p>Again we have data, output and programs available to us in our search path within <code>envsetup:paths</code>, but data is now a named list with two locations. We also now have <code>envsetup_environ</code> which, we will get into more details later, just accept it exists for now.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>We have <code>data</code>, <code>output</code> and <code>programs</code> available to us in our search path within <code>envsetup:paths</code>, but <code>data</code> is now a named list with two locations. We also now have <code>envsetup_environ</code> which, we will get into more details later, just accept it exists for now.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">objects</a></span><span class="op">(</span><span class="st">"envsetup:paths"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "data"             "envsetup_environ" "output"           "programs"</span></span>
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; $DEV</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/DEV/username/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/DEV/username/project1/data"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $PROD</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/PROD/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/PROD/project1/data"</span></span>
 <span><span class="va">output</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/DEV/username/project1/output"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/DEV/username/project1/output"</span></span>
 <span><span class="va">programs</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/DEV/username/project1/programs"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/DEV/username/project1/programs"</span></span>
 <span><span class="va">envsetup_environ</span></span>
 <span><span class="co">#&gt; [1] "DEV"</span></span></code></pre></div>
-<p>We can use <code><a href="../reference/read_path.html">envsetup::read_path()</a></code> to help us find where the data is we would like to read. So we will create the directories and add the <code>mtcars</code> data to the PROD data directory, “/demo/PROD/project1/data”.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/data"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/data"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/data/mtcars.RDS"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can use <code><a href="../reference/read_path.html">read_path()</a></code>, passing in the path object <code>data</code> to find where to read <code>mtcars.RDS</code>. The data is only in PROD so the function returns the path to PROD <code>mtcars.RDS</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
-<p>Let’s keep going! What if the data was in DEV and PROD?</p>
+<p>We can use <code><a href="../reference/read_path.html">envsetup::read_path()</a></code> to help us find where the data is we would like to read.</p>
+<p>Let’s create the directories in our temporary folder structure …</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/data/mtcars.RDS"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/DEV/username/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
-<p>So we see the path to DEV now instead of the path to PROD.</p>
-<p>So now we can talk about then envsetup_environ variable we set in the config! When we have multiple paths, as we do here with data, this controls which paths should be checked. This is just an index, wherever the environment is found in the list, only from here to the end is checked. So DEV is first, meaning all locations are checked until the object is found or nothing is found.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>default<span class="op">:</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span>paths<span class="op">:</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="st">    </span>data<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">list</span>(<span class="dt">DEV =</span> <span class="st">'/demo/DEV/username/project1/data'</span>, <span class="dt">PROD =</span> <span class="st">'/demo/PROD/project1/data'</span>)</span>
-<span id="cb13-4"><a href="#cb13-4"></a>    output<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/output'</span></span>
-<span id="cb13-5"><a href="#cb13-5"></a>    programs<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/programs'</span></span>
-<span id="cb13-6"><a href="#cb13-6"></a>    envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'DEV'</span>); <span class="st">'DEV'</span></span></code></pre></div>
-<p>Let’s now add an environment for PROD. We cannot simply change <code>envsetup_environ</code> from DEV to PROD, or DEV wouldn’t work. We need to add a configuration to PROD.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>default<span class="op">:</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="st">  </span>paths<span class="op">:</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="st">    </span>data<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">list</span>(<span class="dt">DEV =</span> <span class="st">'/demo/DEV/username/project1/data'</span>, <span class="dt">PROD =</span> <span class="st">'/demo/PROD/project1/data'</span>)</span>
-<span id="cb14-4"><a href="#cb14-4"></a>    output<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/output'</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>    programs<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/programs'</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>    envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'DEV'</span>); <span class="st">'DEV'</span></span>
-<span id="cb14-7"><a href="#cb14-7"></a></span>
-<span id="cb14-8"><a href="#cb14-8"></a>prod<span class="op">:</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="st">  </span>paths<span class="op">:</span></span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="st">    </span>envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'PROD'</span>); <span class="st">'PROD'</span></span></code></pre></div>
-<p>So we will write this new config out and use it.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/data"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/data"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>… and add <code>mtcars</code> to the PROD data directory, “/demo/PROD/project1/data”.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/data/mtcars.RDS"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Now we can use <code><a href="../reference/read_path.html">read_path()</a></code>, passing in the path object <code>data</code> to find where to read <code>mtcars.RDS</code>. The data is only in PROD so the function returns the path to PROD <code>mtcars.RDS</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmpcrr78v/filedf15648e0ee/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<p>Let’s keep going!</p>
+<p>What if the data was in DEV and PROD?</p>
+<p>Let’s save the same data to DEV …</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/data/mtcars.RDS"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>… and see what <code><a href="../reference/read_path.html">read_path()</a></code> returns.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmpcrr78v/filedf15648e0ee/demo/DEV/username/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<p>We see the path to DEV now instead of the path to PROD.</p>
+<p>To explain this, we will now talk about <code>envsetup_environ</code>, which we set in the config earlier.</p>
+<p>When we have multiple paths, as we do here with data, this controls which paths should be checked. This is just an index. Wherever the environment is found in the list, only this location to the end will be checked for data.</p>
+<p>In this example below, we set <code>envsetup_environ = 'DEV'</code>. So DEV is first in our <code>data</code> list, meaning all locations are checked until the object is found or nothing is found.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>default<span class="op">:</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="st">  </span>paths<span class="op">:</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="st">    </span>data<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">list</span>(<span class="dt">DEV =</span> <span class="st">'/demo/DEV/username/project1/data'</span>, <span class="dt">PROD =</span> <span class="st">'/demo/PROD/project1/data'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    output<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/output'</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a>    programs<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/programs'</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>    envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'DEV'</span>); <span class="st">'DEV'</span></span></code></pre></div>
+<p>Let’s now add an execution environment for <code>PROD</code>. We cannot simply change <code>envsetup_environ</code> from <code>DEV</code> to <code>PROD</code>, or <code>DEV</code> wouldn’t work. We need to add a configuration to <code>PROD</code>, otherwise it will use <code>default</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>default<span class="op">:</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="st">  </span>paths<span class="op">:</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="st">    </span>data<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">list</span>(<span class="dt">DEV =</span> <span class="st">'/demo/DEV/username/project1/data'</span>, <span class="dt">PROD =</span> <span class="st">'/demo/PROD/project1/data'</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a>    output<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/output'</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>    programs<span class="op">:</span><span class="st"> '/demo/DEV/username/project1/programs'</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>    envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'DEV'</span>); <span class="st">'DEV'</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a>prod<span class="op">:</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="st">  </span>paths<span class="op">:</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="st">    </span>envsetup_environ<span class="op">:</span><span class="st"> </span><span class="op">!</span>expr <span class="kw">Sys.setenv</span>(<span class="dt">ENVSETUP_ENVIRON =</span> <span class="st">'PROD'</span>); <span class="st">'PROD'</span></span></code></pre></div>
+<p>So we will write this new config out …</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># overwrite the config file to the temporary directory previously setup</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span><span class="st">"default:</span></span>
@@ -283,77 +294,83 @@
 <span><span class="st">prod:</span></span>
 <span><span class="st">  paths:</span></span>
 <span><span class="st">    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'"</span></span>
-<span>  <span class="op">)</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
-<span></span>
+<span>  <span class="op">)</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>… and use it to overwrite the project with our new configuration.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># setup the project</span></span>
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre></div>
-<p>Let’s write out the <code>envsetup_environ</code> variable and check that is now PROD.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>Let’s check that <code>envsetup_environ</code> is now PROD.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">envsetup_environ</span></span>
 <span><span class="co">#&gt; [1] "DEV"</span></span></code></pre></div>
 <p>What! It isn’t PROD.</p>
 <p>We must pass the configuration to <code>config:get()</code> telling it to use PROD.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span>, config <span class="op">=</span> <span class="st">"prod"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">envsetup_environ</span></span>
 <span><span class="co">#&gt; [1] "PROD"</span></span></code></pre></div>
-<p>Now lets see what has changed now when we call <code><a href="../reference/read_path.html">read_path()</a></code> for <code>mtcars.RDS</code> when using the PROD configuration.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>Now lets see what has changed when we call <code><a href="../reference/read_path.html">read_path()</a></code> for <code>mtcars.RDS</code> using the PROD configuration.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpa0IP0Y/filedf431bb00448/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmpcrr78v/filedf15648e0ee/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpcrr78v/filedf15648e0ee/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>We see the path to PROD, even though data exists in both DEV and PROD. This is because data was indexed starting with the location of PROD, which is the last element in data, so only this location was checked, excluding DEV.</p>
+<p>Miss McVerse no longer needs to think about where her data is in the workflow, and can use <code>read_path(data, ...)</code> to determine the correct path.</p>
+<p>We can apply the same steps to update our configuration for <code>output</code> and <code>programs</code> to account for <code>PROD</code> as well.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="autos">AUTOS<a class="anchor" aria-label="anchor" href="#autos"></a>
 </h2>
-<p>This adds multiple environments to your search path, each of which containing the objects that are automatically sourced.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>default<span class="op">:</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="st">  </span>autos<span class="op">:</span></span></code></pre></div>
+<p>This adds multiple environments to your search path, each of which contain objects that are automatically sourced.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>default<span class="op">:</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="st">  </span>autos<span class="op">:</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="a-working-example-1">A working example<a class="anchor" aria-label="anchor" href="#a-working-example-1"></a>
+</h3>
 <p>So let’s go back to Tidy McVerse. She has created a custom, one off function and stored this in <code>/demo/DEV/username/project1/script_library</code>.</p>
 <p>We will add this path to the autos config.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default</span><span class="op">:</span></span>
 <span>  <span class="va">autos</span><span class="op">:</span></span>
 <span>    <span class="va">dev_script_library</span><span class="op">:</span> <span class="st">'/demo/DEV/username/project1/script_library'</span></span></code></pre></div>
-<p>So let’s look at a working example. We will create the directory, config, place a script into the folder, and call <code><a href="../reference/rprofile.html">rprofile()</a></code> passing in this config file.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_temp.html" class="external-link">file_temp</a></span><span class="op">(</span><span class="op">)</span></span>
+<p>Let’s look at a working example. We will create the directory, place a script into the folder …</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create the temp directory</span></span>
+<span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_temp.html" class="external-link">file_temp</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span>
-<span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"_envsetup.yml"</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/script_library"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># write a function to the folder</span></span>
-<span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/script_library/test.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/script_library/test.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
-<span><span class="st">"test &lt;- function(){print('test')}"</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
+<span><span class="st">"test &lt;- function(){print('test')}"</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># write the config</span></span>
-<span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
+<span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"_envsetup.yml"</span><span class="op">)</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span><span class="st">"default:</span></span>
 <span><span class="st">  autos:</span></span>
 <span><span class="st">    dev_script_library: '"</span>, <span class="va">dir</span>,<span class="st">"/demo/DEV/username/project1/script_library'"</span></span>
-<span>  <span class="op">)</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>… and call <code><a href="../reference/rprofile.html">rprofile()</a></code> passing in this config file.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attaching functions from/tmp/Rtmpa0IP0Y/filedf432f38dec0/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">dir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can see <code>dev_script_library</code> was added to the search path, the function <code>test()</code> is available within this environment, and we can execute this function without a need for sourcing.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Attaching functions from/tmp/Rtmpcrr78v/filedf15272447fe/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
+<p>Now we can see <code>autos:dev_script_library</code> was added to the search path.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/search.html" class="external-link">search</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] ".GlobalEnv"               "autos:dev_script_library"</span></span>
 <span><span class="co">#&gt;  [3] "package:envsetup"         "envsetup:paths"          </span></span>
@@ -361,70 +378,90 @@
 <span><span class="co">#&gt;  [7] "package:grDevices"        "package:utils"           </span></span>
 <span><span class="co">#&gt;  [9] "package:datasets"         "package:methods"         </span></span>
 <span><span class="co">#&gt; [11] "Autoloads"                "tools:callr"             </span></span>
-<span><span class="co">#&gt; [13] "package:base"</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">objects</a></span><span class="op">(</span><span class="st">"autos:dev_script_library"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [13] "package:base"</span></span></code></pre></div>
+<p><code>test()</code> is available within this environment, and we can execute this function without sourcing.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">objects</a></span><span class="op">(</span><span class="st">"autos:dev_script_library"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "test"</span></span>
 <span></span>
 <span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "test"</span></span></code></pre></div>
 <p>Why on earth would we need this?</p>
 <p>Just as with our previous data example, these scripts can be in multiple locations during their qualification lifecycle.</p>
-<p>So let’s say Tidy McVerse’s custom, one off function is found useful for others in this specific project. This function needs to move from her dev folder, <code>/demo/DEV/username/project1/script_library</code>, to the central prod location, <code>/demo/PROD/project1/script_library</code>.</p>
-<p>If each program that used this function had a hard-coded <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> of this function, multiple program would need updated as function move through their lifecycle.</p>
-<p>So let’s add the prod script library to our config.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p>So let’s say Tidy McVerse’s friend, Sir Purrr, has a function that is useful for others in this specific project, but it is already in prod. Miss McVerse would like to use her function in dev and Sir Purrr’s function in prod.</p>
+<p>To illustrate this, let’s add the prod script library to our config …</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default</span><span class="op">:</span></span>
 <span>  <span class="va">autos</span><span class="op">:</span></span>
 <span>    <span class="va">dev_script_library</span><span class="op">:</span> <span class="st">'/demo/DEV/username/project1/script_library'</span></span>
 <span>    <span class="va">prod_script_library</span><span class="op">:</span> <span class="st">'/demo/PROD/project1/script_library'</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_temp.html" class="external-link">file_temp</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">dir</span><span class="op">)</span></span>
-<span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"_envsetup.yml"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/DEV/username/project1/script_library"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/script_library"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<p>… create the <code>PROD</code> directory and Sir Purrr’s function to <code>PROD</code>.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/script_library"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># write a function to the folder</span></span>
-<span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/script_library/test.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"/demo/PROD/project1/script_library/test2.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
-<span><span class="st">"test &lt;- function(){print('test')}"</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># write the config</span></span>
-<span><span class="va">fileConn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
+<span><span class="st">"test2 &lt;- function(){print('test2')}"</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>Then we can overwrite our <code>_envsetup.yml</code> …</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># write the config</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span><span class="st">"default:</span></span>
 <span><span class="st">  autos:</span></span>
 <span><span class="st">    dev_script_library: '"</span>, <span class="va">dir</span>,<span class="st">"/demo/DEV/username/project1/script_library'</span></span>
 <span><span class="st">    prod_script_library: '"</span>, <span class="va">dir</span>,<span class="st">"/demo/PROD/project1/script_library'"</span></span>
-<span>  <span class="op">)</span>, <span class="va">fileConn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">fileConn</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span></code></pre></div>
+<p>… and overwrite the project with our new configuration.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attaching functions from/tmp/Rtmpa0IP0Y/filedf435df91e05/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">dir</span>, recursive<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can see <code>prod_script_library</code> was added to the search path, the function <code>test()</code> is available within this environment, and we can execute this function without a need for sourcing.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Attaching functions from/tmp/Rtmpcrr78v/filedf15272447fe/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
+<span><span class="co">#&gt; Attaching functions from/tmp/Rtmpcrr78v/filedf15272447fe/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
+<p>Now we can see <code>prod_script_library</code> was added to the search path, the function <code>test()</code> and <code>test2()</code> are available, and we can execute these functions without a need for sourcing.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/search.html" class="external-link">search</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] ".GlobalEnv"                "autos:prod_script_library"</span></span>
-<span><span class="co">#&gt;  [3] "package:envsetup"          "envsetup:paths"           </span></span>
-<span><span class="co">#&gt;  [5] "package:stats"             "package:graphics"         </span></span>
-<span><span class="co">#&gt;  [7] "package:grDevices"         "package:utils"            </span></span>
-<span><span class="co">#&gt;  [9] "package:datasets"          "package:methods"          </span></span>
-<span><span class="co">#&gt; [11] "Autoloads"                 "tools:callr"              </span></span>
-<span><span class="co">#&gt; [13] "package:base"</span></span>
+<span><span class="co">#&gt;  [1] ".GlobalEnv"                "autos:dev_script_library" </span></span>
+<span><span class="co">#&gt;  [3] "autos:prod_script_library" "package:envsetup"         </span></span>
+<span><span class="co">#&gt;  [5] "envsetup:paths"            "package:stats"            </span></span>
+<span><span class="co">#&gt;  [7] "package:graphics"          "package:grDevices"        </span></span>
+<span><span class="co">#&gt;  [9] "package:utils"             "package:datasets"         </span></span>
+<span><span class="co">#&gt; [11] "package:methods"           "Autoloads"                </span></span>
+<span><span class="co">#&gt; [13] "tools:callr"               "package:base"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">objects</a></span><span class="op">(</span><span class="st">"autos:prod_script_library"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "test"</span></span>
+<span><span class="co">#&gt; [1] "test2"</span></span>
 <span></span>
 <span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "test"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "test"</span></span>
+<span><span class="fu">test2</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "test2"</span></span></code></pre></div>
+<p>We can keep going and create different configurations for each execution environment, similar to what we did for PATHS above.</p>
+<p>One example that we would not want to source any functions in dev, when executing in prod. This configuration example is one way you can handle this situation, by blanking out the dev script location when executing in prod.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># write the config</span></span>
+<span><span class="va">file_conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span><span class="st">"default:</span></span>
+<span><span class="st">  autos:</span></span>
+<span><span class="st">    dev_script_library: '"</span>, <span class="va">dir</span>,<span class="st">"/demo/DEV/username/project1/script_library'</span></span>
+<span><span class="st">    prod_script_library: '"</span>, <span class="va">dir</span>,<span class="st">"/demo/PROD/project1/script_library'</span></span>
+<span><span class="st">prod:</span></span>
+<span><span class="st">  autos:</span></span>
+<span><span class="st">    dev_script_library: ''"</span></span>
+<span>  <span class="op">)</span>, <span class="va">file_conn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">file_conn</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span>, config <span class="op">=</span> <span class="st">"prod"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
