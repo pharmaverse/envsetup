@@ -31,8 +31,8 @@ devtools::install_github("pharmaverse/envsetup")
 ## Usage
 
 1.  Create the \_envsetup.yml configuration file to specify your autos
-    and paths and store centrally.See `vignette("config")` for more
-    details in how to create your config.
+    and paths and store centrally. See `vignette("config")` for more
+    details on how to create your config.
 2.  Create or update your `.Rprofile` to read in the config and call
     `rprofile()`
 
