@@ -37,5 +37,6 @@ Suggests:
     lintr,
     styler,
     renv,
-    covr
+    covr,
+    DT
 VignetteBuilder: knitr
