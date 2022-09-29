@@ -36,5 +36,6 @@ Suggests:
     usethis,
     lintr,
     styler,
-    renv
+    renv,
+    covr
 VignetteBuilder: knitr
