@@ -64,16 +64,16 @@ jobs:
             ~/.staged.dependencies
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('DESCRIPTION') }}
           restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}
-
-      - name: Run Staged dependencies
-        uses: insightsengineering/staged-dependencies-action@v1
-        with:
-          run-system-dependencies: true
-          enable-check: false
-          renv-restore: false
-          cran-repos: "CRAN=${{ matrix.config.repos }}"
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+#
+#       - name: Run Staged dependencies
+#         uses: insightsengineering/staged-dependencies-action@v1
+#         with:
+#           run-system-dependencies: true
+#           enable-check: false
+#           renv-restore: false
+#           cran-repos: "CRAN=${{ matrix.config.repos }}"
+#         env:
+#           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       #####################c#####################
 
       - name: Check
