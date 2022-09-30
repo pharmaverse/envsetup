@@ -6,10 +6,9 @@
 <!-- badges: start -->
 
 [<img src="http://pharmaverse.org/shields/envsetup.svg">](https://pharmaverse.org)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/envsetup)](https://CRAN.R-project.org/package=envsetup)
-[![Codecov test
-coverage](https://codecov.io/gh/pharmaverse/envsetup/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pharmaverse/envsetup?branch=devel)
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/envsetup)](https://CRAN.R-project.org/package=envsetup) -->
+[![codecov](https://codecov.io/gh/pharmaverse/envsetup/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pharmaverse/envsetup?branch=main)
+
 <!-- badges: end -->
 
 ## Overview
