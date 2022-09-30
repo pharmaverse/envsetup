@@ -79,17 +79,6 @@ jobs:
     uses: pharmaverse/admiralci/.github/workflows/links.yml@main
     if: >
       github.event_name == 'push' || github.event_name == 'pull_request'
-  coverage:
-    name: Code Coverage
-    uses: pharmaverse/admiralci/.github/workflows/code-coverage.yml@main
-    if: >
-      github.event_name == 'push' || github.event_name == 'pull_request'
-    with:
-      r-version: $R_VERSION
-      # Whether to skip code coverage badge creation
-      # Setting to 'false' will require you to create
-      # an orphan branch called 'badges' in your repository
-      skip-coverage-badges: false
   man-pages:
     name: Man Pages
     uses: pharmaverse/admiralci/.github/workflows/man-pages.yml@main
