@@ -81,7 +81,7 @@ jobs:
       skip-multiversion-docs: false
   coverage:
     name: Code Coverage
-    uses: nicholas-masel/admiralci/.github/workflows/code-coverage.yml@function_exclusion
+    uses: nicholas-masel/admiralci/.github/workflows/code-coverage.yml@exclusion
     if: >
       github.event_name == 'push' || github.event_name == 'pull_request'
     with:
