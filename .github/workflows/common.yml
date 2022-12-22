@@ -31,6 +31,10 @@ on:
   schedule:
     - cron: '21 13 * * 1,3,5'
 
+env:
+  # R version to use for the workflows
+  R_VERSION: "3.6"
+
 # Docs on concurrency:
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
 concurrency:
@@ -43,13 +47,13 @@ jobs:
     uses: pharmaverse/admiralci/.github/workflows/style.yml@main
     if: github.event_name == 'pull_request'
     with:
-      r-version: "3.6"
+      r-version: $R_VERSION
   spellcheck:
     name: Spelling
     uses: pharmaverse/admiralci/.github/workflows/spellcheck.yml@main
     if: github.event_name == 'pull_request'
     with:
-      r-version: "3.6"
+      r-version: $R_VERSION
   readme:
     name: Render README
     uses: pharmaverse/admiralci/.github/workflows/readme-render.yml@main
@@ -74,18 +78,18 @@ jobs:
     uses: pharmaverse/admiralci/.github/workflows/pkgdown.yml@main
     if: github.event_name == 'push'
     with:
-      r-version: "3.6"
+      r-version: $R_VERSION
       # Whether to skip multiversion docs
       # Note that if you have multiple versions of docs,
       # your URL links are likely to break due to path changes
       skip-multiversion-docs: false
   coverage:
     name: Code Coverage
-    uses: nicholas-masel/admiralci/.github/workflows/code-coverage.yml@exclusion
+    uses: pharmaverse/admiralci/.github/workflows/code-coverage.yml@main
     if: >
       github.event_name == 'push' || github.event_name == 'pull_request'
     with:
-      r-version: "3.6"
+      r-version: $R_VERSION
       # Whether to skip code coverage badge creation
       # Setting to 'false' will require you to create
       # an orphan branch called 'badges' in your repository
@@ -100,4 +104,4 @@ jobs:
     uses: pharmaverse/admiralci/.github/workflows/man-pages.yml@main
     if: github.event_name == 'pull_request'
     with:
-      r-version: "3.6"
+      r-version: $R_VERSION
