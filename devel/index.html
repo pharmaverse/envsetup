@@ -43,7 +43,7 @@
     
     <a class="navbar-brand me-2" href="index.html">envsetup</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +64,6 @@
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -88,7 +81,8 @@
 <img src="logo.png" class="logo" alt=""><h1 id="envsetup-">envsetup <a class="anchor" aria-label="anchor" href="#envsetup-"></a>
 </h1>
 </div>
-<!-- badges: start --><!-- badges: end --><div class="section level2">
+<!-- badges: start -->
+<!-- badges: end --><div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>The purpose of this package is to support the setup the R environment. The two main features are:</p>
@@ -104,8 +98,9 @@
 <div class="section level3">
 <h3 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
 </h3>
-<pre><code><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pharmaverse/envsetup"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pharmaverse/envsetup"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -116,13 +111,14 @@
 <li>Create or update your <code>.Rprofile</code> to read in the config and call <code><a href="reference/rprofile.html">rprofile()</a></code>
 </li>
 </ol>
-<!-- --><pre><code><span><span class="kw"><a href="reference/library.html">library</a></span><span class="op">(</span><span class="va">envsetup</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="reference/library.html">library</a></span><span class="op">(</span><span class="va">envsetup</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read configuration</span></span>
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/config/man/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"path/to/_envsetup.yml"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># pass configuration to rprofile() to setup the environment</span></span>
-<span><span class="fu"><a href="reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre>
+<span><span class="fu"><a href="reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -152,7 +148,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://pharmaverse.org" class="external-link"><img src="http://pharmaverse.org/shields/envsetup.svg"></a></li>
+<li><a href="https://app.codecov.io/gh/pharmaverse/envsetup?branch=main" class="external-link"><img src="https://codecov.io/gh/pharmaverse/envsetup/branch/main/graph/badge.svg" alt="codecov"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
