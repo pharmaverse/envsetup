@@ -25,7 +25,11 @@ read_path <- function(lib,
                       filename,
                       full.path = TRUE,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
+
+  restricted_paths <- lib
+  if (!is.null(envsetup_environ) && envsetup_environ %in% names(lib)) {
+    restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
+  }
 
   # find which paths have the object
   path_has_object <-
@@ -67,7 +71,13 @@ read_path <- function(lib,
 #' write_path(a_in, "PROD")
 #' }
 write_path <- function(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  path <- lib[[envsetup_environ]]
+
+  path <- lib
+
+  if (!is.null(envsetup_environ) && envsetup_environ %in% names(lib)) {
+    path <- path[[envsetup_environ]]
+  }
+
   message("Write Path:", path, "\n")
   path
 }
