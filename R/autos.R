@@ -22,7 +22,27 @@
 #' set_autos(envsetup_config$autos)
 #' }
 set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  autos_paths <- unlist(list(...))
+
+  autos_paths <- list(...)
+
+  for (i in seq_along(autos_paths)) {
+
+    cur_autos <- autos_paths[[i]]
+
+    if (length(cur_autos) > 1 && envsetup_environ == "") {
+      stop(paste(
+        "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+        "variable must be used if hierarchical autos are set."), call.=FALSE)
+    }
+
+    filtered_autos <- cur_autos
+    if (envsetup_environ %in% names(cur_autos)) {
+      filtered_autos <-
+        cur_autos[which(names(cur_autos) == envsetup_environ):length(cur_autos)]
+    }
+
+    autos_paths[[i]] <- filtered_autos
+  }
 
   # Check the autos before they're set
   assert_that(
@@ -32,19 +52,20 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # If there are any existing autos then reset them
   detach_autos(paste0("autos:", names(autos_paths)))
 
-  if (envsetup_environ %in% names(autos_paths)) {
-    autos_paths <-
-      autos_paths[which(names(autos_paths) == envsetup_environ):length(autos_paths)]
-  }
-
   # Check that the directories and/or files actually exist
-  walk(autos_paths, {
+  walk(unlist(autos_paths), {
     function(p) {
       if (!dir.exists(p) && !file.exists(p)) {
         warning(paste("Directory or file", p, "does not exist!"))
       }
     }
   })
+
+  # Make sure everything came through here ok - the directories should have validated
+  browser()
+
+  # Now I need to get the autos into a name of hte list with a character vector of length >=1
+  # from there run that in attach_auto for both paths in the same namespace
 
   # Now attach everything. Note that attach will put an environment behind
   # global and in front of the package namespaces. By reversing the list,

@@ -29,5 +29,5 @@ rprofile <- function(config) {
     pos = pos
   )
 
-  set_autos(config$autos)
+  do.call(set_autos, config$autos)
 }
