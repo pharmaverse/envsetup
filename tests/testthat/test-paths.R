@@ -16,6 +16,15 @@ rprofile(envsetup_config)
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.1", {
+  # First check if
+  expect_error(
+    read_path(data,
+              "iris.csv",
+              full.path = TRUE,
+              envsetup_environ = ""
+    )
+  )
+
   readin <- readr::read_csv(read_path(data,
     "iris.csv",
     full.path = TRUE,

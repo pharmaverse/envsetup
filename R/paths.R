@@ -27,7 +27,14 @@ read_path <- function(lib,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   restricted_paths <- lib
-  if (!is.null(envsetup_environ) && envsetup_environ %in% names(lib)) {
+
+  if (length(lib) > 1 && envsetup_environ == "") {
+    stop(paste(
+      "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+      "variable must be used if hierarchical paths are set."), call.=FALSE)
+  }
+
+  if (envsetup_environ %in% names(lib)) {
     restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
   }
 
@@ -58,10 +65,15 @@ read_path <- function(lib,
 }
 
 
-#' Write path
+#' Retrieve a file path from an envsetup object containing paths
 #'
-#' @param lib object containing the paths for all environments of a directory
-#' @param envsetup_environ name of the environment you would like to write to
+#' Paths will be filtered to produce the lowest available level from a hierarchy
+#' of paths based on envsetup_environ
+#'
+#' @param lib Object containing the paths for all environments of a directory
+#' @param filename Name of the file you would like to read
+#' @param envsetup_environ Name of the environment to which you would like to
+#'   write. Defaults to the ENVSETUP_ENVIRON environment variable
 #'
 #' @return path to write
 #' @export
@@ -70,16 +82,28 @@ read_path <- function(lib,
 #' \dontrun{
 #' write_path(a_in, "PROD")
 #' }
-write_path <- function(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+write_path <- function(lib, filename=NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   path <- lib
 
-  if (!is.null(envsetup_environ) && envsetup_environ %in% names(lib)) {
+  if (length(lib) > 1 && envsetup_environ == "") {
+    stop(paste(
+      "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+      "variable must be used if hierarchical paths are set."), call.=FALSE)
+  }
+
+  if (envsetup_environ %in% names(lib)) {
     path <- path[[envsetup_environ]]
   }
 
-  message("Write Path:", path, "\n")
-  path
+  out_path <- path
+
+  if (!is.null(filename)) {
+    out_path <- file.path(path, filename)
+  }
+
+  message("Write Path:", out_path, "\n")
+  out_path
 }
 
 
