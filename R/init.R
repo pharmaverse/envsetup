@@ -9,43 +9,35 @@
 #' \dontrun{
 #' init()
 #' }
-init <- function(project = getwd(), config_path = "envsetup.yml"){
-
+init <- function(project = getwd(), config_path = "envsetup.yml") {
   # create the .Rprofile or add envsetup to the top
-  add <- sprintf('library(envsetup)\nenvsetup_config <- config::get(file = "%s")\nrprofile(envsetup_config)',
-                 config_path)
+  add <- sprintf(
+    'library(envsetup)\nenvsetup_config <- config::get(file = "%s")\nrprofile(envsetup_config)',
+    config_path
+  )
 
   envsetup_write_rprofile(
     add    = add,
-    file   = file.path(project, ".Rprofile"),
-    create = TRUE
+    file   = file.path(project, ".Rprofile")
   )
-
 }
 
-envsetup_write_rprofile <- function(add, file, create) {
-
-  # check to see if file doesn't exist
+envsetup_write_rprofile <- function(add, file) {
   if (!file.exists(file)) {
-
-    # if we're not forcing file creation, just bail
-    if (!create)
-      return(TRUE)
-
-    # otherwise, write the file
-    # ensure_parent_directory(file)
     writeLines(add, file)
     return(TRUE)
-
   }
 
-  # if the file already has the requested line, nothing to do
   before <- readLines(file, warn = FALSE)
+
+  # if there is a call to `rprofile()` in the .Rprofile, assume setup was already done and exit
+  if (any(grepl("rprofile\\(", before))) {
+    stop("It looks like your project has already been initialized to use envsetup.  Manually adjust your .Rprofile if you need to change the environment setup.")
+  }
+
   after <- c(add, before)
 
-  # write to file if we have changes
   writeLines(after, file)
 
   TRUE
-
 }

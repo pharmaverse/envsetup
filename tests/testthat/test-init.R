@@ -23,3 +23,9 @@ test_that("init initializes an .Rprofile correcty when one does exist", {
   actual <- readLines(file.path(init_tmpdir, ".Rprofile"))
   expect_equal(expected, actual)
 })
+
+test_that("init does not update the .Rprofile when it has already be initialized", {
+  withr::defer(unlink(file.path(init_tmpdir, ".Rprofile")))
+  init(init_tmpdir)
+  expect_error(init(init_tmpdir))
+})
