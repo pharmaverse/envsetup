@@ -17,6 +17,29 @@ rootpath_qa <- "QA"
 rootpath_prod <- "PROD"
 
 
+test_that("rprofile stores the configuration", {
+  config_tmpdir <- tempdir()
+  withr::defer(unlink(file.path(config_tmpdir, ".Rprofile")))
+  hierarchy <- "default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data',
+                     PROD = '/demo/PROD/project1/data')
+    output: !expr list(DEV = '/demo/DEV/username/project1/output',
+                       PROD = '/demo/PROD/project1/output')
+    programs: !expr list(DEV = '/demo/DEV/username/project1/programs',
+                         PROD = '/demo/PROD/project1/programs')
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"
+
+  writeLines(hierarchy, file.path(config_tmpdir, "hierarchy.yml"))
+
+  custom_name <- config::get(file = file.path(config_tmpdir, "hierarchy.yml"))
+
+  rprofile(custom_name)
+
+  stored_config <- get("auto_stored_envsetup_config",
+                       pos = which(search() == "envsetup:paths"))
+  expect_equal(custom_name, stored_config)
+})
 
 
 #' @editor Aidan Ceney
