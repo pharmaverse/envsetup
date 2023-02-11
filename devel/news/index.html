@@ -30,13 +30,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -56,7 +49,14 @@
 <div class="section level3">
 <h3 id="new-features-0-0-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-0-1"></a></h3>
 <ul><li>
-<code><a href="../reference/init.html">init()</a></code> added to assist with setting up a project to use envsetup (#21)</li></ul></div>
+<code><a href="../reference/init.html">init()</a></code> added to assist with setting up a project to use envsetup (#21)</li>
+<li>
+<code><a href="../reference/rprofile.html">rprofile()</a></code> will automatically store your configuration file in a standard location with a standard name, allowing <code><a href="../reference/library.html">library()</a></code> to use this to re-assign autos</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-0-0-1">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-1"></a></h3>
+<ul><li>
+<code><a href="../reference/library.html">library()</a></code> will now respect invisible return instead of always returning the list of attached packages (#24)</li></ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
