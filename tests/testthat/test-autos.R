@@ -13,6 +13,10 @@ custom_name <- config::get(
 )
 
 
+test_that("library returns invisibly",{
+  expect_invisible(library("dplyr"))
+})
+
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.1", {

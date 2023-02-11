@@ -146,7 +146,8 @@ detach_autos <- function(names) {
 #' library(dplyr)
 #' }
 library <- function(...) {
-  tmp <- base::library(...)
+
+  tmp <- withVisible(base::library(...))
 
   stored_config <- get("auto_stored_envsetup_config",
                        pos = which(search() == "envsetup:paths"))
@@ -155,5 +156,10 @@ library <- function(...) {
   if (any(grepl("^autos:", search()))) {
     suppressMessages(set_autos(stored_config$autos))
   }
-  tmp
+
+  if(tmp$visible) {
+    tmp$value
+  } else{
+    invisible(tmp$value)
+  }
 }
