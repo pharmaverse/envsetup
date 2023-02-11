@@ -146,11 +146,17 @@ detach_autos <- function(names) {
 #' library(dplyr)
 #' }
 library <- function(...) {
-  tmp <- base::library(...)
+
+  tmp <- withVisible(base::library(...))
 
   # Reset autos back if any are present
   if (any(grepl("^autos:", search()))) {
     suppressMessages(set_autos(envsetup_config$autos))
   }
-  tmp
+
+  if(tmp$visible) {
+    tmp$value
+  } else{
+    invisible(tmp$value)
+  }
 }
