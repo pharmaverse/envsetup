@@ -13,6 +13,38 @@ envsetup_config <- config::get(file = test_path("man/_envsetup_testthat.yml"))
 Sys.setenv(ENVSETUP_ENVIRON = "DEV")
 rprofile(envsetup_config)
 
+test_that("build_from_config builds the correct directories", {
+  build_tmpdir <- tempdir()
+  withr::defer(unlink(build_tmpdir))
+
+  hierarchy <- "default:
+    paths:
+      data: !expr list(DEV = '/demo/DEV/username/project1/data',
+                       PROD = '/demo/PROD/project1/data')
+      output: !expr list(DEV = '/demo/DEV/username/project1/output',
+                         PROD = '/demo/PROD/project1/output')
+      programs: !expr list(DEV = '/demo/DEV/username/project1/programs',
+                           PROD = '/demo/PROD/project1/programs')
+      docs: !expr list(DEV = 'docs',
+                       PROD = 'docs')"
+
+  writeLines(hierarchy, file.path(build_tmpdir, "hierarchy.yml"))
+
+  config <- config::get(file = file.path(build_tmpdir, "hierarchy.yml"))
+
+  build_from_config(config, build_tmpdir)
+
+  paths <- file.path(build_tmpdir, unlist(config$paths, use.names = FALSE))
+
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/DEV/username/project1/data")))
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/PROD/project1/data")))
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/DEV/username/project1/output")))
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/PROD/project1/output")))
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/DEV/username/project1/programs")))
+  expect_true(dir.exists(file.path(build_tmpdir, "/demo/PROD/project1/programs")))
+  expect_true(dir.exists(file.path(build_tmpdir, "docs")))
+})
+
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.1", {
