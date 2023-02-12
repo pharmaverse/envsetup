@@ -36,6 +36,7 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
     }
 
     filtered_autos <- cur_autos
+
     if (envsetup_environ %in% names(cur_autos)) {
       filtered_autos <-
         cur_autos[which(names(cur_autos) == envsetup_environ):length(cur_autos)]
@@ -44,16 +45,19 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
     autos_paths[[i]] <- filtered_autos
   }
 
+  # Flatten the paths to collapse the names down to a single vector
+  flattened_paths <- unlist(autos_paths)
+
   # Check the autos before they're set
-  assert_that(
-    is.null(autos_paths) || is.character(autos_paths),
-    msg = "Paths must be directories"
-  )
+  if (!(is.null(flattened_paths) || is.character(flattened_paths))) {
+    stop("Paths provided for autos must be directories", call.=FALSE)
+  }
+
   # If there are any existing autos then reset them
-  detach_autos(paste0("autos:", names(autos_paths)))
+  detach_autos()
 
   # Check that the directories and/or files actually exist
-  walk(unlist(autos_paths), {
+  walk(unlist(flattened_paths), {
     function(p) {
       if (!dir.exists(p) && !file.exists(p)) {
         warning(paste("Directory or file", p, "does not exist!"))
@@ -61,19 +65,13 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
     }
   })
 
-  # Make sure everything came through here ok - the directories should have validated
-  browser()
-
-  # Now I need to get the autos into a name of hte list with a character vector of length >=1
-  # from there run that in attach_auto for both paths in the same namespace
-
   # Now attach everything. Note that attach will put an environment behind
   # global and in front of the package namespaces. By reversing the list,
   # the search path will be set to apply the autos to the name space so that
   # the path at element one of the list is directly behind global
   walk2(
-    rev(autos_paths),
-    rev(names(autos_paths)),
+    rev(flattened_paths),
+    rev(names(flattened_paths)),
     ~ attach_auto(.x, .y)
   )
 }
@@ -100,12 +98,11 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 attach_auto <- function(path, name) {
   name_with_prefix <- paste0("autos:", name)
 
-
   # if file, source it
   if (file.exists(path) && !dir.exists(path)) {
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
-    message("Attaching functions from", path, " to ", name_with_prefix)
+    message("Attaching functions from ", path, " to ", name_with_prefix)
   } else {
     # Find all the R files in the given path
     r_scripts <- list.files(path,
@@ -119,7 +116,9 @@ attach_auto <- function(path, name) {
         sys.source,
         envir = attach(NULL, name = name_with_prefix)
       )
-      message("Attaching functions from", path, " to ", name_with_prefix)
+      message("Attaching functions from ", path, " to ", name_with_prefix)
+    } else {
+      message("No files found in ", path, ". Nothing to attach.")
     }
   }
 }
@@ -128,19 +127,15 @@ attach_auto <- function(path, name) {
 #'
 #' This function will remove any autos that have been set from the search path
 #'
-#' @param names vector of names of attached packages to detach
-#'
-#' @return names found in the search path
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' detach_autos()
 #' }
-detach_autos <- function(names) {
+detach_autos <- function() {
 
-  # find auto names in search
-  in_search <- names[names %in% search()]
+  in_search <- search()[grepl("^autos:", search())]
 
   # Walk the list of autos and detach them
   walk(
