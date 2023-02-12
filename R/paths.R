@@ -71,7 +71,7 @@ read_path <- function(lib,
 #' of paths based on envsetup_environ
 #'
 #' @param lib Object containing the paths for all environments of a directory
-#' @param filename Name of the file you would like to read
+#' @param filename Name of the file you would like to write
 #' @param envsetup_environ Name of the environment to which you would like to
 #'   write. Defaults to the ENVSETUP_ENVIRON environment variable
 #'
