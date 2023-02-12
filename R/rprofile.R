@@ -29,5 +29,8 @@ rprofile <- function(config) {
     pos = pos
   )
 
-  do.call(set_autos, config$autos)
+  # If autos exist, set them
+  if (!is.null(config$autos)) {
+    do.call(set_autos, config$autos)
+  }
 }
