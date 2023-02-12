@@ -14,7 +14,8 @@ custom_name <- config::get(
 
 
 test_that("library returns invisibly",{
-  expect_invisible(library("dplyr"))
+  expect_invisible(library("purrr"))
+  detach("package:purrr")
 })
 
 #' @editor Aidan Ceney
@@ -99,15 +100,21 @@ test_that("2.1", {
   expect_error(test_prod())
 })
 
+test_that("library doesn't fail if rprofile() was not called", {
+  expect_no_error(library("purrr"))
+  detach("package:purrr")
+})
 
 test_that("the configuration can be named anything and library will
           reattch the autos correctly", {
   rprofile(custom_name)
 
-  library("dplyr")
+  library("purrr")
 
-  dplyr_location <- which(search() == "package:dplyr")
+  purrr_location <- which(search() == "package:purrr")
   autos_locatios <- which(grepl("^autos:", search()))
 
-  expect_true(all(dplyr_location > autos_locatios))
+  detach("package:purrr")
+
+  expect_true(all(purrr_location > autos_locatios))
 })

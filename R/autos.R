@@ -149,11 +149,11 @@ library <- function(...) {
 
   tmp <- withVisible(base::library(...))
 
-  stored_config <- get("auto_stored_envsetup_config",
-                       pos = which(search() == "envsetup:paths"))
-
   # Reset autos back if any are present
-  if (any(grepl("^autos:", search()))) {
+  if (any(grepl("^autos:", search())) & any(grepl("^envsetup:paths", search()))) {
+    stored_config <- get("auto_stored_envsetup_config",
+                         pos = which(search() == "envsetup:paths"))
+
     suppressMessages(set_autos(stored_config$autos))
   }
 
