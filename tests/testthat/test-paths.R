@@ -81,7 +81,7 @@ rprofile(envsetup_config)
 
 #' @editor Mike stackhouse
 #' @editDate 2023-02-10
-test_that("1.5", {
+test_that("read_path works with unset envsetup_environ and non-hierarhical paths", {
   readin <- readr::read_csv(read_path(data,
                                       "iris.csv",
                                       full.path = TRUE
@@ -91,7 +91,7 @@ test_that("1.5", {
 
 #' @editor Mike stackhouse
 #' @editDate 2023-02-10
-test_that("2.2", {
+test_that("write_path works with unset envsetup_environ and non-hierarhical paths", {
   readin <- write_path(data)
   expect_equal(readin, paste0(tmpdir, "/DEV/data"))
 })
