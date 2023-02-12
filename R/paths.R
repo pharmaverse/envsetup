@@ -83,6 +83,16 @@ read_path <- function(lib,
 #' write_path(a_in, "PROD")
 #' }
 write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+  # examine lib to ensure it's not a string
+  # if it's a string, you end up with an incorrect path
+  lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
+  if(rlang::is_string(lib_arg)){
+    stop(paste(
+      "The lib argument should be an object containing the paths",
+      "for all environments of a directory, not a string."
+    ), call. = FALSE)
+  }
+  
   path <- lib
 
   if (length(lib) > 1 && envsetup_environ == "") {
