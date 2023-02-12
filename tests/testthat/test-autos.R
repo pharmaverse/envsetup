@@ -21,8 +21,9 @@ test_that("Autos set and test_dev from highest level appears correctly", {
 })
 
 test_that("library returns invisibly",{
-  expect_warning(library("dplyr"), "envsetup::rprofile was not run")
+  expect_warning(library("purrr"), "envsetup::rprofile was not run")
   rprofile(custom_name)
+  detach("package:purrr", unload=TRUE)
 })
 
 
@@ -88,11 +89,20 @@ test_that("the configuration can be named anything and library will
           reattch the autos correctly", {
   rprofile(custom_name)
 
-  expect_invisible(library("dplyr"))
+  expect_invisible(library("purrr"))
 
   dplyr_location <- which(search() == "package:dplyr")
   autos_locatios <- which(grepl("^autos:", search()))
 
   expect_true(all(dplyr_location > autos_locatios))
-  detach("package:dplyr", unload=TRUE)
+  detach("package:purrr", unload=TRUE)
+})
+
+
+test_that("Autos warns user when ENVSETUP_ENVIRON does not match named
+          environments in autos", {
+  withr::local_envvar(ENVSETUP_ENVIRON = "bad_name")
+
+  expect_warning(rprofile(custom_name))
+
 })

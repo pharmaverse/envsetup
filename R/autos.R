@@ -34,6 +34,17 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
       ), call. = FALSE)
     }
 
+    if (!is.null(names(cur_autos)) && !envsetup_environ %in% names(cur_autos)
+        && envsetup_environ != ""){
+      warning(paste(
+        "The", usethis::ui_field(names(autos_paths[i])), "autos has named",
+        "environments",  usethis::ui_field(names(cur_autos)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
+    }
+
     filtered_autos <- cur_autos
 
     if (envsetup_environ %in% names(cur_autos)) {
@@ -170,7 +181,7 @@ library <- function(...) {
       stored_config <- get("auto_stored_envsetup_config",
         pos = which(search() == "envsetup:paths")
       )
-      suppressMessages(set_autos(stored_config$autos))
+      suppressMessages(do.call(set_autos, stored_config$autos))
     }
   }
 
