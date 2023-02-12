@@ -23,15 +23,12 @@ default:
       PROD = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "output")
       )
   autos:
-    DEV: !expr file.path(
-      Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "functions"
+    projects: !expr list(
+      "DEV" = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "functions"),
+      "QA"= file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "functions"),
+      "PROD" = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "functions")
       )
-    QA: !expr file.path(
-      Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "functions"
-      )
-    PROD: !expr file.path(
-      Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "functions"
-      )
+    global: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "global", "functions")
     envre: !expr file.path(
       Sys.getenv("ENVSETUP_PROJECT_PATH"),
       "PROD",
