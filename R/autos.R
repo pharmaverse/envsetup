@@ -22,17 +22,16 @@
 #' set_autos(envsetup_config$autos)
 #' }
 set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-
   autos_paths <- list(...)
 
   for (i in seq_along(autos_paths)) {
-
     cur_autos <- autos_paths[[i]]
 
     if (length(cur_autos) > 1 && envsetup_environ == "") {
       stop(paste(
         "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
-        "variable must be used if hierarchical autos are set."), call.=FALSE)
+        "variable must be used if hierarchical autos are set."
+      ), call. = FALSE)
     }
 
     filtered_autos <- cur_autos
@@ -50,7 +49,7 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   # Check the autos before they're set
   if (!(is.null(flattened_paths) || is.character(flattened_paths))) {
-    stop("Paths provided for autos must be directories", call.=FALSE)
+    stop("Paths provided for autos must be directories", call. = FALSE)
   }
 
   # If there are any existing autos then reset them
@@ -134,7 +133,6 @@ attach_auto <- function(path, name) {
 #' detach_autos()
 #' }
 detach_autos <- function() {
-
   in_search <- search()[grepl("^autos:", search())]
 
   # Walk the list of autos and detach them
@@ -162,24 +160,23 @@ detach_autos <- function() {
 #' library(dplyr)
 #' }
 library <- function(...) {
-
   tmp <- withVisible(base::library(...))
 
   # Reset autos back if any are present
   if (any(grepl("^autos:", search()))) {
-
     if (!any(search() == "envsetup:paths")) {
       warning("envsetup::rprofile was not run! Autos cannot be restored!")
     } else {
       stored_config <- get("auto_stored_envsetup_config",
-                           pos = which(search() == "envsetup:paths"))
+        pos = which(search() == "envsetup:paths")
+      )
       suppressMessages(set_autos(stored_config$autos))
     }
   }
 
-  if(tmp$visible) {
+  if (tmp$visible) {
     tmp$value
-  } else{
+  } else {
     invisible(tmp$value)
   }
 }

@@ -25,13 +25,13 @@ read_path <- function(lib,
                       filename,
                       full.path = TRUE,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-
   restricted_paths <- lib
 
   if (length(lib) > 1 && envsetup_environ == "") {
     stop(paste(
       "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
-      "variable must be used if hierarchical paths are set."), call.=FALSE)
+      "variable must be used if hierarchical paths are set."
+    ), call. = FALSE)
   }
 
   if (envsetup_environ %in% names(lib)) {
@@ -82,14 +82,14 @@ read_path <- function(lib,
 #' \dontrun{
 #' write_path(a_in, "PROD")
 #' }
-write_path <- function(lib, filename=NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-
+write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   path <- lib
 
   if (length(lib) > 1 && envsetup_environ == "") {
     stop(paste(
       "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
-      "variable must be used if hierarchical paths are set."), call.=FALSE)
+      "variable must be used if hierarchical paths are set."
+    ), call. = FALSE)
   }
 
   if (envsetup_environ %in% names(lib)) {
