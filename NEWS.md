@@ -2,21 +2,10 @@
 
 ## New Features
 
-- You can link the GitHub Issue to Changelog by using (#ISSUE-NUMBER)
-
-## Updates of Existing Functions
-
- - Updates that you have made for this version (#ISSUE-NUMBER)
+- `init()` added to assist with setting up a project to use envsetup (#21)
+- `rprofile()` will automatically store your configuration file in a standard location with a standard name, allowing `library()` to use this to re-assign autos
 
 ## Breaking Changes
 
- - Deprecated functions. (#ISSUE-NUMBER)
- - Bug Fixes (#ISSUE-NUMBER)
-
-## Documentation
-
- - Stuff that you did (#ISSUE-NUMBER)
-
-## Various
-
- - Stuff that you did (#ISSUE-NUMBER)
+- `library()` will now respect invisible return instead of always returning the list of attached packages (#24)
+- `set_autos()` now expects a different YAML structure for hierarchical filtering based on ENVSETUP_ENVIRON (#28)
