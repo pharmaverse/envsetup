@@ -13,7 +13,6 @@ test_that("validate_config, no hierarchy paths return correct messages", {
   withr::defer(unlink(path, recursive = TRUE))
 
   expect_snapshot(validate_config(config::get(file = path)))
-  expect_snapshot(validate_config(config::get(file = path)))
 })
 
 test_that("validate_config, hierarchy paths return correct messages", {
@@ -31,7 +30,6 @@ test_that("validate_config, hierarchy paths return correct messages", {
   withr::defer(unlink(path, recursive = TRUE))
 
   expect_snapshot(validate_config(config::get(file = path)))
-  expect_snapshot(validate_config(config::get(file = path)))
 })
 
 test_that("validate_config, hierarchy paths return todo item/s when unnamed", {
@@ -47,8 +45,6 @@ test_that("validate_config, hierarchy paths return todo item/s when unnamed", {
   writeLines(hierarchy_no_names, path)
   withr::defer(unlink(path, recursive = TRUE))
 
-  expect_snapshot(validate_config(config::get(file = path)))
-  expect_snapshot(validate_config(config::get(file = path)))
   expect_snapshot(validate_config(config::get(file = path)))
 })
 
