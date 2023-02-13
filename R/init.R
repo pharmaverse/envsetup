@@ -9,7 +9,39 @@
 #' \dontrun{
 #' init()
 #' }
-init <- function(project = getwd(), config_path = "envsetup.yml") {
+init <- function(project = getwd(), config_path = NULL) {
+
+  create_config <- FALSE
+
+  if (is.null(config_path)) {
+    create_config <- usethis::ui_yeah("No path to an exisiting configuration file was provided.
+                                      Would you like us to create a default configuration in your project directory?",
+      n_no = 1
+    )
+  } else {
+    if (file.exists(config_path) && !dir.exists(config_path)){
+      usethis::ui_done("Configuration file found!")
+    } else {
+      stop(paste("No configuration file is found at", config_path), call. = FALSE)
+    }
+  }
+
+  # if user agrees, write a configuration file to the project directory
+  if (create_config) {
+    default_path <- system.file("default_envsetup.yml", package = "envsetup", mustWork = TRUE)
+
+    config_path <- file.path(project, "envsetup.yml")
+
+    file.copy(default_path, config_path)
+
+    usethis::ui_done(paste("Configuration file (envsetup.yml) has been written to", project))
+
+    # build out the default directory structure in the project
+    build
+  } else {
+    stop("Aborting envsetup initialization.  A configuration file is needed.", call. = FALSE)
+  }
+
   # create the .Rprofile or add envsetup to the top
   add <- sprintf(
     'library(envsetup)\nenvsetup_config <- config::get(file = "%s")\nrprofile(envsetup_config)',
