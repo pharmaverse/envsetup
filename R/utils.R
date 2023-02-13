@@ -61,17 +61,15 @@
 #' writeLines(no_paths, file.path(tmpdir, "no_paths.yml"))
 #'
 #' validate_config(config::get(file = file.path(tmpdir, "no_paths.yml")))
-validate_config <- function(config){
-
+validate_config <- function(config) {
   validate_paths(config)
 
   # validate_autos(config)
 }
 
-validate_paths <- function(config){
-
+validate_paths <- function(config) {
   # does the paths element exist?
-  if (exists("paths", where = config)){
+  if (exists("paths", where = config)) {
     usethis::ui_done("paths are specified as part of your configuration")
   } else {
     usethis::ui_info("no paths are specified as part of your configuration, skipping path valiation")
@@ -79,7 +77,7 @@ validate_paths <- function(config){
   }
 
   # any hierarchical paths?
-  if(is_hierarchical(config$paths)){
+  if (is_hierarchical(config$paths)) {
     usethis::ui_done(c("hierarchal paths found for:", names(config$paths[sapply(config$paths, is.list)])))
   } else {
     usethis::ui_info("no hierarchical paths found")
@@ -91,7 +89,7 @@ validate_paths <- function(config){
 
   check_for_names <- names(config$paths[has_hierarchy])
 
-  has_names <- function(.x){
+  has_names <- function(.x) {
     !is.null(names(config$paths[has_hierarchy][[.x]]))
   }
 
@@ -100,14 +98,16 @@ validate_paths <- function(config){
   purrr::walk(
     names(name_results[!name_results]),
     ~ usethis::ui_todo(
-      paste0(usethis::ui_field(.),
-             " has a hierarchy but they are not named.  Please update your configuration to name the hierarchy for ",
-             usethis::ui_field(.),"."))
+      paste0(
+        usethis::ui_field(.),
+        " has a hierarchy but they are not named.  Please update your configuration to name the hierarchy for ",
+        usethis::ui_field(.), "."
+      )
+    )
   )
-
 }
 
-is_hierarchical <- function(x){
+is_hierarchical <- function(x) {
   tf <- sapply(x, is.list)
   any(tf)
 }
