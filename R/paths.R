@@ -78,3 +78,53 @@ object_in_path <- function(path, object) {
   f_path <- file.path(path, object)
   file.exists(f_path)
 }
+
+
+
+
+#' Build directory structure from a configuration file
+#'
+#' @param config configuration object from config::get() containing paths
+#' @param root root directory to build from
+#'
+#' @return print directory as a tree-like format from `fs::dir_tree()`
+#' @export
+#'
+#' @examples
+#' tmpdir <- tempdir()
+#'
+#' hierarchy <- "default:
+#'   paths:
+#'     data: !expr list(DEV = '/demo/DEV/username/project1/data',
+#'                      PROD = '/demo/PROD/project1/data')
+#'     output: !expr list(DEV = '/demo/DEV/username/project1/output',
+#'                        PROD = '/demo/PROD/project1/output')
+#'     programs: !expr list(DEV = '/demo/DEV/username/project1/programs',
+#'                          PROD = '/demo/PROD/project1/programs')
+#'     docs: !expr list(DEV = 'docs',
+#'                      PROD = 'docs')"
+#'
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+#'
+#' build_from_config(config, tmpdir)
+build_from_config <- function(config, root = getwd()){
+
+  if(!exists("paths", where = config)){
+    usethis::ui_oops("No paths are specified as part of your configuration.  Update your config file to add paths.")
+    return(invisible())
+  }
+
+  paths <- file.path(root, unlist(config$paths, use.names = FALSE))
+
+  walk(paths,~ {
+    if(!dir.exists(.x)){
+      dir.create(.x, recursive = TRUE)
+    }
+  })
+
+  fs::dir_tree(root)
+
+}
+
