@@ -113,6 +113,7 @@ build_from_config <- function(config, root = getwd()){
 
   if(!exists("paths", where = config)){
     usethis::ui_oops("No paths are specified as part of your configuration.  Update your config file to add paths.")
+    return(invisible())
   }
 
   paths <- file.path(root, unlist(config$paths, use.names = FALSE))
