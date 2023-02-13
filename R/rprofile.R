@@ -9,7 +9,6 @@
 #' rprofile(config::get("path/to/config/_envsetup.yml"))
 #' }
 rprofile <- function(config) {
-
   if ("envsetup:paths" %in% search()) {
     detach("envsetup:paths", character.only = TRUE)
   }
@@ -37,5 +36,4 @@ rprofile <- function(config) {
   assign("auto_stored_envsetup_config", config, pos)
 
   set_autos(config$autos)
-
 }

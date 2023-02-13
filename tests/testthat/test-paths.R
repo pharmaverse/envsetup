@@ -1,5 +1,3 @@
-
-
 tmpdir <- base::tempdir()
 Sys.setenv(testpath = (tmpdir))
 

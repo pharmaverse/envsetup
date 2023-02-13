@@ -10,7 +10,6 @@
 #' init()
 #' }
 init <- function(project = getwd(), config_path = NULL) {
-
   create_config <- FALSE
   config_found <- FALSE
 
@@ -20,7 +19,7 @@ init <- function(project = getwd(), config_path = NULL) {
       n_no = 1
     )
   } else {
-    if (file.exists(config_path) && !dir.exists(config_path)){
+    if (file.exists(config_path) && !dir.exists(config_path)) {
       config_found <- TRUE
       usethis::ui_done("Configuration file found!")
     } else {
@@ -58,7 +57,6 @@ init <- function(project = getwd(), config_path = NULL) {
   )
 
   usethis::ui_done("envsetup initialization complete")
-
 }
 
 envsetup_write_rprofile <- function(add, file) {
@@ -73,7 +71,8 @@ envsetup_write_rprofile <- function(add, file) {
   if (any(grepl("rprofile\\(", before))) {
     stop("It looks like your project has already been initialized to use envsetup.
          Manually adjust your .Rprofile if you need to change the environment setup.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   after <- c(add, before)
