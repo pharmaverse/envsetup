@@ -12,6 +12,7 @@
 init <- function(project = getwd(), config_path = NULL) {
 
   create_config <- FALSE
+  config_found <- FALSE
 
   if (is.null(config_path)) {
     create_config <- usethis::ui_yeah("No path to an exisiting configuration file was provided.
@@ -20,6 +21,7 @@ init <- function(project = getwd(), config_path = NULL) {
     )
   } else {
     if (file.exists(config_path) && !dir.exists(config_path)){
+      config_found <- TRUE
       usethis::ui_done("Configuration file found!")
     } else {
       stop(paste("No configuration file is found at", config_path), call. = FALSE)
@@ -37,8 +39,10 @@ init <- function(project = getwd(), config_path = NULL) {
     usethis::ui_done(paste("Configuration file (envsetup.yml) has been written to", project))
 
     # build out the default directory structure in the project
-    build
-  } else {
+    build_from_config(
+      config::get(file = config_path)
+    )
+  } else if (config_found <- FALSE) {
     stop("Aborting envsetup initialization.  A configuration file is needed.", call. = FALSE)
   }
 
@@ -52,6 +56,9 @@ init <- function(project = getwd(), config_path = NULL) {
     add    = add,
     file   = file.path(project, ".Rprofile")
   )
+
+  usethis::ui_done("envsetup initialization complete")
+
 }
 
 envsetup_write_rprofile <- function(add, file) {
@@ -64,12 +71,14 @@ envsetup_write_rprofile <- function(add, file) {
 
   # if there is a call to `rprofile()` in the .Rprofile, assume setup was already done and exit
   if (any(grepl("rprofile\\(", before))) {
-    stop("It looks like your project has already been initialized to use envsetup.  Manually adjust your .Rprofile if you need to change the environment setup.")
+    stop("It looks like your project has already been initialized to use envsetup.
+         Manually adjust your .Rprofile if you need to change the environment setup.",
+         call. = FALSE)
   }
 
   after <- c(add, before)
 
   writeLines(after, file)
 
-  TRUE
+  usethis::ui_done(paste(".Rprofile created"))
 }
