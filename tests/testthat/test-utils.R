@@ -12,10 +12,8 @@ test_that("validate_config, no hierarchy paths return correct messages", {
   writeLines(no_hierarchy, path)
   withr::defer(unlink(path, recursive = TRUE))
 
-  expect_message(validate_config(config::get(file = path)),
-                 "paths are specified as part of your configuration")
-  expect_message(validate_config(config::get(file = path)),
-                 "no hierarchical paths found")
+  expect_snapshot(validate_config(config::get(file = path)))
+  expect_snapshot(validate_config(config::get(file = path)))
 })
 
 test_that("validate_config, hierarchy paths return correct messages", {
@@ -32,10 +30,8 @@ test_that("validate_config, hierarchy paths return correct messages", {
   writeLines(hierarchy, path)
   withr::defer(unlink(path, recursive = TRUE))
 
-  expect_message(validate_config(config::get(file = path)),
-                 "paths are specified as part of your configuration")
-  expect_message(validate_config(config::get(file = path)),
-                 "hierarchal paths found for:\n\\s*data\n\\s*output\n\\s*programs")
+  expect_snapshot(validate_config(config::get(file = path)))
+  expect_snapshot(validate_config(config::get(file = path)))
 })
 
 test_that("validate_config, hierarchy paths return todo item/s when unnamed", {
@@ -51,12 +47,9 @@ test_that("validate_config, hierarchy paths return todo item/s when unnamed", {
   writeLines(hierarchy_no_names, path)
   withr::defer(unlink(path, recursive = TRUE))
 
-  expect_message(validate_config(config::get(file = path)),
-                 "data has a hierarchy but they are not named.  Please update your configuration to name the hierarchy for data.")
-  expect_message(validate_config(config::get(file = path)),
-                 "output has a hierarchy but they are not named.  Please update your configuration to name the hierarchy for output")
-  expect_message(validate_config(config::get(file = path)),
-                 "programs has a hierarchy but they are not named.  Please update your configuration to name the hierarchy for programs")
+  expect_snapshot(validate_config(config::get(file = path)))
+  expect_snapshot(validate_config(config::get(file = path)))
+  expect_snapshot(validate_config(config::get(file = path)))
 })
 
 test_that("validate_config, no paths return correct message", {
@@ -69,6 +62,5 @@ test_that("validate_config, no paths return correct message", {
   writeLines(no_paths, path)
   withr::defer(unlink(path, recursive = TRUE))
 
-  expect_message(validate_config(config::get(file = path)),
-                 "no paths are specified as part of your configuration, skipping path valiation")
+  expect_snapshot(validate_config(config::get(file = path)))
 })
