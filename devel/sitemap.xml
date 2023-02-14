@@ -52,6 +52,9 @@
     <loc>https://pharmaverse.github.io/envsetup/devel/reference/set_autos.html</loc>
   </url>
   <url>
+    <loc>https://pharmaverse.github.io/envsetup/devel/reference/validate_config.html</loc>
+  </url>
+  <url>
     <loc>https://pharmaverse.github.io/envsetup/devel/reference/write_path.html</loc>
   </url>
 </urlset>
