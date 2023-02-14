@@ -4,12 +4,14 @@
 \alias{init}
 \title{Initialize the R environment with envsetup}
 \usage{
-init(project = getwd(), config_path = NULL)
+init(project = getwd(), config_path = NULL, create_paths = NULL)
 }
 \arguments{
 \item{project}{Character. The path to the project directory. Defaults to the current working directory.}
 
-\item{config_path}{Character. The path of the config file. Defaults to "envsetup.yml".}
+\item{config_path}{Character. The path of the config file. Defaults to NULL.}
+
+\item{create_paths}{Logical indicating if missing paths should be created. Defaults to NULL.}
 }
 \value{
 Logical. TRUE if successful.
