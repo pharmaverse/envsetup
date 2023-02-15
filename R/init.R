@@ -36,7 +36,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
       paths <- unlist(config$paths, use.names = FALSE)
 
-      missing_directories <- !sapply(paths, dir.exists)
+      missing_directories <- !vapply(paths, dir.exists, TRUE)
 
       if (any(missing_directories)) {
         usethis::ui_info(
