@@ -9,7 +9,6 @@
 #' rprofile(config::get("path/to/config/_envsetup.yml"))
 #' }
 rprofile <- function(config) {
-
   if ("envsetup:paths" %in% search()) {
     detach("envsetup:paths", character.only = TRUE)
   }
@@ -29,6 +28,8 @@ rprofile <- function(config) {
     name = "envsetup:paths",
     pos = pos
   )
+
+  message("Attaching paths to envsetup:paths")
 
   # store config with a standard name in a standard location
   # this will allow `envsetup::library()` to re-attach autos
