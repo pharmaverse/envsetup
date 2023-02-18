@@ -6,7 +6,7 @@
 #' level, but don't fit in or necessarily require a package or haven't been
 #' incorporated into a package.
 #'
-#' @param ... named vector of directories
+#' @param autos named list of character vectors
 #' @param envsetup_environ name of the environment you would like to read from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
@@ -21,11 +21,15 @@
 #' \dontrun{
 #' set_autos(envsetup_config$autos)
 #' }
-set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  autos_paths <- list(...)
+set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
-  for (i in seq_along(autos_paths)) {
+  # Must be named list
+  browser()
+
+  for (i in seq_along(autos)) {
     cur_autos <- autos_paths[[i]]
+
+    # Must be named vector
 
     if (length(cur_autos) > 1 && envsetup_environ == "") {
       stop(paste(
@@ -41,11 +45,11 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
         cur_autos[which(names(cur_autos) == envsetup_environ):length(cur_autos)]
     }
 
-    autos_paths[[i]] <- filtered_autos
+    autos[[i]] <- filtered_autos
   }
 
   # Flatten the paths to collapse the names down to a single vector
-  flattened_paths <- unlist(autos_paths)
+  flattened_paths <- unlist(autos)
 
   # Check the autos before they're set
   if (!(is.null(flattened_paths) || is.character(flattened_paths))) {

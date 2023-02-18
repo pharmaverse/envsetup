@@ -35,6 +35,6 @@ rprofile <- function(config) {
 
   # If autos exist, set them
   if (!is.null(config$autos)) {
-    do.call(set_autos, config$autos)
+    set_autos(config$autos)
   }
 }
