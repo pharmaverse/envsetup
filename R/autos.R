@@ -45,6 +45,17 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
       }
     }
 
+    if (!is.null(names(cur_autos)) && !envsetup_environ %in% names(cur_autos)
+        && envsetup_environ != ""){
+      warning(paste(
+        "The", usethis::ui_field(names(autos[i])), "autos has named",
+        "environments",  usethis::ui_field(names(cur_autos)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
+    }
+
     filtered_autos <- cur_autos
 
     if (envsetup_environ %in% names(cur_autos)) {
