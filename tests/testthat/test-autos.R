@@ -1,3 +1,4 @@
+r_version <- function() paste0("R", getRversion()[, 1:2])
 
 tmpdir <- base::tempdir()
 
@@ -21,8 +22,13 @@ test_that("Autos set and test_dev from highest level appears correctly", {
 })
 
 test_that("library returns invisibly",{
-  expect_warning(suppressPackageStartupMessages(library("dplyr")), "envsetup::rprofile was not run")
+  # Detatch envsetup:paths if it exists
+  if (any(search() == "envsetup:paths")) {
+    detach("envsetup:paths")
+  }
+  expect_warning(suppressPackageStartupMessages(library("MASS")), "envsetup::rprofile was not run")
   suppressMessages(rprofile(custom_name))
+  detach("package:MASS", unload=TRUE)
 })
 
 
@@ -96,14 +102,22 @@ test_that("Autos no longer exist when detached", {
 })
 
 test_that("the configuration can be named anything and library will
-          reattch the autos correctly", {
+          reattach the autos correctly", {
   suppressMessages(rprofile(custom_name))
 
-  expect_invisible(suppressPackageStartupMessages(library("dplyr")))
+  expect_invisible(suppressPackageStartupMessages(library("MASS")))
 
-  dplyr_location <- which(search() == "package:dplyr")
+  mass_location <- which(search() == "package:MASS")
   autos_locatios <- which(grepl("^autos:", search()))
 
-  expect_true(all(dplyr_location > autos_locatios))
-  detach("package:dplyr", unload=TRUE)
+  expect_true(all(mass_location > autos_locatios))
+  detach("package:MASS", unload=TRUE)
+})
+
+
+test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environments in autos", {
+  withr::local_envvar(ENVSETUP_ENVIRON = "bad_name")
+
+  expect_snapshot(suppressMessages(rprofile(custom_name)), variant = r_version())
+
 })
