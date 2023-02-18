@@ -66,15 +66,6 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
   # If there are any existing autos then reset them
   detach_autos()
 
-  # Check that the directories and/or files actually exist
-  walk(unlist(flattened_paths), {
-    function(p) {
-      if (!dir.exists(p) && !file.exists(p)) {
-        warning(paste("Directory or file", p, "does not exist!"))
-      }
-    }
-  })
-
   # Now attach everything. Note that attach will put an environment behind
   # global and in front of the package namespaces. By reversing the list,
   # the search path will be set to apply the autos to the name space so that
@@ -108,8 +99,12 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 attach_auto <- function(path, name) {
   name_with_prefix <- paste0("autos:", name)
 
-  # if file, source it
-  if (file.exists(path) && !dir.exists(path)) {
+  if (!(dir.exists(path) || file.exists(path))) {
+    # Check if the auto actually exists
+    stop(sprintf("Autos path specified in _envsetup.yml does not exist: %s = %s", name, path),
+         call.=FALSE)
+  } else if (file.exists(path) && !dir.exists(path)) {
+    # if file, source it
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
     message("Attaching functions from ", path, " to ", name_with_prefix)
