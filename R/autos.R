@@ -172,9 +172,9 @@ library <- function(...) {
       warning("envsetup::rprofile was not run! Autos cannot be restored!")
     } else {
       stored_config <- get("auto_stored_envsetup_config",
-        pos = which(search() == "envsetup:paths")
+                           pos = which(search() == "envsetup:paths")
       )
-      suppressMessages(set_autos(stored_config$autos))
+      suppressMessages(do.call(set_autos, stored_config$autos))
     }
   }
 
