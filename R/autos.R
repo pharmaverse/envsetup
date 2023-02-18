@@ -14,8 +14,7 @@
 #' @return Directory paths of the R autos
 #'
 #' @importFrom purrr walk walk2
-#' @importFrom assertthat assert_that
-#' @export
+#' @noRd
 #'
 #' @examples
 #' \dontrun{
@@ -24,18 +23,26 @@
 set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   # Must be named list
-  browser()
+  if (!rlang::is_named(autos)) {
+    stop("Paths for autos in _envsetup.yml must be named", call.=FALSE)
+  }
 
   for (i in seq_along(autos)) {
-    cur_autos <- autos_paths[[i]]
+    cur_autos <- autos[[i]]
 
-    # Must be named vector
+    if (length(cur_autos) > 1) {
+      # Hierarchical paths must be named
+      if (!rlang::is_named(cur_autos)) {
+        stop("Hierarchical autos paths in _envsetup_yml must be named", call.=FALSE)
+      }
 
-    if (length(cur_autos) > 1 && envsetup_environ == "") {
-      stop(paste(
-        "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
-        "variable must be used if hierarchical autos are set."
-      ), call. = FALSE)
+      # envsetup_environ must be used if using hierarchical paths
+      if (envsetup_environ == "") {
+        stop(paste(
+          "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+          "variable must be used if hierarchical autos are set."
+        ), call. = FALSE)
+      }
     }
 
     filtered_autos <- cur_autos
@@ -174,7 +181,7 @@ library <- function(...) {
       stored_config <- get("auto_stored_envsetup_config",
                            pos = which(search() == "envsetup:paths")
       )
-      suppressMessages(do.call(set_autos, stored_config$autos))
+      suppressMessages(set_autos(stored_config$autos))
     }
   }
 
