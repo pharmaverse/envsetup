@@ -101,7 +101,7 @@ attach_auto <- function(path, name) {
 
   if (!(dir.exists(path) || file.exists(path))) {
     # Check if the auto actually exists
-    stop(sprintf("Autos path specified in _envsetup.yml does not exist: %s = %s", name, path),
+    warning(sprintf("Autos path specified in _envsetup.yml does not exist: %s = %s", name, path),
          call.=FALSE)
   } else if (file.exists(path) && !dir.exists(path)) {
     # if file, source it

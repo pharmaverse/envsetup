@@ -40,7 +40,7 @@ test_that("Autos validation from yml happens correctly", {
   # Paths are characters
   expect_error(set_autos(list(global=1)), "Paths provided for autos must be directories")
 
-  expect_error(set_autos(list(x = "/bad/path/")), "Autos path specified in _envsetup.yml does not exist")
+  expect_warning(set_autos(list(x = "/bad/path/")), "Autos path specified in _envsetup.yml does not exist")
 })
 
 # Detatch and re-setup for QA now
