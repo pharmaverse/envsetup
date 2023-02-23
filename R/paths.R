@@ -112,6 +112,14 @@ write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVS
 
   if (envsetup_environ %in% names(lib)) {
     path <- path[[envsetup_environ]]
+  } else {
+  warning(paste(
+        "The path has named environments",
+        usethis::ui_field(names(lib)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
   }
 
   out_path <- path
