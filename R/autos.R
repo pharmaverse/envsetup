@@ -33,7 +33,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
     if (length(cur_autos) > 1) {
       # Hierarchical paths must be named
       if (!rlang::is_named(cur_autos)) {
-        stop("Hierarchical autos paths in _envsetup_yml must be named", call.=FALSE)
+        stop("Hierarchical autos paths in your envsetup configuration file must be named", call.=FALSE)
       }
 
       # envsetup_environ must be used if using hierarchical paths
