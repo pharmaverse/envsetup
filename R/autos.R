@@ -24,7 +24,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 
   # Must be named list
   if (!rlang::is_named(autos)) {
-    stop("Paths for autos in _envsetup.yml must be named", call.=FALSE)
+    stop("Paths for autos in your envsetup configuration file must be named", call.=FALSE)
   }
 
   for (i in seq_along(autos)) {
