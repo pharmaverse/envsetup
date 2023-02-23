@@ -36,6 +36,14 @@ read_path <- function(lib,
 
   if (envsetup_environ %in% names(lib)) {
     restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
+  } else {
+  warning(paste(
+        "The path has named environments",
+        usethis::ui_field(names(lib)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
   }
 
   # find which paths have the object
