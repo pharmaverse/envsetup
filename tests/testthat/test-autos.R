@@ -40,13 +40,13 @@ test_that("Autos validation from yml happens correctly", {
 
   # Hierarchical list is named
   expect_error(
-    set_autos(list(project=c("path1", "path2"))), "Hierarchical autos paths in _envsetup_yml must be named"
+    set_autos(list(project=c("path1", "path2"))), "Hierarchical autos paths in your envsetup configuration file must be named"
   )
 
   # Paths are characters
   expect_error(set_autos(list(global=1)), "Paths provided for autos must be directories")
 
-  expect_warning(set_autos(list(x = "/bad/path/")), "Autos path specified in _envsetup.yml does not exist")
+  expect_warning(set_autos(list(x = "/bad/path/")), "An autos path specified in your envsetup configuration file does not exist")
 })
 
 # Detatch and re-setup for QA now
