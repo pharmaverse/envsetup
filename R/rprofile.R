@@ -35,5 +35,8 @@ rprofile <- function(config) {
   # this will allow `envsetup::library()` to re-attach autos
   assign("auto_stored_envsetup_config", config, pos)
 
-  set_autos(config$autos)
+  # If autos exist, set them
+  if (!is.null(config$autos)) {
+    set_autos(config$autos)
+  }
 }

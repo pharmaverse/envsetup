@@ -10,3 +10,4 @@
 ## Breaking Changes
 
 - `library()` will now respect invisible return instead of always returning the list of attached packages (#24)
+- `set_autos()` now expects a different YAML structure for hierarchical filtering based on ENVSETUP_ENVIRON (#28)

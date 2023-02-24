@@ -25,7 +25,26 @@ read_path <- function(lib,
                       filename,
                       full.path = TRUE,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
+  restricted_paths <- lib
+
+  if (length(lib) > 1 && envsetup_environ == "") {
+    stop(paste(
+      "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+      "variable must be used if hierarchical paths are set."
+    ), call. = FALSE)
+  }
+
+  if (envsetup_environ %in% names(lib)) {
+    restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
+  } else {
+  warning(paste(
+        "The path has named environments",
+        usethis::ui_field(names(lib)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
+  }
 
   # find which paths have the object
   path_has_object <-
@@ -54,10 +73,15 @@ read_path <- function(lib,
 }
 
 
-#' Write path
+#' Retrieve a file path from an envsetup object containing paths
 #'
-#' @param lib object containing the paths for all environments of a directory
-#' @param envsetup_environ name of the environment you would like to write to
+#' Paths will be filtered to produce the lowest available level from a hierarchy
+#' of paths based on envsetup_environ
+#'
+#' @param lib Object containing the paths for all environments of a directory
+#' @param filename Name of the file you would like to write
+#' @param envsetup_environ Name of the environment to which you would like to
+#'   write. Defaults to the ENVSETUP_ENVIRON environment variable
 #'
 #' @return path to write
 #' @export
@@ -66,10 +90,46 @@ read_path <- function(lib,
 #' \dontrun{
 #' write_path(a_in, "PROD")
 #' }
-write_path <- function(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  path <- lib[[envsetup_environ]]
-  message("Write Path:", path, "\n")
-  path
+write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+  # examine lib to ensure it's not a string
+  # if it's a string, you end up with an incorrect path
+  lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
+  if(rlang::is_string(lib_arg)){
+    stop(paste(
+      "The lib argument should be an object containing the paths",
+      "for all environments of a directory, not a string."
+    ), call. = FALSE)
+  }
+  
+  path <- lib
+
+  if (length(lib) > 1 && envsetup_environ == "") {
+    stop(paste(
+      "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+      "variable must be used if hierarchical paths are set."
+    ), call. = FALSE)
+  }
+
+  if (envsetup_environ %in% names(lib)) {
+    path <- path[[envsetup_environ]]
+  } else {
+  warning(paste(
+        "The path has named environments",
+        usethis::ui_field(names(lib)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        usethis::ui_field(envsetup_environ)
+      ), call. = FALSE)
+  }
+
+  out_path <- path
+
+  if (!is.null(filename)) {
+    out_path <- file.path(path, filename)
+  }
+
+  message("Write Path:", out_path, "\n")
+  out_path
 }
 
 
