@@ -26,9 +26,9 @@ test_that("library returns invisibly",{
   if (any(search() == "envsetup:paths")) {
     detach("envsetup:paths")
   }
-  expect_warning(suppressPackageStartupMessages(library("MASS")), "envsetup::rprofile was not run")
+  expect_warning(suppressPackageStartupMessages(library("purrr")), "envsetup::rprofile was not run")
   suppressMessages(rprofile(custom_name))
-  detach("package:MASS", unload=TRUE)
+  detach("package:purrr")
 })
 
 
@@ -40,7 +40,7 @@ test_that("Autos validation from yml happens correctly", {
 
   # Hierarchical list is named
   expect_error(
-    set_autos(list(project=c("path1", "path2")), "Hierarchical autos paths in _envsetup_yml must be named")
+    set_autos(list(project=c("path1", "path2"))), "Hierarchical autos paths in _envsetup_yml must be named"
   )
 
   # Paths are characters
@@ -105,13 +105,13 @@ test_that("the configuration can be named anything and library will
           reattach the autos correctly", {
   suppressMessages(rprofile(custom_name))
 
-  expect_invisible(suppressPackageStartupMessages(library("MASS")))
+  expect_invisible(suppressPackageStartupMessages(library("purrr")))
 
-  mass_location <- which(search() == "package:MASS")
+  purrr_location <- which(search() == "package:purrr")
   autos_locatios <- which(grepl("^autos:", search()))
 
-  expect_true(all(mass_location > autos_locatios))
-  detach("package:MASS", unload=TRUE)
+  expect_true(all(purrr_location > autos_locatios))
+  detach("package:purrr")
 })
 
 
