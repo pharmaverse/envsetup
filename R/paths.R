@@ -14,6 +14,8 @@
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
+#' @importFrom rlang quo_get_expr enquo is_string
+#'
 #' @return path of the first place the file is found
 #' @export
 #'
@@ -27,16 +29,16 @@ read_path <- function(lib,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # lib can be a object in a different environment
   # get this directly from envsetup:paths
-  lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
+  lib_arg <- quo_get_expr(enquo(lib))
 
-  if (rlang::is_string(lib_arg)) {
+  if (is_string(lib_arg)) {
     stop(paste(
       "The lib argument should be an object containing the paths",
       "for all environments of a directory, not a string."
     ), call. = FALSE)
   }
 
-  read_lib <- get(lib_arg, "envsetup:paths")
+  read_lib <- base::get(lib_arg, "envsetup:paths")
 
   restricted_paths <- read_lib
 
@@ -96,6 +98,8 @@ read_path <- function(lib,
 #' @param envsetup_environ Name of the environment to which you would like to
 #'   write. Defaults to the ENVSETUP_ENVIRON environment variable
 #'
+#' @importFrom rlang quo_get_expr enquo is_string
+#'
 #' @return path to write
 #' @export
 #'
@@ -106,16 +110,16 @@ read_path <- function(lib,
 write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # examine lib to ensure it's not a string
   # if it's a string, you end up with an incorrect path
-  lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
+  lib_arg <- quo_get_expr(enquo(lib))
 
-  if (rlang::is_string(lib_arg)) {
+  if (is_string(lib_arg)) {
     stop(paste(
       "The lib argument should be an object containing the paths",
       "for all environments of a directory, not a string."
     ), call. = FALSE)
   }
 
-  write_path <- get(lib_arg, "envsetup:paths")
+  write_path <- base::get(lib_arg, "envsetup:paths")
   path <- write_path
 
   if (length(write_path) > 1 && envsetup_environ == "") {
@@ -162,6 +166,9 @@ object_in_path <- function(path, object) {
 #' @param config configuration object from config::get() containing paths#'
 #' @param root root directory to build from.
 #' Leave as NULL if using absolute paths.  Set to working directory if using relative paths.
+#'
+#' @importFrom fs dir_tree
+#' @importFrom usethis ui_done
 #'
 #' @return print directory as a tree-like format from `fs::dir_tree()`
 #' @export
@@ -222,6 +229,6 @@ build_from_config <- function(config, root = NULL) {
     root <- paste0(base_path, collapse = "")
   }
 
-  usethis::ui_done("Directories built")
-  fs::dir_tree(root, type = "directory")
+  ui_done("Directories built")
+  dir_tree(root, type = "directory")
 }

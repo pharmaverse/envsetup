@@ -67,20 +67,29 @@ validate_config <- function(config) {
   # validate_autos(config)
 }
 
+
+#' Validate the paths in a configuration
+#'
+#' @param config configuration object from config::get()
+#'
+#' @importFrom usethis ui_done ui_info
+#' @importFrom purrr walk
+#'
+#' @noRd
 validate_paths <- function(config) {
   # does the paths element exist?
   if (exists("paths", where = config)) {
-    usethis::ui_done("paths are specified as part of your configuration")
+    ui_done("paths are specified as part of your configuration")
   } else {
-    usethis::ui_info("no paths are specified as part of your configuration, skipping path valiation")
+    ui_info("no paths are specified as part of your configuration, skipping path valiation")
     return(invisible())
   }
 
   # any hierarchical paths?
   if (is_hierarchical(config$paths)) {
-    usethis::ui_done(c("hierarchal paths found for:", names(config$paths[sapply(config$paths, is.list)])))
+    ui_done(c("hierarchal paths found for:", names(config$paths[sapply(config$paths, is.list)])))
   } else {
-    usethis::ui_info("no hierarchical paths found")
+    ui_info("no hierarchical paths found")
     return(invisible())
   }
 
@@ -95,7 +104,7 @@ validate_paths <- function(config) {
 
   name_results <- sapply(check_for_names, has_names)
 
-  purrr::walk(
+  walk(
     names(name_results[!name_results]),
     ~ usethis::ui_todo(
       paste0(

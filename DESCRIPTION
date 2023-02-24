@@ -19,9 +19,11 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
-    assertthat,
+    config,
+    fs,
     purrr,
-    rlang
+    rlang,
+    usethis
 Suggests: 
     rmarkdown,
     testthat,
@@ -29,12 +31,9 @@ Suggests:
     kableExtra,
     magrittr,
     devtools,
-    config,
     readr,
     tidyr,
     withr,
-    fs,
-    usethis,
     lintr,
     styler,
     renv,

@@ -36,8 +36,11 @@ test_that("rprofile stores the configuration", {
 
   rprofile(custom_name)
 
-  stored_config <- get("auto_stored_envsetup_config",
-                       pos = which(search() == "envsetup:paths"))
+  stored_config <- base::get(
+    "auto_stored_envsetup_config",
+    pos = which(search() == "envsetup:paths")
+    )
+
   expect_equal(custom_name, stored_config)
 })
 
