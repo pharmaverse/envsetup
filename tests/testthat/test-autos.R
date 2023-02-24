@@ -21,7 +21,7 @@ test_that("Autos set and test_dev from highest level appears correctly", {
   expect_equal(c(test_global()), c("Test of global autos"))
 })
 
-test_that("library returns invisibly",{
+test_that("library returns invisibly", {
   # Detatch envsetup:paths if it exists
   if (any(search() == "envsetup:paths")) {
     detach("envsetup:paths")
@@ -40,11 +40,11 @@ test_that("Autos validation from yml happens correctly", {
 
   # Hierarchical list is named
   expect_error(
-    set_autos(list(project=c("path1", "path2"))), "Hierarchical autos paths in your envsetup configuration file must be named"
+    set_autos(list(project = c("path1", "path2"))), "Hierarchical autos paths in your envsetup configuration file must be named"
   )
 
   # Paths are characters
-  expect_error(set_autos(list(global=1)), "Paths provided for autos must be directories")
+  expect_error(set_autos(list(global = 1)), "Paths provided for autos must be directories")
 
   expect_warning(set_autos(list(x = "/bad/path/")), "An autos path specified in your envsetup configuration file does not exist")
 })
@@ -119,5 +119,4 @@ test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environme
   withr::local_envvar(ENVSETUP_ENVIRON = "bad_name")
 
   expect_snapshot(suppressMessages(rprofile(custom_name)), variant = r_version())
-
 })
