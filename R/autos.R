@@ -11,9 +11,12 @@
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
+#'
 #' @return Directory paths of the R autos
 #'
 #' @importFrom purrr walk walk2
+#' @importFrom rlang is_named
+#' @importFrom usethis ui_field
 #' @noRd
 #'
 #' @examples
@@ -23,7 +26,7 @@
 set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   # Must be named list
-  if (!rlang::is_named(autos)) {
+  if (!is_named(autos)) {
     stop("Paths for autos in your envsetup configuration file must be named", call.=FALSE)
   }
 
@@ -32,7 +35,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 
     if (length(cur_autos) > 1) {
       # Hierarchical paths must be named
-      if (!rlang::is_named(cur_autos)) {
+      if (!is_named(cur_autos)) {
         stop("Hierarchical autos paths in your envsetup configuration file must be named", call.=FALSE)
       }
 
@@ -48,11 +51,11 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
     if (!is.null(names(cur_autos)) && !envsetup_environ %in% names(cur_autos)
         && envsetup_environ != ""){
       warning(paste(
-        "The", usethis::ui_field(names(autos[i])), "autos has named",
-        "environments",  usethis::ui_field(names(cur_autos)),
+        "The", ui_field(names(autos[i])), "autos has named",
+        "environments",  ui_field(names(cur_autos)),
         "that do not match with the envsetup_environ parameter",
         "or ENVSETUP_ENVIRON environment variable",
-        usethis::ui_field(envsetup_environ)
+        ui_field(envsetup_environ)
       ), call. = FALSE)
     }
 
@@ -184,8 +187,9 @@ library <- function(...) {
     if (!any(search() == "envsetup:paths")) {
       warning("envsetup::rprofile was not run! Autos cannot be restored!")
     } else {
-      stored_config <- get("auto_stored_envsetup_config",
-                           pos = which(search() == "envsetup:paths")
+      stored_config <- base::get(
+        "auto_stored_envsetup_config",
+        pos = which(search() == "envsetup:paths")
       )
       suppressMessages(set_autos(stored_config$autos))
     }

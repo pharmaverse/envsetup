@@ -4,6 +4,8 @@
 #' @param config_path Character. The path of the config file. Defaults to NULL.
 #' @param create_paths Logical indicating if missing paths should be created. Defaults to NULL.
 #' @export
+#' @importFrom usethis ui_yeah ui_oops ui_info ui_done
+#' @importFrom config get
 #' @return Logical. TRUE if successful.
 #'
 #' @examples
@@ -16,8 +18,8 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
   config_found <- FALSE
 
   if (is.null(config_path)) {
-    create_config <- usethis::ui_yeah("No path to an exisiting configuration file was provided.
-                                      Would you like us to create a default configuration in your project directory?",
+    create_config <- ui_yeah("No path to an exisiting configuration file was provided.
+                             Would you like us to create a default configuration in your project directory?",
       n_no = 1
     )
   } else {
@@ -30,7 +32,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
       config <- config::get(file = config_path)
 
       if (!exists("paths", where = config)) {
-        usethis::ui_oops("No paths are specified as part of your configuration.  Update your config file to add paths.")
+        ui_oops("No paths are specified as part of your configuration.  Update your config file to add paths.")
         return(invisible())
       }
 
@@ -39,7 +41,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
       missing_directories <- !vapply(paths, dir.exists, TRUE)
 
       if (any(missing_directories)) {
-        usethis::ui_info(
+        ui_info(
           c("The following paths in your configuration do not exist:",
             paths[missing_directories])
           )
@@ -54,7 +56,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
         }
 
         if (!create_paths) {
-          usethis::ui_info("All path objects will not work since directories are missing.")
+          ui_info("All path objects will not work since directories are missing.")
         }
       }
     } else {
@@ -70,7 +72,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
     file.copy(default_path, config_path, overwrite = TRUE)
 
-    usethis::ui_done(paste("Configuration file (envsetup.yml) has been written to", project))
+    ui_done(paste("Configuration file (envsetup.yml) has been written to", project))
 
     create_paths <- TRUE
   } else if (config_found <- FALSE) {
@@ -94,7 +96,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
     )
   }
 
-  usethis::ui_done("envsetup initialization complete")
+  ui_done("envsetup initialization complete")
 }
 
 envsetup_write_rprofile <- function(add, file) {
@@ -117,5 +119,5 @@ envsetup_write_rprofile <- function(add, file) {
 
   writeLines(after, file)
 
-  usethis::ui_done(paste(".Rprofile created"))
+  ui_done(paste(".Rprofile created"))
 }
