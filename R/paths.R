@@ -25,25 +25,38 @@ read_path <- function(lib,
                       filename,
                       full.path = TRUE,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  restricted_paths <- lib
+  # lib can be a object in a different environment
+  # get this directly from envsetup:paths
+  lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
 
-  if (length(lib) > 1 && envsetup_environ == "") {
+  if (rlang::is_string(lib_arg)) {
+    stop(paste(
+      "The lib argument should be an object containing the paths",
+      "for all environments of a directory, not a string."
+    ), call. = FALSE)
+  }
+
+  read_lib <- get(lib_arg, "envsetup:paths")
+
+  restricted_paths <- read_lib
+
+  if (length(read_lib) > 1 && envsetup_environ == "") {
     stop(paste(
       "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
       "variable must be used if hierarchical paths are set."
     ), call. = FALSE)
   }
 
-  if (envsetup_environ %in% names(lib)) {
-    restricted_paths <- lib[which(names(lib) == envsetup_environ):length(lib)]
-  } else {
-  warning(paste(
-        "The path has named environments",
-        usethis::ui_field(names(lib)),
-        "that do not match with the envsetup_environ parameter",
-        "or ENVSETUP_ENVIRON environment variable",
-        usethis::ui_field(envsetup_environ)
-      ), call. = FALSE)
+  if (envsetup_environ %in% names(read_lib)) {
+    restricted_paths <- read_lib[which(names(read_lib) == envsetup_environ):length(read_lib)]
+  } else if (length(read_lib) > 1) {
+    warning(paste(
+      "The path has named environments",
+      usethis::ui_field(names(read_lib)),
+      "that do not match with the envsetup_environ parameter",
+      "or ENVSETUP_ENVIRON environment variable",
+      usethis::ui_field(envsetup_environ)
+    ), call. = FALSE)
   }
 
   # find which paths have the object
@@ -56,7 +69,7 @@ read_path <- function(lib,
     )
 
   if (any(path_has_object) == FALSE) {
-    stop(paste0(filename, " not found in ", substitute(lib)))
+    stop(paste0(filename, " not found in ", substitute(read_lib)))
   }
 
   # subset and keep the first
@@ -94,32 +107,34 @@ write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVS
   # examine lib to ensure it's not a string
   # if it's a string, you end up with an incorrect path
   lib_arg <- rlang::quo_get_expr(rlang::enquo(lib))
-  if(rlang::is_string(lib_arg)){
+
+  if (rlang::is_string(lib_arg)) {
     stop(paste(
       "The lib argument should be an object containing the paths",
       "for all environments of a directory, not a string."
     ), call. = FALSE)
   }
-  
-  path <- lib
 
-  if (length(lib) > 1 && envsetup_environ == "") {
+  write_path <- get(lib_arg, "envsetup:paths")
+  path <- write_path
+
+  if (length(write_path) > 1 && envsetup_environ == "") {
     stop(paste(
       "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
       "variable must be used if hierarchical paths are set."
     ), call. = FALSE)
   }
 
-  if (envsetup_environ %in% names(lib)) {
+  if (envsetup_environ %in% names(write_path)) {
     path <- path[[envsetup_environ]]
-  } else {
-  warning(paste(
-        "The path has named environments",
-        usethis::ui_field(names(lib)),
-        "that do not match with the envsetup_environ parameter",
-        "or ENVSETUP_ENVIRON environment variable",
-        usethis::ui_field(envsetup_environ)
-      ), call. = FALSE)
+  } else if (length(write_path) > 1) {
+    warning(paste(
+      "The path has named environments",
+      usethis::ui_field(names(lib)),
+      "that do not match with the envsetup_environ parameter",
+      "or ENVSETUP_ENVIRON environment variable",
+      usethis::ui_field(envsetup_environ)
+    ), call. = FALSE)
   }
 
   out_path <- path

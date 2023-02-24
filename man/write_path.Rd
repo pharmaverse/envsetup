@@ -13,7 +13,7 @@ write_path(
 \arguments{
 \item{lib}{Object containing the paths for all environments of a directory}
 
-\item{filename}{Name of the file you would like to read}
+\item{filename}{Name of the file you would like to write}
 
 \item{envsetup_environ}{Name of the environment to which you would like to
 write. Defaults to the ENVSETUP_ENVIRON environment variable}

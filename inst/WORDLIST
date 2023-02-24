@@ -11,3 +11,5 @@ config
 yml
 Codecov
 codecov
+ENVIRON
+YAML

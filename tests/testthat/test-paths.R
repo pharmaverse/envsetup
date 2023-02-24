@@ -11,6 +11,26 @@ envsetup_config <- config::get(file = test_path("man/_envsetup_testthat.yml"))
 Sys.setenv(ENVSETUP_ENVIRON = "DEV")
 rprofile(envsetup_config)
 
+test_that("read_path will return the correct path if the object exists in another environment", {
+  data <- function() {
+    stop()
+  }
+
+  expect_equal(read_path(data, "iris.csv"), file.path(tmpdir, "DEV", "data", "iris.csv"))
+
+  rm(data)
+})
+
+test_that("write_path will return the correct path if the object exists in another environment", {
+  data <- function() {
+    stop()
+  }
+
+  expect_equal(write_path(data, "iris.csv"), file.path(tmpdir, "DEV", "data", "iris.csv"))
+
+  rm(data)
+})
+
 test_that("build_from_config builds the correct directories", {
   build_tmpdir <- tempdir()
   withr::defer(unlink(build_tmpdir))
@@ -49,9 +69,9 @@ test_that("1.1", {
   # First check if
   expect_error(
     read_path(data,
-              "iris.csv",
-              full.path = TRUE,
-              envsetup_environ = ""
+      "iris.csv",
+      full.path = TRUE,
+      envsetup_environ = ""
     )
   )
 
@@ -113,8 +133,8 @@ rprofile(envsetup_config)
 #' @editDate 2023-02-10
 test_that("read_path works with unset envsetup_environ and non-hierarhical paths", {
   readin <- readr::read_csv(read_path(data,
-                                      "iris.csv",
-                                      full.path = TRUE
+    "iris.csv",
+    full.path = TRUE
   ))
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })

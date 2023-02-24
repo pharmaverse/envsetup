@@ -21,14 +21,14 @@ test_that("Autos set and test_dev from highest level appears correctly", {
   expect_equal(c(test_global()), c("Test of global autos"))
 })
 
-test_that("library returns invisibly",{
+test_that("library returns invisibly", {
   # Detatch envsetup:paths if it exists
   if (any(search() == "envsetup:paths")) {
     detach("envsetup:paths")
   }
-  expect_warning(suppressPackageStartupMessages(library("MASS")), "envsetup::rprofile was not run")
+  expect_warning(suppressPackageStartupMessages(library("purrr")), "envsetup::rprofile was not run")
   suppressMessages(rprofile(custom_name))
-  detach("package:MASS", unload=TRUE)
+  detach("package:purrr")
 })
 
 
@@ -40,13 +40,13 @@ test_that("Autos validation from yml happens correctly", {
 
   # Hierarchical list is named
   expect_error(
-    set_autos(list(project=c("path1", "path2")), "Hierarchical autos paths in _envsetup_yml must be named")
+    set_autos(list(project = c("path1", "path2"))), "Hierarchical autos paths in your envsetup configuration file must be named"
   )
 
   # Paths are characters
-  expect_error(set_autos(list(global=1)), "Paths provided for autos must be directories")
+  expect_error(set_autos(list(global = 1)), "Paths provided for autos must be directories")
 
-  expect_warning(set_autos(list(x = "/bad/path/")), "Autos path specified in _envsetup.yml does not exist")
+  expect_warning(set_autos(list(x = "/bad/path/")), "An autos path specified in your envsetup configuration file does not exist")
 })
 
 # Detatch and re-setup for QA now
@@ -105,13 +105,13 @@ test_that("the configuration can be named anything and library will
           reattach the autos correctly", {
   suppressMessages(rprofile(custom_name))
 
-  expect_invisible(suppressPackageStartupMessages(library("MASS")))
+  expect_invisible(suppressPackageStartupMessages(library("purrr")))
 
-  mass_location <- which(search() == "package:MASS")
+  purrr_location <- which(search() == "package:purrr")
   autos_locatios <- which(grepl("^autos:", search()))
 
-  expect_true(all(mass_location > autos_locatios))
-  detach("package:MASS", unload=TRUE)
+  expect_true(all(purrr_location > autos_locatios))
+  detach("package:purrr")
 })
 
 
@@ -119,5 +119,4 @@ test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environme
   withr::local_envvar(ENVSETUP_ENVIRON = "bad_name")
 
   expect_snapshot(suppressMessages(rprofile(custom_name)), variant = r_version())
-
 })
