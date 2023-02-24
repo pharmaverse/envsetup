@@ -1,5 +1,5 @@
 init_tmpdir <- base::tempdir()
-config_path <- test_path("man/default_envsetup.yml")
+config_path <- test_path("man/default_hierarchy_envsetup.yml")
 r_version <- function() paste0("R", getRversion()[, 1:2])
 
 test_that("init creates a .Rprofile", {

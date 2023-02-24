@@ -68,7 +68,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
     config_path <- file.path(project, "envsetup.yml")
 
-    file.copy(default_path, config_path)
+    file.copy(default_path, config_path, overwrite = TRUE)
 
     usethis::ui_done(paste("Configuration file (envsetup.yml) has been written to", project))
 

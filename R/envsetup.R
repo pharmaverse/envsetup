@@ -14,5 +14,3 @@
 
   invisible()
 }
-
-globalVariables("envsetup_config")
