@@ -81,7 +81,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
   # create the .Rprofile or add envsetup to the top
   add <- sprintf(
-    'library(envsetup)\nenvsetup_config <- config::get(file = "%s")\nrprofile(envsetup_config)',
+    'library(envsetup)\nrprofile(config::get(file = "%s"))',
     config_path
   )
 
