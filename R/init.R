@@ -102,6 +102,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 envsetup_write_rprofile <- function(add, file) {
   if (!file.exists(file)) {
     writeLines(add, file)
+    ui_done(paste(".Rprofile created"))
     return(TRUE)
   }
 
@@ -119,5 +120,5 @@ envsetup_write_rprofile <- function(add, file) {
 
   writeLines(after, file)
 
-  ui_done(paste(".Rprofile created"))
+  ui_done(paste(".Rprofile updated"))
 }

@@ -14,6 +14,7 @@
         /DEV/username/project1/output
         /PROD/project1/output
       i All path objects will not work since directories are missing.
+      v .Rprofile created
       v envsetup initialization complete
 
 # init initializes an .Rprofile correcty when one does not exist
@@ -32,6 +33,7 @@
         /DEV/username/project1/output
         /PROD/project1/output
       i All path objects will not work since directories are missing.
+      v .Rprofile created
       v envsetup initialization complete
 
 # init initializes an .Rprofile correcty when one does exist
@@ -50,6 +52,6 @@
         /DEV/username/project1/output
         /PROD/project1/output
       i All path objects will not work since directories are missing.
-      v .Rprofile created
+      v .Rprofile updated
       v envsetup initialization complete
 
