@@ -81,7 +81,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
   # create the .Rprofile or add envsetup to the top
   add <- sprintf(
-    'library(envsetup)\nrprofile(config::get(file = "%s"))',
+    '\nlibrary(envsetup)\nrprofile(config::get(file = "%s"))',
     config_path
   )
 
@@ -115,7 +115,7 @@ envsetup_write_rprofile <- function(add, file) {
     return(invisible())
   }
 
-  after <- c(add, before)
+  after <- c(before, add)
 
   writeLines(after, file)
 
