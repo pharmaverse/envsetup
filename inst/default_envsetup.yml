@@ -5,3 +5,5 @@ default:
     programs: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "programs")
     functions: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "functions")
     output: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "output")
+  autos:
+    functions: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "functions")
