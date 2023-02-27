@@ -37,3 +37,13 @@ default:
         Sys.getenv("ENVSETUP_PROJECT_PATH"),
         "PROD/project1",
         "output"))
+  autos:
+    functions: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "functions"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "functions"))
