@@ -79,7 +79,7 @@ init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
     stop("Aborting envsetup initialization.  A configuration file is needed.", call. = FALSE)
   }
 
-  # create the .Rprofile or add envsetup to the top
+  # create the .Rprofile or add envsetup to the bottom
   add <- sprintf(
     '\nlibrary(envsetup)\nrprofile(config::get(file = "%s"))',
     config_path
