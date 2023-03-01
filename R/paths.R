@@ -27,6 +27,7 @@ read_path <- function(lib,
                       filename,
                       full.path = TRUE,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+
   # lib can be a object in a different environment
   # get this directly from envsetup:paths
   lib_arg <- quo_get_expr(enquo(lib))
@@ -38,7 +39,7 @@ read_path <- function(lib,
     ), call. = FALSE)
   }
 
-  read_lib <- base::get(lib_arg, "envsetup:paths")
+  read_lib <- base::get(toString(lib_arg), "envsetup:paths")
 
   restricted_paths <- read_lib
 
@@ -119,7 +120,7 @@ write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVS
     ), call. = FALSE)
   }
 
-  write_path <- base::get(lib_arg, "envsetup:paths")
+  write_path <- base::get(toString(lib_arg), "envsetup:paths")
   path <- write_path
 
   if (length(write_path) > 1 && envsetup_environ == "") {
