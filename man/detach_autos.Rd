@@ -4,13 +4,7 @@
 \alias{detach_autos}
 \title{Detach the autos from the current session}
 \usage{
-detach_autos(names)
-}
-\arguments{
-\item{names}{vector of names of attached packages to detach}
-}
-\value{
-names found in the search path
+detach_autos()
 }
 \description{
 This function will remove any autos that have been set from the search path

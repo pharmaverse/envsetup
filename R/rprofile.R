@@ -29,5 +29,14 @@ rprofile <- function(config) {
     pos = pos
   )
 
-  set_autos(config$autos)
+  message("Attaching paths to envsetup:paths")
+
+  # store config with a standard name in a standard location
+  # this will allow `envsetup::library()` to re-attach autos
+  assign("auto_stored_envsetup_config", config, pos)
+
+  # If autos exist, set them
+  if (!is.null(config$autos)) {
+    set_autos(config$autos)
+  }
 }

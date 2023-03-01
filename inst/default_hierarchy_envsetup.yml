@@ -1,0 +1,49 @@
+default:
+  project_path: !expr Sys.setenv(ENVSETUP_PROJECT_PATH = getwd()); getwd()
+  paths:
+    data: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "data"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "data"))
+    programs: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "programs"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "programs"))
+    functions: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "functions"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "functions"))
+    output: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "output"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "output"))
+  autos:
+    functions: !expr list(
+      DEV = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "DEV/username/project1",
+        "functions"),
+      PROD = file.path(
+        Sys.getenv("ENVSETUP_PROJECT_PATH"),
+        "PROD/project1",
+        "functions"))

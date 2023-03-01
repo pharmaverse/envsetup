@@ -2,20 +2,28 @@
 % Please edit documentation in R/paths.R
 \name{write_path}
 \alias{write_path}
-\title{Write path}
+\title{Retrieve a file path from an envsetup object containing paths}
 \usage{
-write_path(lib, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"))
+write_path(
+  lib,
+  filename = NULL,
+  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")
+)
 }
 \arguments{
-\item{lib}{object containing the paths for all environments of a directory}
+\item{lib}{Object containing the paths for all environments of a directory}
 
-\item{envsetup_environ}{name of the environment you would like to write to}
+\item{filename}{Name of the file you would like to write}
+
+\item{envsetup_environ}{Name of the environment to which you would like to
+write. Defaults to the ENVSETUP_ENVIRON environment variable}
 }
 \value{
 path to write
 }
 \description{
-Write path
+Paths will be filtered to produce the lowest available level from a hierarchy
+of paths based on envsetup_environ
 }
 \examples{
 \dontrun{

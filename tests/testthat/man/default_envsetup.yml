@@ -1,0 +1,7 @@
+default:
+  project_path: !expr Sys.setenv(ENVSETUP_PROJECT_PATH = ""); ""
+  paths:
+    data: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "data")
+    programs: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "programs")
+    functions: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "functions")
+    output: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "output")

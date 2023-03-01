@@ -6,53 +6,87 @@
 #' level, but don't fit in or necessarily require a package or haven't been
 #' incorporated into a package.
 #'
-#' @param ... named vector of directories
+#' @param autos named list of character vectors
 #' @param envsetup_environ name of the environment you would like to read from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
+#'
 #' @return Directory paths of the R autos
 #'
 #' @importFrom purrr walk walk2
-#' @importFrom assertthat assert_that
-#' @export
+#' @importFrom rlang is_named
+#' @importFrom usethis ui_field
+#' @noRd
 #'
 #' @examples
 #' \dontrun{
 #' set_autos(envsetup_config$autos)
 #' }
-set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
-  autos_paths <- unlist(list(...))
+set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
-  # Check the autos before they're set
-  assert_that(
-    is.null(autos_paths) || is.character(autos_paths),
-    msg = "Paths must be directories"
-  )
-  # If there are any existing autos then reset them
-  detach_autos(paste0("autos:", names(autos_paths)))
-
-  if (envsetup_environ %in% names(autos_paths)) {
-    autos_paths <-
-      autos_paths[which(names(autos_paths) == envsetup_environ):length(autos_paths)]
+  # Must be named list
+  if (!is_named(autos)) {
+    stop("Paths for autos in your envsetup configuration file must be named", call.=FALSE)
   }
 
-  # Check that the directories and/or files actually exist
-  walk(autos_paths, {
-    function(p) {
-      if (!dir.exists(p) && !file.exists(p)) {
-        warning(paste("Directory or file", p, "does not exist!"))
+  for (i in seq_along(autos)) {
+    cur_autos <- autos[[i]]
+
+    if (length(cur_autos) > 1) {
+      # Hierarchical paths must be named
+      if (!is_named(cur_autos)) {
+        stop("Hierarchical autos paths in your envsetup configuration file must be named", call.=FALSE)
+      }
+
+      # envsetup_environ must be used if using hierarchical paths
+      if (envsetup_environ == "") {
+        stop(paste(
+          "The envsetup_environ parameter or ENVSETUP_ENVIRON environment",
+          "variable must be used if hierarchical autos are set."
+        ), call. = FALSE)
       }
     }
-  })
+
+    if (!is.null(names(cur_autos)) && !envsetup_environ %in% names(cur_autos)
+        && envsetup_environ != ""){
+      warning(paste(
+        "The", ui_field(names(autos[i])), "autos has named",
+        "environments",  ui_field(names(cur_autos)),
+        "that do not match with the envsetup_environ parameter",
+        "or ENVSETUP_ENVIRON environment variable",
+        ui_field(envsetup_environ)
+      ), call. = FALSE)
+    }
+
+    filtered_autos <- cur_autos
+
+    if (envsetup_environ %in% names(cur_autos)) {
+      filtered_autos <-
+        cur_autos[which(names(cur_autos) == envsetup_environ):length(cur_autos)]
+    }
+
+    autos[[i]] <- filtered_autos
+  }
+
+  # Flatten the paths to collapse the names down to a single vector
+  flattened_paths <- unlist(autos)
+
+  # Check the autos before they're set
+  if (!(is.null(flattened_paths) || is.character(flattened_paths))) {
+    stop("Paths provided for autos must be directories", call. = FALSE)
+  }
+
+  # If there are any existing autos then reset them
+  detach_autos()
 
   # Now attach everything. Note that attach will put an environment behind
   # global and in front of the package namespaces. By reversing the list,
   # the search path will be set to apply the autos to the name space so that
   # the path at element one of the list is directly behind global
   walk2(
-    rev(autos_paths),
-    rev(names(autos_paths)),
+    rev(flattened_paths),
+    rev(names(flattened_paths)),
     ~ attach_auto(.x, .y)
   )
 }
@@ -79,12 +113,15 @@ set_autos <- function(..., envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 attach_auto <- function(path, name) {
   name_with_prefix <- paste0("autos:", name)
 
-
-  # if file, source it
-  if (file.exists(path) && !dir.exists(path)) {
+  if (!(dir.exists(path) || file.exists(path))) {
+    # Check if the auto actually exists
+    warning(sprintf("An autos path specified in your envsetup configuration file does not exist: %s = %s", name, path),
+         call.=FALSE)
+  } else if (file.exists(path) && !dir.exists(path)) {
+    # if file, source it
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
-    message("Attaching functions from", path, " to ", name_with_prefix)
+    message("Attaching functions from ", path, " to ", name_with_prefix)
   } else {
     # Find all the R files in the given path
     r_scripts <- list.files(path,
@@ -98,7 +135,9 @@ attach_auto <- function(path, name) {
         sys.source,
         envir = attach(NULL, name = name_with_prefix)
       )
-      message("Attaching functions from", path, " to ", name_with_prefix)
+      message("Attaching functions from ", path, " to ", name_with_prefix)
+    } else {
+      message("No files found in ", path, ". Nothing to attach.")
     }
   }
 }
@@ -107,19 +146,14 @@ attach_auto <- function(path, name) {
 #'
 #' This function will remove any autos that have been set from the search path
 #'
-#' @param names vector of names of attached packages to detach
-#'
-#' @return names found in the search path
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' detach_autos()
 #' }
-detach_autos <- function(names) {
-
-  # find auto names in search
-  in_search <- names[names %in% search()]
+detach_autos <- function() {
+  in_search <- search()[grepl("^autos:", search())]
 
   # Walk the list of autos and detach them
   walk(
@@ -146,11 +180,24 @@ detach_autos <- function(names) {
 #' library(dplyr)
 #' }
 library <- function(...) {
-  tmp <- base::library(...)
+  tmp <- withVisible(base::library(...))
 
   # Reset autos back if any are present
   if (any(grepl("^autos:", search()))) {
-    suppressMessages(set_autos(envsetup_config$autos))
+    if (!any(search() == "envsetup:paths")) {
+      warning("envsetup::rprofile was not run! Autos cannot be restored!")
+    } else {
+      stored_config <- base::get(
+        "auto_stored_envsetup_config",
+        pos = which(search() == "envsetup:paths")
+      )
+      suppressMessages(set_autos(stored_config$autos))
+    }
   }
-  tmp
+
+  if (tmp$visible) {
+    tmp$value
+  } else {
+    invisible(tmp$value)
+  }
 }
