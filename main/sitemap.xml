@@ -31,10 +31,16 @@
     <loc>https://pharmaverse.github.io/envsetup/main/reference/attach_auto.html</loc>
   </url>
   <url>
+    <loc>https://pharmaverse.github.io/envsetup/main/reference/build_from_config.html</loc>
+  </url>
+  <url>
     <loc>https://pharmaverse.github.io/envsetup/main/reference/detach_autos.html</loc>
   </url>
   <url>
     <loc>https://pharmaverse.github.io/envsetup/main/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmaverse.github.io/envsetup/main/reference/init.html</loc>
   </url>
   <url>
     <loc>https://pharmaverse.github.io/envsetup/main/reference/library.html</loc>
@@ -46,7 +52,7 @@
     <loc>https://pharmaverse.github.io/envsetup/main/reference/rprofile.html</loc>
   </url>
   <url>
-    <loc>https://pharmaverse.github.io/envsetup/main/reference/set_autos.html</loc>
+    <loc>https://pharmaverse.github.io/envsetup/main/reference/validate_config.html</loc>
   </url>
   <url>
     <loc>https://pharmaverse.github.io/envsetup/main/reference/write_path.html</loc>
