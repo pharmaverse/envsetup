@@ -30,17 +30,16 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/pharmaverse/envsetup" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -48,29 +47,33 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      
+      <small>Source: <a href="https://github.com/pharmaverse/envsetup/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.1" id="envsetup-001">envsetup 0.0.1<a class="anchor" aria-label="anchor" href="#envsetup-001"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.0.1.9000" id="envsetup-0019000">envsetup 0.0.1.9000<a class="anchor" aria-label="anchor" href="#envsetup-0019000"></a></h2>
 <div class="section level3">
-<h3 id="new-features-0-0-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-0-1"></a></h3>
+<h3 id="new-features-0-0-1-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-0-1-9000"></a></h3>
 <ul><li>
-<code><a href="../reference/init.html">init()</a></code> added to assist with setting up a project to use envsetup (#20, #21, #31)</li>
+<code><a href="../reference/init.html">init()</a></code> added to assist with setting up a project to use envsetup (<a href="https://github.com/pharmaverse/envsetup/issues/20" class="external-link">#20</a>, <a href="https://github.com/pharmaverse/envsetup/issues/21" class="external-link">#21</a>, <a href="https://github.com/pharmaverse/envsetup/issues/31" class="external-link">#31</a>)</li>
 <li>
-<code><a href="../reference/build_from_config.html">build_from_config()</a></code> added to add ability to also use config to create your directories (#25)</li>
+<code><a href="../reference/build_from_config.html">build_from_config()</a></code> added to add ability to also use config to create your directories (<a href="https://github.com/pharmaverse/envsetup/issues/25" class="external-link">#25</a>)</li>
 <li>
-<code><a href="../reference/validate_config.html">validate_config()</a></code> added to assist with creating configuration files (#23)</li>
+<code><a href="../reference/validate_config.html">validate_config()</a></code> added to assist with creating configuration files (<a href="https://github.com/pharmaverse/envsetup/issues/23" class="external-link">#23</a>)</li>
 <li>
 <code><a href="../reference/rprofile.html">rprofile()</a></code> will automatically store your configuration file in a standard location with a standard name, allowing <code><a href="../reference/library.html">library()</a></code> to use this to re-assign autos</li>
 </ul></div>
 <div class="section level3">
-<h3 id="breaking-changes-0-0-1">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-1"></a></h3>
+<h3 id="breaking-changes-0-0-1-9000">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-1-9000"></a></h3>
 <ul><li>
-<code><a href="../reference/library.html">library()</a></code> will now respect invisible return instead of always returning the list of attached packages (#24)</li>
+<code><a href="../reference/library.html">library()</a></code> will now respect invisible return instead of always returning the list of attached packages (<a href="https://github.com/pharmaverse/envsetup/issues/24" class="external-link">#24</a>)</li>
 <li>
-<code>set_autos()</code> now expects a different YAML structure for hierarchical filtering based on ENVSETUP_ENVIRON (#28)</li>
+<code>set_autos()</code> now expects a different YAML structure for hierarchical filtering based on ENVSETUP_ENVIRON (<a href="https://github.com/pharmaverse/envsetup/issues/28" class="external-link">#28</a>)</li>
 </ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-0-1-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-1-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/read_path.html">read_path()</a></code> and <code><a href="../reference/write_path.html">write_path()</a></code> will work correctly now even if the path objects exists in other environments (<a href="https://github.com/pharmaverse/envsetup/issues/36" class="external-link">#36</a>)</li></ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
