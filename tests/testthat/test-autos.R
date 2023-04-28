@@ -4,7 +4,10 @@ tmpdir <- base::tempdir()
 
 Sys.setenv(testpath = (tmpdir))
 
-system(paste0("cp ", testthat::test_path("man/testdir/*"), " ", tmpdir, " -r"))
+file.copy(testthat::test_path("man/testdir/DEV"), tmpdir, recursive = TRUE)
+file.copy(testthat::test_path("man/testdir/global"), tmpdir, recursive = TRUE)
+file.copy(testthat::test_path("man/testdir/PROD"), tmpdir, recursive = TRUE)
+file.copy(testthat::test_path("man/testdir/QA"), tmpdir, recursive = TRUE)
 
 custom_name <- config::get(
   file = testthat::test_path("man/_envsetup_testthat.yml")
