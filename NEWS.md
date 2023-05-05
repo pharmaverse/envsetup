@@ -1,4 +1,8 @@
-# envsetup 0.0.1.9000
+# envsetup 0.1.0
+
+- Minor updates to prepare for initial CRAN release (#55)
+
+# envsetup 0.0.1
 
 ## New Features
 

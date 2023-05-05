@@ -6,11 +6,49 @@
 \usage{
 detach_autos()
 }
+\value{
+Called for its side-effects.
+}
 \description{
 This function will remove any autos that have been set from the search path
 }
 \examples{
-\dontrun{
+tmpdir <- tempdir()
+print(tmpdir)
+
+# Create an example config file\
+hierarchy <- glue::glue("default:
+  paths:
+    functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
+                          PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')
+  autos:
+     my_functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
+                              PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')",
+                        .trim = FALSE)
+
+# write config
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+
+build_from_config(config)
+
+# write function to DEV
+writeLines("dev_function <- function() {print(environment(dev_function))}",
+           file.path(tmpdir, 'demo/DEV/username/project1/functions/dev_function.r'))
+
+# write function to PROD
+writeLines("prod_function <- function() {print(environment(prod_function))}",
+           file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
+
+# setup the environment
+Sys.setenv(ENVSETUP_ENVIRON = "DEV")
+rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+
+# show dev_function() and prod_function() are available and print their location
+dev_function()
+prod_function()
+
+# remove autos from search
 detach_autos()
-}
 }

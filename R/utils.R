@@ -5,7 +5,7 @@
 #'
 #' @param config configuration object from config::get()
 #'
-#' @return findings from validation checks
+#' @return Called for its side-effects. Prints findings from validation checks.
 #' @export
 #'
 #' @examples

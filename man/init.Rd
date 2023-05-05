@@ -14,13 +14,29 @@ init(project = getwd(), config_path = NULL, create_paths = NULL)
 \item{create_paths}{Logical indicating if missing paths should be created. Defaults to NULL.}
 }
 \value{
-Logical. TRUE if successful.
+Called for its side-effects.
 }
 \description{
 Initialize the R environment with envsetup
 }
 \examples{
-\dontrun{
-init()
-}
+tmpdir <- tempdir()
+print(tmpdir)
+
+# Create an example config file\
+hierarchy <- glue::glue("default:
+ paths:
+  data: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/data')}',
+                   PROD = '{file.path(tmpdir, 'demo/PROD/project1/data')}')
+  output: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/output')}',
+                     PROD = '{file.path(tmpdir, 'demo/PROD/project1/output')}')
+  programs: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/programs')}',
+                       PROD = '{file.path(tmpdir, 'demo/PROD/project1/programs')}');",
+                        .trim = FALSE)
+
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+init(project = tmpdir,
+     config_path = file.path(tmpdir, "hierarchy.yml"),
+     create_paths = TRUE)
 }

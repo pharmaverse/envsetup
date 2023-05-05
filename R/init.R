@@ -6,12 +6,28 @@
 #' @export
 #' @importFrom usethis ui_yeah ui_oops ui_info ui_done
 #' @importFrom config get
-#' @return Logical. TRUE if successful.
+#' @return Called for its side-effects.
 #'
 #' @examples
-#' \dontrun{
-#' init()
-#' }
+#' tmpdir <- tempdir()
+#' print(tmpdir)
+#'
+#' # Create an example config file\
+#' hierarchy <- glue::glue("default:
+#'  paths:
+#'   data: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/data')}',
+#'                    PROD = '{file.path(tmpdir, 'demo/PROD/project1/data')}')
+#'   output: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/output')}',
+#'                      PROD = '{file.path(tmpdir, 'demo/PROD/project1/output')}')
+#'   programs: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/programs')}',
+#'                        PROD = '{file.path(tmpdir, 'demo/PROD/project1/programs')}');",
+#'                         .trim = FALSE)
+#'
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' init(project = tmpdir,
+#'      config_path = file.path(tmpdir, "hierarchy.yml"),
+#'      create_paths = TRUE)
 init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
 
   create_config <- FALSE

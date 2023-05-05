@@ -10,7 +10,7 @@ validate_config(config)
 \item{config}{configuration object from config::get()}
 }
 \value{
-findings from validation checks
+Called for its side-effects. Prints findings from validation checks.
 }
 \description{
 A helper function to help troubleshoot common problems that can occur when
