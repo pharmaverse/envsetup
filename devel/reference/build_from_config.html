@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">envsetup</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,13 +30,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://pharmaverse.github.io/envsetup/devel">devel</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -82,9 +75,7 @@ Leave as NULL if using absolute paths.  Set to working directory if using relati
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>print directory as a tree-like format from <code><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">fs::dir_tree()</a></code></p>
-
-
+<p>Called for its side-effects. The directories build print as a tree-like format from <code><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">fs::dir_tree()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -108,8 +99,8 @@ Leave as NULL if using absolute paths.  Set to working directory if using relati
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">build_from_config</span><span class="op">(</span><span class="va">config</span>, <span class="va">tmpdir</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Directories built</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">/tmp/Rtmp8kCxaX</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├── <span style="color: #0000BB; font-weight: bold;">bslib-f8738d5a69cf9e017963174ab9cac1c4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpOfo7np</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├── <span style="color: #0000BB; font-weight: bold;">bslib-d0dbbabcc4a8d6b49c274792cfce45b2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├── <span style="color: #0000BB; font-weight: bold;">demo</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │   ├── <span style="color: #0000BB; font-weight: bold;">DEV</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │   │   └── <span style="color: #0000BB; font-weight: bold;">username</span></span>
@@ -124,7 +115,7 @@ Leave as NULL if using absolute paths.  Set to working directory if using relati
 <span class="r-out co"><span class="r-pr">#&gt;</span> │           └── <span style="color: #0000BB; font-weight: bold;">programs</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├── <span style="color: #0000BB; font-weight: bold;">docs</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├── <span style="color: #0000BB; font-weight: bold;">downlit</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └── <span style="color: #0000BB; font-weight: bold;">fileb51b677ba5dc</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └── <span style="color: #0000BB; font-weight: bold;">fileb5da415d6ca6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ├── <span style="color: #0000BB; font-weight: bold;">devel</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     │   ├── <span style="color: #0000BB; font-weight: bold;">deps</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     │   │   ├── <span style="color: #0000BB; font-weight: bold;">bootstrap-5.2.2</span></span>
