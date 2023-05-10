@@ -27,6 +27,10 @@ configurations that can be used for multiple or all projects.
 
 ## Installation
 
+```
+install.packages("envsetup")
+```
+
 ### Development version
 
 ```
