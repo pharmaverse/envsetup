@@ -23,16 +23,24 @@ Initialize the R environment with envsetup
 tmpdir <- tempdir()
 print(tmpdir)
 
+# account for windows
+if (Sys.info()['sysname'] == "Windows") {
+  tmpdir <- gsub("\\\\", "\\\\\\\\", tmpdir, fixed = TRUE)
+}
+
 # Create an example config file\
-hierarchy <- glue::glue("default:
- paths:
-  data: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/data')}',
-                   PROD = '{file.path(tmpdir, 'demo/PROD/project1/data')}')
-  output: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/output')}',
-                     PROD = '{file.path(tmpdir, 'demo/PROD/project1/output')}')
-  programs: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/programs')}',
-                       PROD = '{file.path(tmpdir, 'demo/PROD/project1/programs')}');",
-                        .trim = FALSE)
+hierarchy <- paste0("default:
+  paths:
+    data: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))
+    output: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'output'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'output'))
+    programs: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'programs'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'programs'))")
+
 
 writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
 

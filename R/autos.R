@@ -142,15 +142,37 @@ attach_auto <- function(path, name) {
 #' tmpdir <- tempdir()
 #' print(tmpdir)
 #'
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
+#' }
+#'
 #' # Create an example config file\
-#' hierarchy <- glue::glue("default:
+#' hierarchy <- paste0("default:
 #'   paths:
-#'     functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
-#'                           PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')
+#'     functions: !expr list(DEV = file.path('",tmpdir,"',
+#'                                           'demo',
+#'                                           'DEV',
+#'                                           'username',
+#'                                           'project1',
+#'                                           'functions'),
+#'                           PROD = file.path('",tmpdir,"',
+#'                                            'demo',
+#'                                            'PROD',
+#'                                            'project1',
+#'                                            'functions'))
 #'   autos:
-#'      my_functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
-#'                               PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')",
-#'                         .trim = FALSE)
+#'      my_functions: !expr list(DEV = file.path('",tmpdir,"',
+#'                                               'demo',
+#'                                               'DEV',
+#'                                               'username',
+#'                                               'project1',
+#'                                               'functions'),
+#'                               PROD = file.path('",tmpdir,"',
+#'                                                'demo',
+#'                                                'PROD',
+#'                                                'project1',
+#'                                                'functions'))")
 #'
 #' # write config
 #' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
@@ -161,11 +183,11 @@ attach_auto <- function(path, name) {
 #'
 #' # write function to DEV
 #' writeLines("dev_function <- function() {print(environment(dev_function))}",
-#'            file.path(tmpdir, 'demo/DEV/username/project1/functions/dev_function.r'))
+#'            file.path(tmpdir, 'demo', 'DEV', 'username', 'project1', 'functions', 'dev_function.r'))
 #'
 #' # write function to PROD
 #' writeLines("prod_function <- function() {print(environment(prod_function))}",
-#'            file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
+#'            file.path(tmpdir, 'demo', 'PROD', 'project1', 'functions', 'prod_function.r'))
 #'
 #' # setup the environment
 #' Sys.setenv(ENVSETUP_ENVIRON = "DEV")
@@ -202,21 +224,28 @@ detach_autos <- function() {
 #'
 #' @examples
 #' # Simple example
-#' library(dplyr)
+#' library(purrr)
 #'
 #' # Illustrative example to show that autos will always remain above attached libraries
 #' tmpdir <- tempdir()
 #' print(tmpdir)
 #'
-#' # Create an example config file\
-#' hierarchy <- glue::glue("default:
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
+#' }
+#'
+#' # Create an example config file
+#' hierarchy <- paste0("default:
 #'   paths:
-#'     functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
-#'                           PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')
+#'     functions: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))
 #'   autos:
-#'      my_functions: !expr list(DEV = '{file.path(tmpdir, 'demo/DEV/username/project1/functions')}',
-#'                               PROD = '{file.path(tmpdir, 'demo/PROD/project1/functions')}')",
-#'                         .trim = FALSE)
+#'     my_functions: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))")
+#'
 #'
 #' # write config
 #' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
@@ -234,15 +263,16 @@ detach_autos <- function() {
 #'            file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
 #'
 #' # setup the environment
+#' Sys.setenv(ENVSETUP_ENVIRON = "DEV")
 #' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
 #'
 #' # show search
 #' search()
 #'
-#' # now attach dplyr
-#' library(dplyr)
+#' # now attach purrr
+#' library(purrr)
 #'
-#' # see autos are still above dplyr in the search path
+#' # see autos are still above purrr in the search path
 #' search()
 library <- function(...) {
   tmp <- withVisible(base::library(...))

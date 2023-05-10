@@ -37,11 +37,17 @@ we search dev and prod. If in prod, we only search prod.
 \examples{
 tmpdir <- tempdir()
 
+# account for windows
+if (Sys.info()['sysname'] == "Windows") {
+  tmpdir <- gsub("\\\\", "\\\\\\\\", tmpdir, fixed = TRUE)
+}
+
 # add config for just the data location
-hierarchy <- glue::glue("default:
+hierarchy <- paste0("default:
   paths:
-    data: !expr list(DEV = '{tmpdir}/demo/DEV/username/project1/data',
-                     PROD = '{tmpdir}/demo/PROD/project1/data')", .trim = FALSE)
+    data: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))")
 
 # write config file to temp directory
 writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
