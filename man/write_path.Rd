@@ -26,7 +26,34 @@ Paths will be filtered to produce the lowest available level from a hierarchy
 of paths based on envsetup_environ
 }
 \examples{
-\dontrun{
-write_path(a_in, "PROD")
+tmpdir <- tempdir()
+
+# account for windows
+if (Sys.info()['sysname'] == "Windows") {
+  tmpdir <- gsub("\\\\", "\\\\\\\\", tmpdir, fixed = TRUE)
 }
+
+# add config for just the data location
+hierarchy <- paste0("default:
+  paths:
+    data: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))")
+
+# write config file to temp directory
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+
+# build folder structure from config
+build_from_config(config)
+
+# setup environment based on config
+rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+
+# find location to write mtcars.rds
+write_path(data, "mtcars.rds")
+
+# save data in data folder using write_path
+saveRDS(mtcars, write_path(data, "mtcars.rds"))
 }

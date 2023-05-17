@@ -16,13 +16,40 @@
 #'
 #' @importFrom rlang quo_get_expr enquo is_string
 #'
-#' @return path of the first place the file is found
+#' @return string containing the path of the first directory the file is found
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' read_path(a_in, "adsl.sas7bdat")
+#' tmpdir <- tempdir()
+#'
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
 #' }
+#'
+#' # add config for just the data location
+#' hierarchy <- paste0("default:
+#'   paths:
+#'     data: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))")
+#'
+#' # write config file to temp directory
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+#'
+#' # build folder structure from config
+#' build_from_config(config)
+#'
+#' # setup environment based on config
+#' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+#'
+#' # place data in prod data folder
+#' saveRDS(mtcars, file.path(tmpdir, "demo/PROD/project1/data/mtcars.rds"))
+#'
+#' # find the location of mtcars.rds
+#' read_path(data, "mtcars.rds")
 read_path <- function(lib,
                       filename,
                       full.path = TRUE,
@@ -105,9 +132,36 @@ read_path <- function(lib,
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' write_path(a_in, "PROD")
+#' tmpdir <- tempdir()
+#'
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
 #' }
+#'
+#' # add config for just the data location
+#' hierarchy <- paste0("default:
+#'   paths:
+#'     data: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))")
+#'
+#' # write config file to temp directory
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+#'
+#' # build folder structure from config
+#' build_from_config(config)
+#'
+#' # setup environment based on config
+#' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+#'
+#' # find location to write mtcars.rds
+#' write_path(data, "mtcars.rds")
+#'
+#' # save data in data folder using write_path
+#' saveRDS(mtcars, write_path(data, "mtcars.rds"))
 write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
   # examine lib to ensure it's not a string
   # if it's a string, you end up with an incorrect path
@@ -171,7 +225,7 @@ object_in_path <- function(path, object) {
 #' @importFrom fs dir_tree
 #' @importFrom usethis ui_done
 #'
-#' @return print directory as a tree-like format from `fs::dir_tree()`
+#' @return Called for its side-effects. The directories build print as a tree-like format from `fs::dir_tree()`.
 #' @export
 #'
 #' @examples

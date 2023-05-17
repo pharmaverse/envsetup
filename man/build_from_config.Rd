@@ -13,7 +13,7 @@ build_from_config(config, root = NULL)
 Leave as NULL if using absolute paths.  Set to working directory if using relative paths.}
 }
 \value{
-print directory as a tree-like format from \code{fs::dir_tree()}
+Called for its side-effects. The directories build print as a tree-like format from \code{fs::dir_tree()}.
 }
 \description{
 Build directory structure from a configuration file

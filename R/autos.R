@@ -11,18 +11,12 @@
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
 #'
-#'
-#' @return Directory paths of the R autos
+#' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
 #'
 #' @importFrom purrr walk walk2
 #' @importFrom rlang is_named
 #' @importFrom usethis ui_field
 #' @noRd
-#'
-#' @examples
-#' \dontrun{
-#' set_autos(envsetup_config$autos)
-#' }
 set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   # Must be named list
@@ -100,16 +94,11 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 #' search path. This function should not be called directly. To apply autos,
 #' use `set_autos()`.
 #'
-#'
 #' @param path Directory path
 #' @param name Directory name
+#' @noRd
 #'
-#' @return Environment containing functions
-#'
-#' @examples
-#' \dontrun{
-#' attach_auto("./my_funcs", "my_autos")
-#' }
+#' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
 attach_auto <- function(path, name) {
   name_with_prefix <- paste0("autos:", name)
 
@@ -146,12 +135,70 @@ attach_auto <- function(path, name) {
 #'
 #' This function will remove any autos that have been set from the search path
 #'
+#' @return Called for its side-effects.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' detach_autos()
+#' tmpdir <- tempdir()
+#' print(tmpdir)
+#'
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
 #' }
+#'
+#' # Create an example config file\
+#' hierarchy <- paste0("default:
+#'   paths:
+#'     functions: !expr list(DEV = file.path('",tmpdir,"',
+#'                                           'demo',
+#'                                           'DEV',
+#'                                           'username',
+#'                                           'project1',
+#'                                           'functions'),
+#'                           PROD = file.path('",tmpdir,"',
+#'                                            'demo',
+#'                                            'PROD',
+#'                                            'project1',
+#'                                            'functions'))
+#'   autos:
+#'      my_functions: !expr list(DEV = file.path('",tmpdir,"',
+#'                                               'demo',
+#'                                               'DEV',
+#'                                               'username',
+#'                                               'project1',
+#'                                               'functions'),
+#'                               PROD = file.path('",tmpdir,"',
+#'                                                'demo',
+#'                                                'PROD',
+#'                                                'project1',
+#'                                                'functions'))")
+#'
+#' # write config
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+#'
+#' build_from_config(config)
+#'
+#' # write function to DEV
+#' writeLines("dev_function <- function() {print(environment(dev_function))}",
+#'            file.path(tmpdir, 'demo', 'DEV', 'username', 'project1', 'functions', 'dev_function.r'))
+#'
+#' # write function to PROD
+#' writeLines("prod_function <- function() {print(environment(prod_function))}",
+#'            file.path(tmpdir, 'demo', 'PROD', 'project1', 'functions', 'prod_function.r'))
+#'
+#' # setup the environment
+#' Sys.setenv(ENVSETUP_ENVIRON = "DEV")
+#' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+#'
+#' # show dev_function() and prod_function() are available and print their location
+#' dev_function()
+#' prod_function()
+#'
+#' # remove autos from search
+#' detach_autos()
 detach_autos <- function() {
   in_search <- search()[grepl("^autos:", search())]
 
@@ -176,9 +223,57 @@ detach_autos <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' library(dplyr)
+#' # Simple example
+#' library(purrr)
+#'
+#' # Illustrative example to show that autos will always remain above attached libraries
+#' tmpdir <- tempdir()
+#' print(tmpdir)
+#'
+#' # account for windows
+#' if (Sys.info()['sysname'] == "Windows") {
+#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
 #' }
+#'
+#' # Create an example config file
+#' hierarchy <- paste0("default:
+#'   paths:
+#'     functions: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))
+#'   autos:
+#'     my_functions: !expr list(
+#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))")
+#'
+#'
+#' # write config
+#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+#'
+#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+#'
+#' build_from_config(config)
+#'
+#' # write function to DEV
+#' writeLines("dev_function <- function() {print(environment(dev_function))}",
+#'            file.path(tmpdir, 'demo/DEV/username/project1/functions/dev_function.r'))
+#'
+#' # write function to PROD
+#' writeLines("prod_function <- function() {print(environment(prod_function))}",
+#'            file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
+#'
+#' # setup the environment
+#' Sys.setenv(ENVSETUP_ENVIRON = "DEV")
+#' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+#'
+#' # show search
+#' search()
+#'
+#' # now attach purrr
+#' library(purrr)
+#'
+#' # see autos are still above purrr in the search path
+#' search()
 library <- function(...) {
   tmp <- withVisible(base::library(...))
 

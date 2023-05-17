@@ -10,13 +10,27 @@ rprofile(config)
 \item{config}{configuration object from config::get()}
 }
 \value{
-Directory paths of the R autos
+Called for its side effects.  Directory paths and autos are added to the search path based on your config.
 }
 \description{
 Function used to pass through code to the .Rprofile
 }
 \examples{
-\dontrun{
-rprofile(config::get("path/to/config/_envsetup.yml"))
-}
+# temp location to store configuration files
+tmpdir <- tempdir()
+print(tmpdir)
+
+# Create an example config file
+hierarchy <- "default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data',
+                     PROD = '/demo/PROD/project1/data')
+    output: !expr list(DEV = '/demo/DEV/username/project1/output',
+                       PROD = '/demo/PROD/project1/output')
+    programs: !expr list(DEV = '/demo/DEV/username/project1/programs',
+                         PROD = '/demo/PROD/project1/programs')"
+
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
 }

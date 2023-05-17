@@ -23,7 +23,7 @@ default values comes from the value in the system variable ENVSETUP_ENVIRON
 which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")}
 }
 \value{
-path of the first place the file is found
+string containing the path of the first directory the file is found
 }
 \description{
 Check each environment for the file and return the path to the first.
@@ -35,7 +35,34 @@ production area (prod), and the code is executing in the dev environment,
 we search dev and prod. If in prod, we only search prod.
 }
 \examples{
-\dontrun{
-read_path(a_in, "adsl.sas7bdat")
+tmpdir <- tempdir()
+
+# account for windows
+if (Sys.info()['sysname'] == "Windows") {
+  tmpdir <- gsub("\\\\", "\\\\\\\\", tmpdir, fixed = TRUE)
 }
+
+# add config for just the data location
+hierarchy <- paste0("default:
+  paths:
+    data: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'data'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'data'))")
+
+# write config file to temp directory
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+
+# build folder structure from config
+build_from_config(config)
+
+# setup environment based on config
+rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+
+# place data in prod data folder
+saveRDS(mtcars, file.path(tmpdir, "demo/PROD/project1/data/mtcars.rds"))
+
+# find the location of mtcars.rds
+read_path(data, "mtcars.rds")
 }

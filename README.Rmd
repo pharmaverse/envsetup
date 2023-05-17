@@ -38,6 +38,10 @@ Both are implemented using a configuration file to allow easy, custom configurat
 
 ## Installation
 
+```{r eval = FALSE}
+install.packages("envsetup")
+```
+
 ### Development version
 
 ```{r eval = FALSE}

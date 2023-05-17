@@ -15,7 +15,55 @@ This wrapper around \code{base::library()} will reset the autos after each new
 library is attached to ensure this behavior is followed.
 }
 \examples{
-\dontrun{
-library(dplyr)
+# Simple example
+library(purrr)
+
+# Illustrative example to show that autos will always remain above attached libraries
+tmpdir <- tempdir()
+print(tmpdir)
+
+# account for windows
+if (Sys.info()['sysname'] == "Windows") {
+  tmpdir <- gsub("\\\\", "\\\\\\\\", tmpdir, fixed = TRUE)
 }
+
+# Create an example config file
+hierarchy <- paste0("default:
+  paths:
+    functions: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))
+  autos:
+    my_functions: !expr list(
+      DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
+      PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))")
+
+
+# write config
+writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
+
+config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
+
+build_from_config(config)
+
+# write function to DEV
+writeLines("dev_function <- function() {print(environment(dev_function))}",
+           file.path(tmpdir, 'demo/DEV/username/project1/functions/dev_function.r'))
+
+# write function to PROD
+writeLines("prod_function <- function() {print(environment(prod_function))}",
+           file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
+
+# setup the environment
+Sys.setenv(ENVSETUP_ENVIRON = "DEV")
+rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
+
+# show search
+search()
+
+# now attach purrr
+library(purrr)
+
+# see autos are still above purrr in the search path
+search()
 }
