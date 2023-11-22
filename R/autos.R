@@ -210,14 +210,21 @@ detach_autos <- function() {
   )
 }
 
-#' Wrapper around library to re-set autos
+#' Wrapper around library to place packages after any current autos
 #'
 #' Autos need to immediately follow the global environment.
-#' This wrapper around `base::library()` will reset the autos after each new
-#' library is attached to ensure this behavior is followed.
+#' This wrapper around `base::library()` will position any
+#' attached packages in the earliest position on the
+#' search path currently occupied by a package environment,
+#' guaranteeing newly loaded packages appear before previously
+#' loaded packages but after any currently attached non-packages.
 #'
 #' @usage NULL
 #' @param ... pass directly through to base::library
+#' @param pos see base::library. NULL (the default) is taken
+#' to mean the earliest position of a package environment
+#' within the current search path. If non-null, underlying
+#' behavior of base::library is respected.
 #'
 #' @return returns (invisibly) the list of attached packages
 #' @export
@@ -274,25 +281,14 @@ detach_autos <- function() {
 #'
 #' # see autos are still above purrr in the search path
 #' search()
-library <- function(...) {
-  tmp <- withVisible(base::library(...))
-
-  # Reset autos back if any are present
-  if (any(grepl("^autos:", search()))) {
-    if (!any(search() == "envsetup:paths")) {
-      warning("envsetup::rprofile was not run! Autos cannot be restored!")
-    } else {
-      stored_config <- base::get(
-        "auto_stored_envsetup_config",
-        pos = which(search() == "envsetup:paths")
-      )
-      suppressMessages(set_autos(stored_config$autos))
-    }
+library <- function(..., pos = NULL) {
+  if(is.null(pos)) {
+      ## we have at least one package loaded (envsetup itself)
+      ## use earliest current package position as place to
+      ## attach all future packages, regardless of what
+      ## envsetup, devtools, or anything else has put
+      ## in front of them
+      pos <- min(grep("^package:", search()))
   }
-
-  if (tmp$visible) {
-    tmp$value
-  } else {
-    invisible(tmp$value)
-  }
+  base::library(..., pos = pos)
 }

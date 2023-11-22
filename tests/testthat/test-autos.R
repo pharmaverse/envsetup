@@ -24,12 +24,14 @@ test_that("Autos set and test_dev from highest level appears correctly", {
   expect_equal(c(test_global()), c("Test of global autos"))
 })
 
+#' @editor Gabe Becker
+#' @editDate 2023-11-22
 test_that("library returns invisibly", {
   # Detatch envsetup:paths if it exists
   if (any(search() == "envsetup:paths")) {
     detach("envsetup:paths")
   }
-  expect_warning(suppressPackageStartupMessages(library("purrr")), "envsetup::rprofile was not run")
+  expect_silent(expect_invisible(suppressPackageStartupMessages(library("purrr"))))
   suppressMessages(rprofile(custom_name))
   detach("package:purrr")
 })
