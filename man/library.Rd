@@ -2,17 +2,25 @@
 % Please edit documentation in R/autos.R
 \name{library}
 \alias{library}
-\title{Wrapper around library to re-set autos}
+\title{Wrapper around library to place packages after any current autos}
 \arguments{
 \item{...}{pass directly through to base::library}
+
+\item{pos}{see base::library. NULL (the default) is taken
+to mean the earliest position of a package environment
+within the current search path. If non-null, underlying
+behavior of base::library is respected.}
 }
 \value{
 returns (invisibly) the list of attached packages
 }
 \description{
 Autos need to immediately follow the global environment.
-This wrapper around \code{base::library()} will reset the autos after each new
-library is attached to ensure this behavior is followed.
+This wrapper around \code{base::library()} will position any
+attached packages in the earliest position on the
+search path currently occupied by a package environment,
+guaranteeing newly loaded packages appear before previously
+loaded packages but after any currently attached non-packages.
 }
 \examples{
 # Simple example
