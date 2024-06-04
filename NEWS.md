@@ -1,3 +1,8 @@
+# envsetup 0.2.0
+
+- `library()` will no longer actively reset autos, instead placing newly attached packages in the correct position that respects existing autos (#59)
+
+
 # envsetup 0.1.0
 
 - Minor updates to prepare for initial CRAN release (#55)
