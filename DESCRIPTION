@@ -9,12 +9,12 @@ Authors@R: c(
     person("Atorus Research LLC", role = "cph")
   )
 Description: The purpose of this package is to support the setup the R environment.  
-    The two main features are `autos`, to automatically source files and/or 
-    directories into your environment, and `paths` to consistently set path objects 
+    The two main features are 'autos', to automatically source files and/or 
+    directories into your environment, and 'paths' to consistently set path objects 
     across projects for input and output. Both are implemented using a configuration 
     file to allow easy, custom configurations that can be used for multiple 
     or all projects.
-License: Apache License 2.0 | file LICENSE
+License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1

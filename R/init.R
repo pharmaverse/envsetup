@@ -1,6 +1,6 @@
 #' Initialize the R environment with envsetup
 #'
-#' @param project Character. The path to the project directory. Defaults to the current working directory.
+#' @param project Character. The path to the project directory.
 #' @param config_path Character. The path of the config file. Defaults to NULL.
 #' @param create_paths Logical indicating if missing paths should be created. Defaults to NULL.
 #' @export
@@ -36,7 +36,7 @@
 #' init(project = tmpdir,
 #'      config_path = file.path(tmpdir, "hierarchy.yml"),
 #'      create_paths = TRUE)
-init <- function(project = getwd(), config_path = NULL, create_paths = NULL) {
+init <- function(project, config_path = NULL, create_paths = NULL) {
 
   create_config <- FALSE
   config_found <- FALSE

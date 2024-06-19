@@ -2,7 +2,7 @@
 
     Code
       validate_config(config::get(file = path))
-    Message <rlang_message>
+    Message
       v paths are specified as part of your configuration
       i no hierarchical paths found
 
@@ -10,7 +10,7 @@
 
     Code
       validate_config(config::get(file = path))
-    Message <rlang_message>
+    Message
       v paths are specified as part of your configuration
       v hierarchal paths found for:
         data
@@ -21,7 +21,7 @@
 
     Code
       validate_config(config::get(file = path))
-    Message <rlang_message>
+    Message
       v paths are specified as part of your configuration
       v hierarchal paths found for:
         data
@@ -35,6 +35,6 @@
 
     Code
       validate_config(config::get(file = path))
-    Message <rlang_message>
+    Message
       i no paths are specified as part of your configuration, skipping path valiation
 
