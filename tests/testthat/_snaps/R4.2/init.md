@@ -2,7 +2,7 @@
 
     Code
       init(init_tmpdir, config_path, create_paths = FALSE)
-    Message <rlang_message>
+    Message
       v Configuration file found!
       i The following paths in your configuration do not exist:
         /DEV/username/project1/data
@@ -21,7 +21,7 @@
 
     Code
       init(init_tmpdir, config_path, create_paths = FALSE)
-    Message <rlang_message>
+    Message
       v Configuration file found!
       i The following paths in your configuration do not exist:
         /DEV/username/project1/data
@@ -40,7 +40,7 @@
 
     Code
       init(init_tmpdir, config_path, create_paths = FALSE)
-    Message <rlang_message>
+    Message
       v Configuration file found!
       i The following paths in your configuration do not exist:
         /DEV/username/project1/data
