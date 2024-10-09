@@ -4,10 +4,10 @@
 \alias{init}
 \title{Initialize the R environment with envsetup}
 \usage{
-init(project = getwd(), config_path = NULL, create_paths = NULL)
+init(project, config_path = NULL, create_paths = NULL)
 }
 \arguments{
-\item{project}{Character. The path to the project directory. Defaults to the current working directory.}
+\item{project}{Character. The path to the project directory.}
 
 \item{config_path}{Character. The path of the config file. Defaults to NULL.}
 

@@ -1,3 +1,10 @@
+## Resubmission
+This is a resubmission.  In this version I have:
+
+* Corrected quotations in the description.
+* Removed the LICENSE file, as there are no additional restrictions.
+* Removed the default write path in R/init.R.
+
 ## envsetup 0.1.0
 
 Tested on RHEL 7, RHEL 8, GitHub Action and RHub.
