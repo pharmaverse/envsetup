@@ -155,11 +155,11 @@ writeLines(
   paste0(
 "default:
   paths:
-    data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
-    output: '",dir,"/demo/DEV/username/project1/output'
-    programs: '",dir,"/demo/DEV/username/project1/programs'
+    data: !expr list(DEV = '", dir,"/demo/DEV/username/project1/data', PROD = '", dir, "/demo/PROD/project1/data')
+    output: '", dir, "/demo/DEV/username/project1/output'
+    programs: '", dir, "/demo/DEV/username/project1/programs'
     envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"
-  ), file_conn)
+ ), file_conn)
 close(file_conn)
 ```
 

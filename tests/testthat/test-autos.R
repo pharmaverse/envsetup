@@ -45,13 +45,16 @@ test_that("Autos validation from yml happens correctly", {
 
   # Hierarchical list is named
   expect_error(
-    set_autos(list(project = c("path1", "path2"))), "Hierarchical autos paths in your envsetup configuration file must be named"
+    set_autos(list(project = c("path1", "path2"))),
+    "Hierarchical autos paths in your envsetup configuration file must be named"
   )
 
   # Paths are characters
-  expect_error(set_autos(list(global = 1)), "Paths provided for autos must be directories")
+  expect_error(set_autos(list(global = 1)),
+               "Paths provided for autos must be directories")
 
-  expect_warning(set_autos(list(x = "/bad/path/")), "An autos path specified in your envsetup configuration file does not exist")
+  expect_warning(set_autos(list(x = "/bad/path/")),
+                 "An autos path specified in your envsetup configuration file does not exist")
 })
 
 # Detatch and re-setup for QA now
@@ -108,16 +111,17 @@ test_that("Autos no longer exist when detached", {
 
 test_that("the configuration can be named anything and library will
           reattach the autos correctly", {
-  suppressMessages(rprofile(custom_name))
+    suppressMessages(rprofile(custom_name))
 
-  expect_invisible(suppressPackageStartupMessages(library("purrr")))
+    expect_invisible(suppressPackageStartupMessages(library("purrr")))
 
-  purrr_location <- which(search() == "package:purrr")
-  autos_locatios <- which(grepl("^autos:", search()))
+    purrr_location <- which(search() == "package:purrr")
+    autos_locatios <- which(grepl("^autos:", search()))
 
-  expect_true(all(purrr_location > autos_locatios))
-  detach("package:purrr")
-})
+    expect_true(all(purrr_location > autos_locatios))
+    detach("package:purrr")
+  }
+)
 
 
 test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environments in autos", {

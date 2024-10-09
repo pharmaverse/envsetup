@@ -86,11 +86,16 @@ test_that("1.1", {
 #' @editor Aidan Ceney
 #' @editDate 2022-05-12
 test_that("1.2", {
-  expect_error(readr::read_csv(read_path(data,
-    "iris.csv",
-    full.path = TRUE,
-    envsetup_environ = "PROD"
-  )))
+  expect_error(
+    readr::read_csv(
+      read_path(
+        data,
+        "iris.csv",
+        full.path = TRUE,
+        envsetup_environ = "PROD"
+      )
+    )
+  )
 })
 
 #' @editor Aidan Ceney
