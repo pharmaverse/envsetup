@@ -8,6 +8,7 @@ file.copy(testthat::test_path("man/testdir/DEV"), tmpdir, recursive = TRUE)
 file.copy(testthat::test_path("man/testdir/global"), tmpdir, recursive = TRUE)
 file.copy(testthat::test_path("man/testdir/PROD"), tmpdir, recursive = TRUE)
 file.copy(testthat::test_path("man/testdir/QA"), tmpdir, recursive = TRUE)
+dir.create(file.path(tmpdir, "returns_null"))
 
 custom_name <- config::get(
   file = testthat::test_path("man/_envsetup_testthat.yml")
@@ -124,4 +125,16 @@ test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environme
   withr::local_envvar(ENVSETUP_ENVIRON = "bad_name")
 
   expect_snapshot(suppressMessages(rprofile(custom_name)), variant = r_version())
+})
+
+
+#' @editor Nick Masel
+#' @editDate 2024-10-24
+detach_autos()
+Sys.setenv(ENVSETUP_ENVIRON = "QA")
+null_test <- config::get(
+  file = testthat::test_path("man/_envsetup_testthat_null.yml")
+)
+test_that("NULL paths do not throw an error", {
+  expect_no_error(set_autos(null_test$autos))
 })

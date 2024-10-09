@@ -17,7 +17,7 @@ Description: The purpose of this package is to support the setup the R environme
 License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     config,
     fs,

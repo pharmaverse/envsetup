@@ -1,0 +1,33 @@
+default:
+  project_path: !expr Sys.setenv(ENVSETUP_PROJECT_PATH = Sys.getenv("testpath"));
+                      Sys.getenv("testpath")
+  paths:
+    data: !expr list(
+      DEV = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "data"),
+      QA = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "data"),
+      PROD = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "data")
+      )
+    programs: !expr list(
+      DEV = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "programs"),
+      QA = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "programs"),
+      PROD = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "programs")
+      )
+    functions: !expr list(
+      DEV = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "functions"),
+      QA = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "functions"),
+      PROD = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "functions")
+      )
+    output: !expr list(
+      DEV = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "DEV", "output"),
+      QA = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "QA", "output"),
+      PROD = file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "PROD", "output")
+      )
+  autos:
+    projects: !expr NULL
+    global: !expr file.path(Sys.getenv("ENVSETUP_PROJECT_PATH"), "global", "functions")
+    envre: !expr file.path(
+      Sys.getenv("ENVSETUP_PROJECT_PATH"),
+      "PROD",
+      "functions",
+      "envre.R"
+      )

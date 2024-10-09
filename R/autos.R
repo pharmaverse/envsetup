@@ -24,6 +24,11 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
     stop("Paths for autos in your envsetup configuration file must be named", call.=FALSE)
   }
 
+  # remove NULL before further processing
+  # NULL is expected for hierarchical paths when running in an environment
+  # after the first level of the hierarchy
+  autos <- autos[!vapply(autos, is.null, FALSE)]
+
   for (i in seq_along(autos)) {
     cur_autos <- autos[[i]]
 
