@@ -1,7 +1,10 @@
+# envsetup 0.2.1
+
+- `set_autos()` will how handle NULL hierarchical paths (#66)
+
 # envsetup 0.2.0
 
 - `library()` will no longer actively reset autos, instead placing newly attached packages in the correct position that respects existing autos (#59)
-
 
 # envsetup 0.1.0
 

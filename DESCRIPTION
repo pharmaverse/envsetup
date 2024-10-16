@@ -1,6 +1,6 @@
 Package: envsetup
 Title: Support the Setup of the R Environment for Clinical Trial Programming Workflows
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person("Nicholas", "Masel", email = "nmasel@its.jnj.com", role = c("aut", "cre")),
     person("Mike", "Stackhouse", email = "mike.stackhouse@atorusresearch.com", role = c("aut"), comment = c(ORCID = "0000-0001-6030-723X")),
@@ -17,7 +17,7 @@ Description: The purpose of this package is to support the setup the R environme
 License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     config,
     fs,
