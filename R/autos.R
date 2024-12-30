@@ -141,22 +141,6 @@ attach_auto <- function(path, name) {
 
     message("Attaching functions from ", path, " to ", name_with_prefix)
   } else {
-    # # Find all the R files in the given path
-    # r_scripts <- list.files(path,
-    #   pattern = ".r$",
-    #   ignore.case = TRUE,
-    #   full.names = TRUE
-    # )
-    #
-    # # check if functions used @include to define function dependencies
-    # # if so, collate functions prior to sourcing
-    # collated_func <- roxygen2:::generate_collate(path)
-    #
-    # if (is.null(collated_func)) {
-    #   collated_r_scripts <- r_scripts
-    # } else {
-    #   collated_r_scripts <- sapply(1:length(collated_func), function(x) file.path(path, collated_func[[x]]))
-    # }
     collated_r_scripts <- collate_func(path)
 
     if (!identical(collated_r_scripts, character(0))) {
