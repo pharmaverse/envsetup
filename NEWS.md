@@ -1,6 +1,7 @@
 # envsetup 0.2.1
 
-- `set_autos()` will how handle NULL hierarchical paths (#66)
+- `set_autos()` will now handle NULL hierarchical paths (#66)
+- `set_autos()` will account for using `@include` to define function dependencies (#70)
 
 # envsetup 0.2.0
 

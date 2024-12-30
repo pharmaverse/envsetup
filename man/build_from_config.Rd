@@ -7,7 +7,7 @@
 build_from_config(config, root = NULL)
 }
 \arguments{
-\item{config}{configuration object from config::get() containing paths#'}
+\item{config}{configuration object from config::get() containing paths}
 
 \item{root}{root directory to build from.
 Leave as NULL if using absolute paths.  Set to working directory if using relative paths.}
