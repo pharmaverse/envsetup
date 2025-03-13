@@ -25,6 +25,34 @@ test_that("Autos set and test_dev from highest level appears correctly", {
   expect_equal(c(test_global()), c("Test of global autos"))
 })
 
+
+#' @editor Nick Masel
+#' @editDate 2024-12-30
+test_that("Order of functions appears correctly when @include is used", {
+  dev_order <- collate_func(custom_name$autos$projects$DEV)
+  expect_equal(dev_order,
+               c(file.path(tmpdir, "DEV/functions/TestDev.R"),
+                 file.path(tmpdir, "DEV/functions/inc3.R"),
+                 file.path(tmpdir, "DEV/functions/inc2.R"),
+                 file.path(tmpdir, "DEV/functions/inc1.R")
+                 )
+               )
+})
+
+
+#' @editor Nick Masel
+#' @editDate 2024-12-30
+test_that("Order of functions appears correctly when @include is not used", {
+  qa_order <- collate_func(custom_name$autos$projects$QA)
+  expect_equal(qa_order,
+               c(file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/inc1.R"),
+                 file.path(tmpdir, "QA/functions/inc2.R"),
+                 file.path(tmpdir, "QA/functions/inc3.R")
+                 )
+               )
+})
+
 #' @editor Gabe Becker
 #' @editDate 2023-11-22
 test_that("library returns invisibly", {

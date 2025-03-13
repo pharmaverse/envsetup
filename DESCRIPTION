@@ -23,7 +23,8 @@ Imports:
     fs,
     purrr,
     rlang,
-    usethis
+    usethis,
+    roxygen2
 Suggests: 
     rmarkdown,
     testthat,

@@ -90,6 +90,30 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
   )
 }
 
+#' Source order of functions
+#'
+#' This function is used to define the sorting order of functions if
+#' `@include` is used to define function dependencies.
+#'
+#' @param path Directory path
+#' @noRd
+collate_func <- function(path){
+  r_scripts <- list.files(path,
+                          pattern = ".r$",
+                          ignore.case = TRUE,
+                          full.names = TRUE
+  )
+
+  collated_func <- roxygen2:::generate_collate(path)
+
+  if (is.null(collated_func)) {
+    r_scripts
+  } else {
+    sapply(1:length(collated_func), function(x) file.path(path, collated_func[[x]]))
+  }
+
+}
+
 
 #' Attach a function directory
 #'
@@ -117,15 +141,10 @@ attach_auto <- function(path, name) {
 
     message("Attaching functions from ", path, " to ", name_with_prefix)
   } else {
-    # Find all the R files in the given path
-    r_scripts <- list.files(path,
-      pattern = ".r$",
-      ignore.case = TRUE,
-      full.names = TRUE
-    )
+    collated_r_scripts <- collate_func(path)
 
-    if (!identical(r_scripts, character(0))) {
-      walk(r_scripts,
+    if (!identical(collated_r_scripts, character(0))) {
+      walk(collated_r_scripts,
         sys.source,
         envir = attach(NULL, name = name_with_prefix)
       )
