@@ -1,0 +1,90 @@
+---
+title: "Tips"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tips}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# 1:  Safely set autos
+
+If you would like to account for potential syntax errors when sourcing in your `autos`, you can wrap `rprofile()` in `purrr::safely()`. This function will attempt to set the autos and return a list containing the result and any error that occurred.
+
+Let's show an example.  First we'll make an example configuration file that will automatically source your autos.  We'll intentionally add a syntax error to show how `safely()` works.
+
+Here is our configuration file, which will automatically source the autos from the `DEV` and `PROD` directories:
+
+```{r eval = FALSE}
+default:
+  autos:
+    projects: !expr list(
+      "DEV" = file.path("demo", "DEV", "username", "project1", "functions"),
+      "PROD" = file.path("demo", "PROD", "project1", "functions")
+      )
+```
+
+We will do a little work here to create the directory, place a script into the directory.  We'll add a syntax error by leaving off a closing `}` in `test_error.R` script in the PROD folder.
+
+
+```{r}
+# create the temp directory
+dir <- fs::file_temp()
+dir.create(dir)
+dir.create(file.path(dir, "/demo/PROD/project1/functions"), recursive = TRUE)
+
+# write a function to the folder with an error
+file_conn <- file(file.path(dir, "/demo/PROD/project1/functions/test_error.R"))
+writeLines(
+"test <- function(){print('test')", file_conn)
+close(file_conn)
+
+# write the config
+config_path <- file.path(dir, "_envsetup.yml")
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    PROD: '", dir,"/demo/PROD/project1/functions'"
+  ), file_conn)
+close(file_conn)
+```
+
+So if we call `rprofile()` passing in this config file, we will get an error because of the syntax error in `test_error.R`:
+
+```{r error = TRUE}
+library(envsetup)
+
+envsetup_config <- config::get(file = config_path)
+
+rprofile(envsetup_config)
+```
+
+To handle this error, we can use `purrr::safely()` to wrap the `rprofile()` function. This will allow us to catch the error and handle it gracefully.
+
+```{r setup}
+safely_rprofile <- purrr::safely(rprofile)
+
+ret <- safely_rprofile(envsetup_config)
+```
+
+We still have an error, but safely allow the setup to continue.  We can check the result of the `safely_rprofile()` function to see if there was an error, identify the issue and correct the syntax error in the function.
+
+```{r check}
+# check for errors and return if any occurred
+if(!is.null(ret$error)) {
+  print(ret$error)
+}
+```
+
+```{r echo = FALSE}
+unlink(dir, recursive=TRUE)
+```
