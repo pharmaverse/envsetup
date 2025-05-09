@@ -21,8 +21,13 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 
   # Must be named list
   if (!is_named(autos)) {
-    stop("Paths for autos in your envsetup configuration file must be named", call.=FALSE)
+    stop("Paths for autos in your envsetup configuration file must be named", call. = FALSE)
   }
+
+  # remove NULL before further processing
+  # NULL is expected for hierarchical paths when running in an environment
+  # after the first level of the hierarchy
+  autos <- autos[!vapply(autos, is.null, FALSE)]
 
   for (i in seq_along(autos)) {
     cur_autos <- autos[[i]]
@@ -30,7 +35,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
     if (length(cur_autos) > 1) {
       # Hierarchical paths must be named
       if (!is_named(cur_autos)) {
-        stop("Hierarchical autos paths in your envsetup configuration file must be named", call.=FALSE)
+        stop("Hierarchical autos paths in your envsetup configuration file must be named", call. = FALSE)
       }
 
       # envsetup_environ must be used if using hierarchical paths
@@ -43,7 +48,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
     }
 
     if (!is.null(names(cur_autos)) && !envsetup_environ %in% names(cur_autos)
-        && envsetup_environ != ""){
+        && envsetup_environ != "") {
       warning(paste(
         "The", ui_field(names(autos[i])), "autos has named",
         "environments",  ui_field(names(cur_autos)),
@@ -85,6 +90,30 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
   )
 }
 
+#' Source order of functions
+#'
+#' This function is used to define the sorting order of functions if
+#' `@include` is used to define function dependencies.
+#'
+#' @param path Directory path
+#' @noRd
+collate_func <- function(path){
+  r_scripts <- list.files(path,
+                          pattern = ".r$",
+                          ignore.case = TRUE,
+                          full.names = TRUE
+  )
+
+  collated_func <- roxygen2:::generate_collate(path)
+
+  if (is.null(collated_func)) {
+    r_scripts
+  } else {
+    sapply(1:length(collated_func), function(x) file.path(path, collated_func[[x]]))
+  }
+
+}
+
 
 #' Attach a function directory
 #'
@@ -105,22 +134,17 @@ attach_auto <- function(path, name) {
   if (!(dir.exists(path) || file.exists(path))) {
     # Check if the auto actually exists
     warning(sprintf("An autos path specified in your envsetup configuration file does not exist: %s = %s", name, path),
-         call.=FALSE)
+            call. = FALSE)
   } else if (file.exists(path) && !dir.exists(path)) {
     # if file, source it
     sys.source(path, envir = attach(NULL, name = name_with_prefix))
 
     message("Attaching functions from ", path, " to ", name_with_prefix)
   } else {
-    # Find all the R files in the given path
-    r_scripts <- list.files(path,
-      pattern = ".r$",
-      ignore.case = TRUE,
-      full.names = TRUE
-    )
+    collated_r_scripts <- collate_func(path)
 
-    if (!identical(r_scripts, character(0))) {
-      walk(r_scripts,
+    if (!identical(collated_r_scripts, character(0))) {
+      walk(collated_r_scripts,
         sys.source,
         envir = attach(NULL, name = name_with_prefix)
       )
@@ -282,13 +306,13 @@ detach_autos <- function() {
 #' # see autos are still above purrr in the search path
 #' search()
 library <- function(..., pos = NULL) {
-  if(is.null(pos)) {
-      ## we have at least one package loaded (envsetup itself)
-      ## use earliest current package position as place to
-      ## attach all future packages, regardless of what
-      ## envsetup, devtools, or anything else has put
-      ## in front of them
-      pos <- min(grep("^package:", search()))
+  if (is.null(pos)) {
+    ## we have at least one package loaded (envsetup itself)
+    ## use earliest current package position as place to
+    ## attach all future packages, regardless of what
+    ## envsetup, devtools, or anything else has put
+    ## in front of them
+    pos <- min(grep("^package:", search()))
   }
   base::library(..., pos = pos)
 }

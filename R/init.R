@@ -68,7 +68,7 @@ init <- function(project, config_path = NULL, create_paths = NULL) {
         ui_info(
           c("The following paths in your configuration do not exist:",
             paths[missing_directories])
-          )
+        )
 
         # if not, ask if user would like them built
         if (is.null(create_paths)) {
@@ -76,7 +76,7 @@ init <- function(project, config_path = NULL, create_paths = NULL) {
             usethis::ui_yeah(
               "Would you like us to create your directories to match your configuration?",
               n_no = 1
-          )
+            )
         }
 
         if (!create_paths) {
@@ -134,7 +134,8 @@ envsetup_write_rprofile <- function(add, file) {
 
   # if there is a call to `rprofile()` in the .Rprofile, assume setup was already done and exit
   if (any(grepl("rprofile\\(", before))) {
-    warning("It looks like your project has already been initialized to use envsetup. Manually adjust your .Rprofile if you need to change the environment setup.",
+    warning("It looks like your project has already been initialized to use envsetup.
+            Manually adjust your .Rprofile if you need to change the environment setup.",
       call. = FALSE
     )
     return(invisible())

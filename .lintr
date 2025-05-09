@@ -1,2 +1,2 @@
-linters: with_defaults(line_length_linter(125), object_usage_linter=NULL, cyclocomp_linter(complexity_limit = 20), object_name_linter(styles = c("snake_case", "symbols", "dotted.case")), single_quotes_linter=NULL)
+linters: linters_with_defaults(line_length_linter(125), object_usage_linter=NULL, cyclocomp_linter(complexity_limit = 20), object_name_linter(styles = c("snake_case", "symbols", "dotted.case")))
 exclusions: list("R/data.R")

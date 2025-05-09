@@ -218,7 +218,7 @@ object_in_path <- function(path, object) {
 
 #' Build directory structure from a configuration file
 #'
-#' @param config configuration object from config::get() containing paths#'
+#' @param config configuration object from config::get() containing paths
 #' @param root root directory to build from.
 #' Leave as NULL if using absolute paths.  Set to working directory if using relative paths.
 #'

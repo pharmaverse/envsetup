@@ -63,8 +63,6 @@
 #' validate_config(config::get(file = file.path(tmpdir, "no_paths.yml")))
 validate_config <- function(config) {
   validate_paths(config)
-
-  # validate_autos(config)
 }
 
 
