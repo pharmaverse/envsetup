@@ -40,7 +40,8 @@ test_that("rprofile stores the configuration", {
 
   stored_config <- base::get(
     "auto_stored_envsetup_config",
-    pos = which(search() == "envsetup:paths")
+    envsetup_path_environment
+    # pos = which(search() == "envsetup:paths")
   )
 
   expect_equal(custom_name, stored_config)
@@ -52,15 +53,13 @@ test_that("rprofile stores the configuration", {
 test_that("1.1", {
   rprofile(envsetup_config)
 
-  withr::defer(detach(envsetup:paths))
-
   expected <- list()
   folder <- "data"
   expected$DEV <- file.path(tmpdir, rootpath_dev, folder)
   expected$QA <- file.path(tmpdir, rootpath_qa, folder)
   expected$PROD <- file.path(tmpdir, rootpath_prod, folder)
 
-  expect_identical(expected, data)
+  expect_identical(expected, envsetup_path_environment$data)
 })
 
 
@@ -69,8 +68,6 @@ test_that("1.1", {
 test_that("2.1", {
   Sys.setenv(ENVSETUP_ENVIRON = "DEV")
   rprofile(envsetup_config)
-
-  withr::defer(detach(envsetup:paths))
 
   expect_equal(c(test_dev()), c("Test of dev autos"))
 })
@@ -88,8 +85,6 @@ test_that("3.1", {
   readin <- readr::read_csv(
     read_path(data, "iris.csv", full.path = TRUE, envsetup_environ = "DEV")
   )
-
-  withr::defer(detach(envsetup:paths))
 
   expect_equal(tidyr::as_tibble(iris)$Petal.Length, readin$Petal.Length)
 })
