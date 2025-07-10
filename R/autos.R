@@ -79,15 +79,74 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
   # If there are any existing autos then reset them
   detach_autos()
 
-  # Now attach everything. Note that attach will put an environment behind
-  # global and in front of the package namespaces. By reversing the list,
-  # the search path will be set to apply the autos to the name space so that
-  # the path at element one of the list is directly behind global
+  # Now source everything
   walk2(
-    rev(flattened_paths),
-    rev(names(flattened_paths)),
+    flattened_paths,
+    names(flattened_paths),
     ~ attach_auto(.x, .y)
   )
+}
+
+#' Source scripts and warn of conflicts
+#'
+#' Source a script, only adding objects to global if they do not already exist
+#'
+#' @param file path to a script containing object to add to global
+#'
+#' @return Called for side-effects. Objects are added to the global environment.
+#'
+#' @noRd
+source_warn_conflicts <- function(file){
+
+  # create a new environment to source into
+  new_env <- new.env()
+
+  # source directory into a this environment
+  sys.source(file,
+             envir = new_env)
+
+  # compare objects to find unique and non-unique
+  objects_in_new_env <- ls(new_env)
+  objects_in_global <- ls(.GlobalEnv)
+  unique_objects <- setdiff(objects_in_new_env, objects_in_global)
+  non_unique_objects <- intersect(objects_in_new_env, objects_in_global)
+
+
+  for (obj_name in unique_objects) {
+    # move objects from new env to .GlobalEnv
+    assign(obj_name, base::get(obj_name, envir = new_env), envir = .GlobalEnv)
+
+    # store the metadata for the objects
+    new_record <- data.frame(
+      object_name = obj_name,
+      script = file
+    )
+
+    if (!is.null(envsetup_environment$object_metadata)) {
+      envsetup_environment$object_metadata <- rbind(envsetup_environment$object_metadata, new_record)
+    } else {
+      envsetup_environment$object_metadata <- new_record
+    }
+
+  }
+
+  cat("Sourcing file: ", usethis::ui_value(file), "\n")
+
+  if (length(unique_objects) != 0) {
+    cat("\n The following objects are added to .GlobalEnv:", sep = "\n")
+    cat("", sep = "\n")
+    cat(paste0("    ", usethis::ui_value(unique_objects), "\n"))
+  }
+
+
+  if (length(non_unique_objects) != 0) {
+    cat("\n The following objects were not added to .GlobalEnv as they already exist:", sep = "\n")
+    cat("", sep = "\n")
+    cat(paste0("    ", usethis::ui_value(non_unique_objects), "\n"))
+  }
+
+  cat("", sep = "\n")
+
 }
 
 #' Source order of functions
@@ -129,6 +188,7 @@ collate_func <- function(path){
 #'
 #' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
 attach_auto <- function(path, name) {
+
   name_with_prefix <- paste0("autos:", name)
 
   if (!(dir.exists(path) || file.exists(path))) {
@@ -137,18 +197,12 @@ attach_auto <- function(path, name) {
             call. = FALSE)
   } else if (file.exists(path) && !dir.exists(path)) {
     # if file, source it
-    sys.source(path, envir = attach(NULL, name = name_with_prefix))
-
-    message("Attaching functions from ", path, " to ", name_with_prefix)
+    source_warn_conflicts(path)
   } else {
     collated_r_scripts <- collate_func(path)
 
     if (!identical(collated_r_scripts, character(0))) {
-      walk(collated_r_scripts,
-        sys.source,
-        envir = attach(NULL, name = name_with_prefix)
-      )
-      message("Attaching functions from ", path, " to ", name_with_prefix)
+      walk(collated_r_scripts, source_warn_conflicts)
     } else {
       message("No files found in ", path, ". Nothing to attach.")
     }
@@ -224,95 +278,9 @@ attach_auto <- function(path, name) {
 #' # remove autos from search
 #' detach_autos()
 detach_autos <- function() {
-  in_search <- search()[grepl("^autos:", search())]
 
-  # Walk the list of autos and detach them
-  walk(
-    in_search,
-    detach,
-    character.only = TRUE
-  )
-}
+  rm(list = envsetup_environment$object_metadata$object_name, envir = .GlobalEnv)
 
-#' Wrapper around library to place packages after any current autos
-#'
-#' Autos need to immediately follow the global environment.
-#' This wrapper around `base::library()` will position any
-#' attached packages in the earliest position on the
-#' search path currently occupied by a package environment,
-#' guaranteeing newly loaded packages appear before previously
-#' loaded packages but after any currently attached non-packages.
-#'
-#' @usage NULL
-#' @param ... pass directly through to base::library
-#' @param pos see base::library. NULL (the default) is taken
-#' to mean the earliest position of a package environment
-#' within the current search path. If non-null, underlying
-#' behavior of base::library is respected.
-#'
-#' @return returns (invisibly) the list of attached packages
-#' @export
-#'
-#' @examples
-#' # Simple example
-#' library(purrr)
-#'
-#' # Illustrative example to show that autos will always remain above attached libraries
-#' tmpdir <- tempdir()
-#' print(tmpdir)
-#'
-#' # account for windows
-#' if (Sys.info()['sysname'] == "Windows") {
-#'   tmpdir <- gsub("\\", "\\\\", tmpdir, fixed = TRUE)
-#' }
-#'
-#' # Create an example config file
-#' hierarchy <- paste0("default:
-#'   paths:
-#'     functions: !expr list(
-#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
-#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))
-#'   autos:
-#'     my_functions: !expr list(
-#'       DEV = file.path('",tmpdir,"', 'demo', 'DEV', 'username', 'project1', 'functions'),
-#'       PROD = file.path('",tmpdir,"', 'demo', 'PROD', 'project1', 'functions'))")
-#'
-#'
-#' # write config
-#' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
-#'
-#' config <- config::get(file = file.path(tmpdir, "hierarchy.yml"))
-#'
-#' build_from_config(config)
-#'
-#' # write function to DEV
-#' writeLines("dev_function <- function() {print(environment(dev_function))}",
-#'            file.path(tmpdir, 'demo/DEV/username/project1/functions/dev_function.r'))
-#'
-#' # write function to PROD
-#' writeLines("prod_function <- function() {print(environment(prod_function))}",
-#'            file.path(tmpdir, 'demo/PROD/project1/functions/prod_function.r'))
-#'
-#' # setup the environment
-#' Sys.setenv(ENVSETUP_ENVIRON = "DEV")
-#' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
-#'
-#' # show search
-#' search()
-#'
-#' # now attach purrr
-#' library(purrr)
-#'
-#' # see autos are still above purrr in the search path
-#' search()
-library <- function(..., pos = NULL) {
-  if (is.null(pos)) {
-    ## we have at least one package loaded (envsetup itself)
-    ## use earliest current package position as place to
-    ## attach all future packages, regardless of what
-    ## envsetup, devtools, or anything else has put
-    ## in front of them
-    pos <- min(grep("^package:", search()))
-  }
-  base::library(..., pos = pos)
+  envsetup_environment$object_metadata <- NULL
+
 }
