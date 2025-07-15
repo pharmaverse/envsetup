@@ -250,14 +250,14 @@ now.</p>
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; $DEV</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/DEV/username/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/DEV/username/project1/data"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $PROD</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/PROD/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/PROD/project1/data"</span></span>
 <span><span class="va">output</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/DEV/username/project1/output"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/DEV/username/project1/output"</span></span>
 <span><span class="va">programs</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/DEV/username/project1/programs"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/DEV/username/project1/programs"</span></span>
 <span><span class="va">envsetup_environ</span></span>
 <span><span class="co">#&gt; [1] "DEV"</span></span></code></pre></div>
 <p>We can use <code><a href="../reference/read_path.html">envsetup::read_path()</a></code> to help us find where
@@ -276,8 +276,8 @@ data is only in PROD so the function returns the path to PROD
 <code>mtcars.RDS</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>Let’s keep going!</p>
 <p>What if the data was in DEV and PROD?</p>
 <p>Let’s save the same data to DEV …</p>
@@ -286,8 +286,8 @@ data is only in PROD so the function returns the path to PROD
 <p>… and see what <code><a href="../reference/read_path.html">read_path()</a></code> returns.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/DEV/username/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/DEV/username/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>We see the path to DEV now instead of the path to PROD.</p>
 <p>To explain this, we will now talk about
 <code>envsetup_environ</code>, which we set in the config earlier.</p>
@@ -363,8 +363,8 @@ it to use PROD.</p>
 for <code>mtcars.RDS</code> using the PROD configuration.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLQBvt5/file1e7f4e730afb/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp2KhcnJ/file1ee04ba3758b/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 <p>We see the path to PROD, even though data exists in both DEV and
 PROD. This is because data was indexed starting with the location of
 PROD, which is the last element in data, so only this location was
@@ -425,7 +425,7 @@ a script into the folder …</p>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching paths to envsetup:paths</span></span>
-<span><span class="co">#&gt; Attaching functions from /tmp/RtmpLQBvt5/file1e7f55b7b4f1/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
+<span><span class="co">#&gt; Attaching functions from /tmp/Rtmp2KhcnJ/file1ee0770175f9/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
 <p>Now we can see <code>autos:dev_script_library</code> was added to the
 search path.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -487,8 +487,8 @@ function in prod.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attaching paths to envsetup:paths</span></span>
-<span><span class="co">#&gt; Attaching functions from /tmp/RtmpLQBvt5/file1e7f55b7b4f1/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
-<span><span class="co">#&gt; Attaching functions from /tmp/RtmpLQBvt5/file1e7f55b7b4f1/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
+<span><span class="co">#&gt; Attaching functions from /tmp/Rtmp2KhcnJ/file1ee0770175f9/demo/PROD/project1/script_library to autos:prod_script_library</span></span>
+<span><span class="co">#&gt; Attaching functions from /tmp/Rtmp2KhcnJ/file1ee0770175f9/demo/DEV/username/project1/script_library to autos:dev_script_library</span></span></code></pre></div>
 <p>Now we can see <code>prod_script_library</code> was added to the
 search path, the function <code>test()</code> and <code>test2()</code>
 are available, and we can execute these functions without a need for
@@ -547,7 +547,7 @@ executing in prod.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
