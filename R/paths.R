@@ -1,6 +1,12 @@
 #' Path environment
 #' @export
-envsetup_path_environment <- new.env(parent = emptyenv())
+envsetup_environment <- new.env()
+
+#' Get a path from the envsetup environment
+#' @export
+get_path <- function(path){
+  base::get(substitute(path), envsetup_environment)
+}
 
 #' Read path
 #'
@@ -60,7 +66,7 @@ read_path <- function(lib,
                       envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
 
   # lib can be a object in a different environment
-  # get this directly from envsetup_path_environment
+  # get this directly from envsetup_environment
   lib_arg <- quo_get_expr(enquo(lib))
 
   if (is_string(lib_arg)) {
@@ -70,7 +76,7 @@ read_path <- function(lib,
     ), call. = FALSE)
   }
 
-  read_lib <- base::get(toString(lib_arg), envsetup_path_environment)
+  read_lib <- base::get(toString(lib_arg), envsetup_environment)
 
   restricted_paths <- read_lib
 
@@ -178,7 +184,7 @@ write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVS
     ), call. = FALSE)
   }
 
-  write_path <- base::get(toString(lib_arg), envsetup_path_environment)
+  write_path <- base::get(toString(lib_arg), envsetup_environment)
   path <- write_path
 
   if (length(write_path) > 1 && envsetup_environ == "") {

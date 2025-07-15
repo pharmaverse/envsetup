@@ -38,26 +38,16 @@ rprofile <- function(config) {
     (pos <- 2L)
   }
 
-  # browser()
-
   walk2(names(config_minus_autos$paths),
         config_minus_autos$paths,
         assign,
-        envir = envsetup_path_environment)
-  #
-  # assign(names(config_minus_autos$paths)[[1]], config_minus_autos$paths[[1]],
-  #        envir = envsetup_path_environment)
-  #
-  # attach(config_minus_autos$paths,
-  #   name = "envsetup:paths",
-  #   pos = pos
-  # )
+        envir = envsetup_environment)
 
-  message("Assigned paths to envsetup_path_environment")
+  message("Assigned paths to envsetup_environment")
 
   # store config with a standard name in a standard location
   # this will allow `envsetup::library()` to re-attach autos
-  assign("auto_stored_envsetup_config", config, envir = envsetup_path_environment)
+  assign("auto_stored_envsetup_config", config, envir = envsetup_environment)
 
   # If autos exist, set them
   if (!is.null(config$autos)) {
