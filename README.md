@@ -3,32 +3,97 @@
 
 # envsetup <img src='man/figures/logo.png' align="right" height="200" style="float:right; height:200px;" />
 
-<!-- badges: start -->
+<!-- start badges -->
 
 [<img src="http://pharmaverse.org/shields/envsetup.svg">](https://pharmaverse.org)
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/envsetup)](https://CRAN.R-project.org/package=envsetup) -->
-[![codecov](https://codecov.io/gh/pharmaverse/envsetup/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pharmaverse/envsetup?branch=main)
-
+[![Check
+🛠](https://github.com/pharmaverse/envsetup/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaverse/envsetup/actions/workflows/R-CMD-check.yaml)
+[![Docs
+📚](https://github.com/pharmaverse/envsetup/actions/workflows/pkgdown.yaml/badge.svg)](https://pharmaverse.github.io/envsetup/)
+[![Code Coverage
+📔](https://raw.githubusercontent.com/pharmaverse/envsetup/refs/heads/gh-pages/_xml_coverage_reports/badge.svg)](https://pharmaverse.github.io/envsetup/_xml_coverage_reports/coverage.html)
+![GitHub commit
+activity](https://img.shields.io/github/commit-activity/m/pharmaverse/envsetup)
+![GitHub
+contributors](https://img.shields.io/github/contributors/pharmaverse/envsetup)
+![GitHub last
+commit](https://img.shields.io/github/last-commit/pharmaverse/envsetup)
+![GitHub pull
+requests](https://img.shields.io/github/issues-pr/pharmaverse/envsetup)
+![GitHub repo
+size](https://img.shields.io/github/repo-size/pharmaverse/envsetup)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Current
+Version](https://img.shields.io/github/r-package/v/pharmaverse/envsetup/main?color=purple&label=package%20version)](https://github.com/pharmaverse/envsetup/tree/main)
+[![Open
+Issues](https://img.shields.io/github/issues-raw/pharmaverse/envsetup?color=red&label=open%20issues)](https://github.com/pharmaverse/envsetup/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
+![GitHub
+forks](https://img.shields.io/github/forks/pharmaverse/envsetup?style=social)
+![GitHub repo
+stars](https://img.shields.io/github/stars/pharmaverse/envsetup?style=social)
 <!-- badges: end -->
 
-## Overview
+# Overview
 
-The purpose of this package is to support the setup of the R
-environment. The two main features are:
+The `envsetup` package helps you manage R project environments by
+providing a flexible configuration system that adapts to different
+deployment stages (development, testing, production) without requiring
+code changes.
 
-- `autos` to automatically source files and/or directories into your
-  environment
+## Why Use envsetup?
 
-- `paths` to consistently set path objects across projects for I/O
+When working on R projects, you often need to:
 
-Both are implemented using a configuration file to allow easy, custom
-configurations that can be used for multiple or all projects.
+- Point to different data sources across environments
 
-## Installation
+- Use different output directories
+
+- Load environment-specific functions
+
+- Maintain consistent code across environments like dev, qa, and prod
+
+Instead of hardcoding paths or manually changing configurations,
+`envsetup` uses YAML configuration files to manage these differences
+automatically.
+
+## Basic Concepts
+
+The `envsetup` package works with two main components:
+
+1.  **PATHS**: Manages file system locations (data, output, programs)
+2.  **AUTOS**: Automatically sources R scripts from specified
+    directories
+
+## Your First Configuration
+
+Here’s the simplest possible `_envsetup.yml` configuration:
+
+``` yaml
+default:
+  paths:
+    data: "/path/to/your/data"
+    output: "/path/to/your/output"
+```
+
+## Quick Start Example
 
 ``` r
-install.packages("envsetup")
+library(envsetup)
+
+# Load your configuration
+envsetup_config <- config::get(file = "_envsetup.yml")
+
+# Apply the configuration
+rprofile(envsetup_config)
+
+# Now you can use the configured paths
+print(data)    # Points to your data directory
+print(output)  # Points to your output directory
 ```
+
+## Installation
 
 ### Development version
 
@@ -37,20 +102,18 @@ install.packages("envsetup")
 devtools::install_github("pharmaverse/envsetup")
 ```
 
-## Usage
+## What’s Next?
 
-1.  Create the \_envsetup.yml configuration file to specify your autos
-    and paths and store centrally. See `vignette("config")` for more
-    details on how to create your config.
-2.  Create or update your `.Rprofile` to read in the config and call
-    `rprofile()`
+In the following guides, you’ll learn:
 
-``` r
-library(envsetup)
+- How to set up basic path configurations
 
-# read configuration
-envsetup_config <- config::get(file = "path/to/_envsetup.yml")
+- Managing multiple environments
 
-# pass configuration to rprofile() to setup the environment
-rprofile(envsetup_config)
-```
+- Advanced path resolution
+
+- Automatic script sourcing
+
+- Real-world examples and best practices
+
+Let’s start with basic path configuration in the next section.

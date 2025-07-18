@@ -84,6 +84,15 @@ test_that("Autos validation from yml happens correctly", {
 
   expect_warning(set_autos(list(x = "/bad/path/")),
                  "An autos path specified in your envsetup configuration file does not exist")
+
+
+  withr::local_envvar(c("ENVSETUP_ENVIRON" = ""))
+
+  expect_error(
+    set_autos(list(project = c(DEV="path1", PROD="path2"))),
+    "The envsetup_environ parameter or ENVSETUP_ENVIRON environment variable must be used if hierarchical autos are set."
+    )
+
 })
 
 # Detatch and re-setup for QA now

@@ -6,7 +6,8 @@
       mustWork = TRUE
     ),
     envsetup.rprofile.path = system.file(".Rprofile", package = "envsetup"),
-    envsetup.renviron.path = system.file(".Renviron", package = "envsetup")
+    envsetup.renviron.path = system.file(".Renviron", package = "envsetup"),
+    envsetup.path.environment = .GlobalEnv
   )
 
   toset <- !(names(op.envsetup) %in% names(op))

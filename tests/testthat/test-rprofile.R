@@ -18,7 +18,8 @@ rootpath_dev <- "DEV"
 rootpath_qa <- "QA"
 rootpath_prod <- "PROD"
 
-
+#' @editor Nick Masel
+#' @editDate 2025-07-17
 test_that("rprofile stores the configuration", {
   config_tmpdir <- tempdir()
   withr::defer(unlink(file.path(config_tmpdir, ".Rprofile")))
@@ -38,13 +39,7 @@ test_that("rprofile stores the configuration", {
 
   rprofile(custom_name)
 
-  stored_config <- base::get(
-    "auto_stored_envsetup_config",
-    envsetup_path_environment
-    # pos = which(search() == "envsetup:paths")
-  )
-
-  expect_equal(custom_name, stored_config)
+  expect_equal(custom_name, auto_stored_envsetup_config)
 })
 
 
@@ -59,7 +54,7 @@ test_that("1.1", {
   expected$QA <- file.path(tmpdir, rootpath_qa, folder)
   expected$PROD <- file.path(tmpdir, rootpath_prod, folder)
 
-  expect_identical(expected, envsetup_path_environment$data)
+  expect_identical(expected, data)
 })
 
 
