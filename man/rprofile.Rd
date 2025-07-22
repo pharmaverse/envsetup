@@ -4,10 +4,12 @@
 \alias{rprofile}
 \title{Function used to pass through code to the .Rprofile}
 \usage{
-rprofile(config)
+rprofile(config, overwrite = TRUE)
 }
 \arguments{
 \item{config}{configuration object from config::get()}
+
+\item{overwrite}{logical indicating if sourcing of autos should overwrite an object in global if it already exists}
 }
 \value{
 Called for its side effects.  Directory paths and autos are added to the search path based on your config.

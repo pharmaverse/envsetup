@@ -39,33 +39,45 @@
       
        The following objects are added to .GlobalEnv:
       
-          'not_a_conflict_qa'
+          'my_conflict', 'not_a_conflict_qa'
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects were overwritten in .GlobalEnv:
       
           'my_conflict'
       
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects are added to .GlobalEnv:
+      
+          'inc1'
+      
+       The following objects were overwritten in .GlobalEnv:
       
           'inc1'
       
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects are added to .GlobalEnv:
+      
+          'inc2'
+      
+       The following objects were overwritten in .GlobalEnv:
       
           'inc2'
       
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects are added to .GlobalEnv:
+      
+          'inc3'
+      
+       The following objects were overwritten in .GlobalEnv:
       
           'inc3'
       
       
        The following objects are added to .GlobalEnv:
       
-          'not_a_conflict_prod'
+          'my_conflict', 'not_a_conflict_prod'
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects were overwritten in .GlobalEnv:
       
           'my_conflict'
       
@@ -90,7 +102,11 @@
           'test_global'
       
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects are added to .GlobalEnv:
+      
+          'atest'
+      
+       The following objects were overwritten in .GlobalEnv:
       
           'atest'
       

@@ -22,12 +22,104 @@ remove_sourcing_file <- function(x) {
 # Dev tests
 Sys.setenv(ENVSETUP_ENVIRON = "DEV")
 
-#' @editor Mike Stackhouse
-#' @editDate 2023-02-11
-test_that("Autos set and test_dev from highest level appears correctly", {
+#' @editor Nick Masel
+#' @editDate 2025-07-22
+test_that("Autos set correctly when default of overwrite is used", {
   suppressMessages(set_autos(custom_name$autos))
+
   expect_equal(c(test_dev()), c("Test of dev autos"))
   expect_equal(c(test_global()), c("Test of global autos"))
+
+  # my_conflict is in dev, qa and prod.  overwrite is TRUE so we should see the prod version.
+  expect_equal(c(my_conflict()), c("This is a function that makes a conflict.  It is in PROD."))
+
+  # check object metadata stores files correctly
+  expect_equal(
+    envsetup_environment$object_metadata,
+    data.frame(
+      stringsAsFactors = FALSE,
+      object_name = c("test_dev",
+                      "my_conflict",
+                      "not_a_conflict_dev",
+                      "inc3",
+                      "inc2",
+                      "inc1",
+                      "mtcars",
+                      "paste",
+                      "test_qa",
+                      "not_a_conflict_qa",
+                      "not_a_conflict_prod",
+                      "atest",
+                      "test_prod",
+                      "test_prod2",
+                      "test_global"),
+      script = c(file.path(tmpdir, "DEV/functions/TestDev.R"),
+                 file.path(tmpdir, "PROD/functions/conflicts.R"),
+                 file.path(tmpdir, "DEV/functions/conflicts.R"),
+                 file.path(tmpdir, "QA/functions/inc3.R"),
+                 file.path(tmpdir, "QA/functions/inc2.R"),
+                 file.path(tmpdir, "QA/functions/inc1.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/conflicts.R"),
+                 file.path(tmpdir, "PROD/functions/conflicts.R"),
+                 file.path(tmpdir, "PROD/functions/envre.R"),
+                 file.path(tmpdir, "PROD/functions/prodtest.R"),
+                 file.path(tmpdir, "PROD/functions/prodtest2.R"),
+                 file.path(tmpdir, "global/functions/globaltest.R"))
+    ))
+
+  detach_autos()
+})
+
+#' @editor Nick Masel
+#' @editDate 2025-07-22
+test_that("Autos set correctly when overwrite is FALSE", {
+  suppressMessages(set_autos(custom_name$autos, overwrite = FALSE))
+
+  expect_equal(c(test_dev()), c("Test of dev autos"))
+  expect_equal(c(test_global()), c("Test of global autos"))
+
+  # my_conflict is in dev, qa and prod.  overwrite is FALSE so we should see the dev version.
+  expect_equal(c(my_conflict()), c("This is a function that makes a conflict.  It is in DEV."))
+
+  # check object metadata stores files correctly
+  expect_equal(
+    envsetup_environment$object_metadata,
+    data.frame(
+      stringsAsFactors = FALSE,
+      object_name = c("test_dev",
+                      "my_conflict",
+                      "not_a_conflict_dev",
+                      "inc3",
+                      "inc2",
+                      "inc1",
+                      "mtcars",
+                      "paste",
+                      "test_qa",
+                      "not_a_conflict_qa",
+                      "not_a_conflict_prod",
+                      "atest",
+                      "test_prod",
+                      "test_prod2",
+                      "test_global"),
+      script = c(file.path(tmpdir, "DEV/functions/TestDev.R"),
+                 file.path(tmpdir, "DEV/functions/conflicts.R"),
+                 file.path(tmpdir, "DEV/functions/conflicts.R"),
+                 file.path(tmpdir, "DEV/functions/inc3.R"),
+                 file.path(tmpdir, "DEV/functions/inc2.R"),
+                 file.path(tmpdir, "DEV/functions/inc1.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/QATest.R"),
+                 file.path(tmpdir, "QA/functions/conflicts.R"),
+                 file.path(tmpdir, "PROD/functions/conflicts.R"),
+                 file.path(tmpdir, "PROD/functions/envre.R"),
+                 file.path(tmpdir, "PROD/functions/prodtest.R"),
+                 file.path(tmpdir, "PROD/functions/prodtest2.R"),
+                 file.path(tmpdir, "global/functions/globaltest.R"))
+    ))
 
   detach_autos()
 })
@@ -110,7 +202,9 @@ test_that("Data output in namespace appears", {
 
 #' @editor Mike Stackhouse
 #' @editDate 2022-02-11
-test_that("set_autos effectively clears and resets namespace", {
+test_that("set_autos effectively clears previously sourced autos", {
+  Sys.setenv(ENVSETUP_ENVIRON = "DEV")
+  suppressMessages(set_autos(custom_name$autos))
   Sys.setenv(ENVSETUP_ENVIRON = "QA")
   suppressMessages(set_autos(custom_name$autos))
   expect_error(test_dev())
@@ -150,6 +244,8 @@ test_that("Autos warns user when ENVSETUP_ENVIRON does not match named environme
     variant = r_version(),
     transform = remove_sourcing_file
     )
+
+  detach_autos()
 })
 
 
@@ -161,13 +257,15 @@ null_test <- config::get(
 )
 test_that("NULL paths do not throw an error", {
   expect_no_error(set_autos(null_test$autos))
+
+  detach_autos()
 })
 
 
 
 #' @editor Nick Masel
 #' @editDate 2025-07-10
-test_that("source_warn_conflicts works with one directory", {
+test_that("source_warn_conflicts works with one directory in global", {
   dirs <- testthat::test_path("man/testdir/DEV/functions/conflicts.R")
 
   expect_snapshot(
@@ -177,11 +275,14 @@ test_that("source_warn_conflicts works with one directory", {
 
   # check object_metadata
   expect_snapshot(envsetup_environment$object_metadata$object_name)
+
+  detach_autos()
 })
 
 #' @editor Nick Masel
 #' @editDate 2025-07-10
-test_that("source_warn_conflicts works when adding a second directory with conflicts", {
+test_that("source_warn_conflicts works when adding a second directory with conflicts in global", {
+
   dirs <- list(
     testthat::test_path("man/testdir/DEV/functions/conflicts.R"),
     testthat::test_path("man/testdir/QA/functions/conflicts.R")
@@ -190,19 +291,44 @@ test_that("source_warn_conflicts works when adding a second directory with confl
   # source first file
   source_warn_conflicts(dirs[[1]])
 
+  expect_equal(
+    envsetup_environment$object_metadata,
+    data.frame(
+      stringsAsFactors = FALSE,
+      object_name = c("my_conflict", "not_a_conflict_dev"),
+      script = c(dirs[[1]],
+                 dirs[[1]])
+    )
+  )
+
   # now source second to confirm functions added, and those not added to global
   expect_snapshot(
     source_warn_conflicts(dirs[[2]]),
     transform = remove_sourcing_file
   )
 
+  expect_equal(
+    envsetup_environment$object_metadata,
+    data.frame(
+      stringsAsFactors = FALSE,
+      object_name = c("my_conflict", "not_a_conflict_dev", "not_a_conflict_qa"),
+      script = c(dirs[[2]],
+                 dirs[[1]],
+                 dirs[[2]])
+    )
+  )
+
+  detach_autos()
+
 })
 
 #' @editor Nick Masel
 #' @editDate 2025-07-10
-test_that("source_warn_conflicts throws an error when a path is not valid", {
+test_that("source_warn_conflicts throws an error when a path is not valid in global", {
 
   dirs <- testthat::test_path("man/testdir/DEV/functions/conflictss.R")
   expect_error(source_warn_conflicts(dirs))
+
+  detach_autos()
 
 })

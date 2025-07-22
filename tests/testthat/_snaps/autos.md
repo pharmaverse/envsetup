@@ -1,4 +1,4 @@
-# source_warn_conflicts works with one directory
+# source_warn_conflicts works with one directory in global
 
     Code
       source_warn_conflicts(dirs)
@@ -14,10 +14,9 @@
     Code
       envsetup_environment$object_metadata$object_name
     Output
-      [1] "test_global"        "atest"              "my_conflict"       
-      [4] "not_a_conflict_dev"
+      [1] "my_conflict"        "not_a_conflict_dev"
 
-# source_warn_conflicts works when adding a second directory with conflicts
+# source_warn_conflicts works when adding a second directory with conflicts in global
 
     Code
       source_warn_conflicts(dirs[[2]])
@@ -25,9 +24,9 @@
       
        The following objects are added to .GlobalEnv:
       
-          'not_a_conflict_qa'
+          'my_conflict', 'not_a_conflict_qa'
       
-       The following objects were not added to .GlobalEnv as they already exist:
+       The following objects were overwritten in .GlobalEnv:
       
           'my_conflict'
       

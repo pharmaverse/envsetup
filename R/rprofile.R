@@ -1,6 +1,7 @@
 #' Function used to pass through code to the .Rprofile
 #'
 #' @param config configuration object from config::get()
+#' @param overwrite logical indicating if sourcing of autos should overwrite an object in global if it already exists
 #' @export
 #' @return Called for its side effects.  Directory paths and autos are added to the search path based on your config.
 #'
@@ -22,7 +23,7 @@
 #' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
 #'
 #' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
-rprofile <- function(config) {
+rprofile <- function(config, overwrite = TRUE) {
   if ("envsetup:paths" %in% search()) {
     detach("envsetup:paths", character.only = TRUE)
   }
@@ -51,6 +52,6 @@ rprofile <- function(config) {
 
   # If autos exist, set them
   if (!is.null(config$autos)) {
-    set_autos(config$autos)
+    set_autos(config$autos, overwrite = overwrite)
   }
 }

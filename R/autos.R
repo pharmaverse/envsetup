@@ -10,6 +10,7 @@
 #' @param envsetup_environ name of the environment you would like to read from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
+#' @param overwrite logical indicating if sourcing of autos should overwrite an object in global if it already exists
 #'
 #' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
 #'
@@ -17,7 +18,7 @@
 #' @importFrom rlang is_named
 #' @importFrom usethis ui_field
 #' @noRd
-set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"), overwrite = TRUE) {
 
   # Must be named list
   if (!is_named(autos)) {
@@ -83,7 +84,7 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
   walk2(
     flattened_paths,
     names(flattened_paths),
-    ~ attach_auto(.x, .y)
+    ~ attach_auto(.x, .y, overwrite = overwrite)
   )
 }
 
@@ -92,14 +93,17 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) 
 #' Source a script, only adding objects to global if they do not already exist
 #'
 #' @param file path to a script containing object to add to global
+#' @param overwrite logical indicating if sourcing should overwrite an object in global if it already exists
 #'
 #' @return Called for side-effects. Objects are added to the global environment.
 #'
 #' @noRd
-source_warn_conflicts <- function(file){
+source_warn_conflicts <- function(file, overwrite = TRUE){
 
   # create a new environment to source into
   new_env <- new.env()
+
+  cat("Sourcing file: ", usethis::ui_value(file), "\n")
 
   # source directory into a this environment
   sys.source(file,
@@ -108,44 +112,82 @@ source_warn_conflicts <- function(file){
   # compare objects to find unique and non-unique
   objects_in_new_env <- ls(new_env)
   objects_in_global <- ls(.GlobalEnv)
-  unique_objects <- setdiff(objects_in_new_env, objects_in_global)
-  non_unique_objects <- intersect(objects_in_new_env, objects_in_global)
 
-
-  for (obj_name in unique_objects) {
-    # move objects from new env to .GlobalEnv
-    assign(obj_name, base::get(obj_name, envir = new_env), envir = .GlobalEnv)
-
-    # store the metadata for the objects
-    new_record <- data.frame(
-      object_name = obj_name,
-      script = file
-    )
-
-    if (!is.null(envsetup_environment$object_metadata)) {
-      envsetup_environment$object_metadata <- rbind(envsetup_environment$object_metadata, new_record)
-    } else {
-      envsetup_environment$object_metadata <- new_record
-    }
-
+  if (overwrite == FALSE) {
+    objects_to_assign <- setdiff(objects_in_new_env, objects_in_global)
+    objects_to_skip_assign <- intersect(objects_in_new_env, objects_in_global)
+    objects_that_are_overwritten <- NULL
+  } else if (overwrite == TRUE) {
+    objects_to_assign <- objects_in_new_env
+    objects_to_skip_assign <- NULL
+    objects_that_are_overwritten <- intersect(objects_in_new_env, objects_in_global)
+  } else {
+    warning("overwrite must contain a logical")
   }
 
-  cat("Sourcing file: ", usethis::ui_value(file), "\n")
+  for (obj_name in objects_to_assign) {
+    assign_and_move_function(obj_name, temp_env = new_env, envir = .GlobalEnv)
+    record_function_metadata(obj_name, file)
+  }
 
-  if (length(unique_objects) != 0) {
+  if (length(objects_to_assign) != 0) {
     cat("\n The following objects are added to .GlobalEnv:", sep = "\n")
     cat("", sep = "\n")
-    cat(paste0("    ", usethis::ui_value(unique_objects), "\n"))
+    cat(paste0("    ", usethis::ui_value(objects_to_assign), "\n"))
   }
 
 
-  if (length(non_unique_objects) != 0) {
+  if (length(objects_to_skip_assign) != 0) {
     cat("\n The following objects were not added to .GlobalEnv as they already exist:", sep = "\n")
     cat("", sep = "\n")
-    cat(paste0("    ", usethis::ui_value(non_unique_objects), "\n"))
+    cat(paste0("    ", usethis::ui_value(objects_to_skip_assign), "\n"))
+  }
+
+
+  if (length(objects_that_are_overwritten) != 0) {
+    cat("\n The following objects were overwritten in .GlobalEnv:", sep = "\n")
+    cat("", sep = "\n")
+    cat(paste0("    ", usethis::ui_value(objects_that_are_overwritten), "\n"))
   }
 
   cat("", sep = "\n")
+
+}
+
+
+assign_and_move_function <- function(obj_name, temp_env, envir){
+  assign(obj_name, base::get(obj_name, envir = temp_env), envir = envir)
+}
+
+
+record_function_metadata <- function(obj_name, file
+                                     # , envir
+                                     ){
+
+  # store the metadata for the objects
+  new_record <- data.frame(
+    object_name = obj_name,
+    script = file
+  )
+
+  if (exists("object_metadata", envsetup_environment)) {
+    df <- dplyr::full_join(
+      base::get("object_metadata", envsetup_environment),
+      new_record,
+      by = dplyr::join_by(object_name))
+
+    if (any(c("script.x", "script.y") %in% names(df))) {
+      df$script <- ifelse(is.na(df$script.y), df$script.x, df$script.y)
+      df$script.x <- NULL
+      df$script.y <- NULL
+    }
+
+    # assign("object_metadata", df, envir = envir)
+    envsetup_environment$object_metadata <- df
+  } else {
+    envsetup_environment$object_metadata <- new_record
+    # assign("object_metadata", new_record, envir = envir)
+  }
 
 }
 
@@ -184,10 +226,11 @@ collate_func <- function(path){
 #'
 #' @param path Directory path
 #' @param name Directory name
+#' @param overwrite logical indicating if sourcing of autos should overwrite an object in global if it already exists
 #' @noRd
 #'
 #' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
-attach_auto <- function(path, name) {
+attach_auto <- function(path, name, overwrite = TRUE) {
 
   name_with_prefix <- paste0("autos:", name)
 
@@ -202,7 +245,7 @@ attach_auto <- function(path, name) {
     collated_r_scripts <- collate_func(path)
 
     if (!identical(collated_r_scripts, character(0))) {
-      walk(collated_r_scripts, source_warn_conflicts)
+      walk(collated_r_scripts, source_warn_conflicts, overwrite = overwrite)
     } else {
       message("No files found in ", path, ". Nothing to attach.")
     }
@@ -279,8 +322,9 @@ attach_auto <- function(path, name) {
 #' detach_autos()
 detach_autos <- function() {
 
-  rm(list = envsetup_environment$object_metadata$object_name, envir = .GlobalEnv)
-
-  envsetup_environment$object_metadata <- NULL
+  if (exists("object_metadata", envir = envsetup_environment)){
+    rm(list = envsetup_environment$object_metadata$object_name, envir = .GlobalEnv)
+    rm("object_metadata", envir = envsetup_environment)
+  }
 
 }
