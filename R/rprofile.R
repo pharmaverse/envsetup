@@ -23,32 +23,23 @@
 #' writeLines(hierarchy, file.path(tmpdir, "hierarchy.yml"))
 #'
 #' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
-rprofile <- function(config, overwrite = TRUE) {
-  if ("envsetup:paths" %in% search()) {
-    detach("envsetup:paths", character.only = TRUE)
-  }
+rprofile <- function(config,
+                     envir = getOption("envsetup.path.environment"), 
+                     overwrite = TRUE) {
 
   # remove autos and pass everything else to "envsetup:paths"
   config_minus_autos <- config
   config_minus_autos$autos <- NULL
 
-  # attach after package to allow functions from package to be used in config
-  if (any(search() == "package:envsetup")) {
-    pos <- which(search() == "package:envsetup") + 1
-  } else {
-    (pos <- 2L)
-  }
+  walk2(names(config_minus_autos$paths),
+        config_minus_autos$paths,
+        assign,
+        envir = envir)
 
-  attach(config_minus_autos$paths,
-    name = "envsetup:paths",
-    pos = pos
-  )
-
-  message("Attaching paths to envsetup:paths")
+  message(paste0("Assigned paths to ", envnames::environment_name(envir)))
 
   # store config with a standard name in a standard location
-  # this will allow `envsetup::library()` to re-attach autos
-  assign("auto_stored_envsetup_config", config, pos)
+  assign("auto_stored_envsetup_config", config, envir = envir)
 
   # If autos exist, set them
   if (!is.null(config$autos)) {

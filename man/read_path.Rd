@@ -8,7 +8,8 @@ read_path(
   lib,
   filename,
   full.path = TRUE,
-  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")
+  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"),
+  envir = getOption("envsetup.path.environment")
 )
 }
 \arguments{

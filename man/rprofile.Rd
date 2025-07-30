@@ -4,7 +4,7 @@
 \alias{rprofile}
 \title{Function used to pass through code to the .Rprofile}
 \usage{
-rprofile(config, overwrite = TRUE)
+rprofile(config, envir = getOption("envsetup.path.environment"))
 }
 \arguments{
 \item{config}{configuration object from config::get()}

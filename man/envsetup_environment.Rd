@@ -3,14 +3,39 @@
 \docType{data}
 \name{envsetup_environment}
 \alias{envsetup_environment}
-\title{Path environment}
+
+\title{Environment Setup Environment}
 \format{
-An object of class \code{environment} of length 0.
+An environment object created with \code{new.env()}.
 }
 \usage{
 envsetup_environment
 }
 \description{
-Path environment
+A dedicated environment object used to store and manage path configurations
+and other setup variables for the envsetup package. This environment provides
+an isolated namespace for storing path objects that can be retrieved using
+the package's path management functions.
+}
+\details{
+This environment serves as the default storage location for path objects
+when using envsetup package functions. It helps maintain clean separation
+between user workspace and package-managed paths.
+}
+\examples{
+# Store a path in the envsetup environment
+assign("project_root", "/path/to/project", envir = envsetup_environment)
+
+# List objects in the environment
+ls(envir = envsetup_environment)
+
+# Check if the environment exists and is an environment
+exists("envsetup_environment")
+is.environment(envsetup_environment)
+
+}
+\seealso{
+\code{\link{get_path}}, \code{\link[base]{new.env}}
+
 }
 \keyword{datasets}

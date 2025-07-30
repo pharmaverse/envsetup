@@ -3,6 +3,7 @@
 export(build_from_config)
 export(detach_autos)
 export(envsetup_environment)
+export(get_path)
 export(init)
 export(read_path)
 export(rprofile)
