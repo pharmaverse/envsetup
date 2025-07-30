@@ -1,3 +1,7 @@
+#' Path environment
+#' @export
+envsetup_environment <- new.env()
+
 #' Read path
 #'
 #' Check each environment for the file and return the path to the first.
