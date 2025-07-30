@@ -8,6 +8,8 @@ rprofile(config, envir = getOption("envsetup.path.environment"))
 }
 \arguments{
 \item{config}{configuration object from config::get()}
+
+\item{overwrite}{logical indicating if sourcing of autos should overwrite an object in global if it already exists}
 }
 \value{
 Called for its side effects.  Directory paths and autos are added to the search path based on your config.
