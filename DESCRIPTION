@@ -24,7 +24,8 @@ Imports:
     purrr,
     rlang,
     usethis,
-    roxygen2
+    envnames,
+    utils
 Suggests: 
     rmarkdown,
     testthat,

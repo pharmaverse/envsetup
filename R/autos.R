@@ -95,6 +95,8 @@ set_autos <- function(autos, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"), 
 #' @param file path to a script containing object to add to global
 #' @param overwrite logical indicating if sourcing should overwrite an object in global if it already exists
 #'
+#' @importFrom usethis ui_value
+#'
 #' @return Called for side-effects. Objects are added to the global environment.
 #'
 #' @noRd
@@ -103,7 +105,7 @@ source_warn_conflicts <- function(file, overwrite = TRUE){
   # create a new environment to source into
   new_env <- new.env()
 
-  cat("Sourcing file: ", usethis::ui_value(file), "\n")
+  cat("Sourcing file: ", ui_value(file), "\n")
 
   # source directory into a this environment
   sys.source(file,
@@ -133,21 +135,21 @@ source_warn_conflicts <- function(file, overwrite = TRUE){
   if (length(objects_to_assign) != 0) {
     cat("\n The following objects are added to .GlobalEnv:", sep = "\n")
     cat("", sep = "\n")
-    cat(paste0("    ", usethis::ui_value(objects_to_assign), "\n"))
+    cat(paste0("    ", ui_value(objects_to_assign), "\n"))
   }
 
 
   if (length(objects_to_skip_assign) != 0) {
     cat("\n The following objects were not added to .GlobalEnv as they already exist:", sep = "\n")
     cat("", sep = "\n")
-    cat(paste0("    ", usethis::ui_value(objects_to_skip_assign), "\n"))
+    cat(paste0("    ", ui_value(objects_to_skip_assign), "\n"))
   }
 
 
   if (length(objects_that_are_overwritten) != 0) {
     cat("\n The following objects were overwritten in .GlobalEnv:", sep = "\n")
     cat("", sep = "\n")
-    cat(paste0("    ", usethis::ui_value(objects_that_are_overwritten), "\n"))
+    cat(paste0("    ", ui_value(objects_that_are_overwritten), "\n"))
   }
 
   cat("", sep = "\n")
@@ -160,9 +162,7 @@ assign_and_move_function <- function(obj_name, temp_env, envir){
 }
 
 
-record_function_metadata <- function(obj_name, file
-                                     # , envir
-                                     ){
+record_function_metadata <- function(obj_name, file){
 
   # store the metadata for the objects
   new_record <- data.frame(
@@ -171,10 +171,12 @@ record_function_metadata <- function(obj_name, file
   )
 
   if (exists("object_metadata", envsetup_environment)) {
-    df <- dplyr::full_join(
+    df <- merge(
       base::get("object_metadata", envsetup_environment),
       new_record,
-      by = dplyr::join_by(object_name))
+      by = "object_name",
+      all = TRUE
+      )
 
     if (any(c("script.x", "script.y") %in% names(df))) {
       df$script <- ifelse(is.na(df$script.y), df$script.x, df$script.y)
@@ -182,11 +184,9 @@ record_function_metadata <- function(obj_name, file
       df$script.y <- NULL
     }
 
-    # assign("object_metadata", df, envir = envir)
     envsetup_environment$object_metadata <- df
   } else {
     envsetup_environment$object_metadata <- new_record
-    # assign("object_metadata", new_record, envir = envir)
   }
 
 }
@@ -197,6 +197,9 @@ record_function_metadata <- function(obj_name, file
 #' `@include` is used to define function dependencies.
 #'
 #' @param path Directory path
+#'
+#' @importFrom utils getFromNamespace
+#'
 #' @noRd
 collate_func <- function(path){
   r_scripts <- list.files(path,
@@ -205,7 +208,9 @@ collate_func <- function(path){
                           full.names = TRUE
   )
 
-  collated_func <- roxygen2:::generate_collate(path)
+  generate_collate <- utils::getFromNamespace("generate_collate", "roxygen2")
+
+  collated_func <- generate_collate(path)
 
   if (is.null(collated_func)) {
     r_scripts
@@ -232,15 +237,13 @@ collate_func <- function(path){
 #' @return Called for side-effects. Directory paths of the R autos added to search path are printed.
 attach_auto <- function(path, name, overwrite = TRUE) {
 
-  name_with_prefix <- paste0("autos:", name)
-
   if (!(dir.exists(path) || file.exists(path))) {
     # Check if the auto actually exists
     warning(sprintf("An autos path specified in your envsetup configuration file does not exist: %s = %s", name, path),
             call. = FALSE)
   } else if (file.exists(path) && !dir.exists(path)) {
     # if file, source it
-    source_warn_conflicts(path)
+    source_warn_conflicts(path, overwrite = overwrite)
   } else {
     collated_r_scripts <- collate_func(path)
 

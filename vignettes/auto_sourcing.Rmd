@@ -1,0 +1,555 @@
+---
+title: "Automatic Script Sourcing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Automatic Script Sourcing}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `autos` configuration automatically sources R scripts from specified
+directories, making custom functions immediately available without
+manual sourcing. This is perfect for project-specific utility functions
+and shared code libraries.
+
+## Basic AUTOS Configuration
+
+``` yaml
+default:
+  autos:
+    script_library: '/path/to/your/scripts'
+```
+
+**Note**: By default, auto-sourcing will overwrite any existing
+functions with the same name. This behavior can be controlled through
+the `overwrite` parameter in the underlying functions, though this is
+typically managed automatically by the system.
+
+## Working Example: Single Script Library
+
+Let's create a practical example where Tidy McVerse has custom functions
+in a script library:
+
+```{r}
+library(envsetup)
+
+# Create temporary directory structure
+dir <- fs::file_temp()
+dir.create(dir)
+dir.create(file.path(dir, "/demo/DEV/username/project1/script_library"), recursive = TRUE)
+
+# Create a custom function
+file_conn <- file(file.path(dir, "/demo/DEV/username/project1/script_library/test.R"))
+writeLines(
+"test <- function(){print('Hello from auto-sourced function!')}", file_conn)
+close(file_conn)
+
+# Write the configuration
+config_path <- file.path(dir, "_envsetup.yml")
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'"
+  ), file_conn)
+close(file_conn)
+```
+
+## Loading and Using Auto-Sourced Functions
+
+```{r}
+# Load configuration and apply it
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+```
+
+The auto-sourced functions are now available:
+
+```{r}
+# See what functions are available
+objects()
+
+# Use the function directly (no manual sourcing needed!)
+test()
+```
+
+## Multiple Script Libraries
+
+Real projects often have multiple script libraries for different
+purposes:
+
+```{r}
+# Create production script library
+dir.create(file.path(dir, "/demo/PROD/project1/script_library"), recursive = TRUE)
+
+# Add production functions
+file_conn <- file(file.path(dir, "/demo/PROD/project1/script_library/test2.R"))
+writeLines(
+"test2 <- function(){print('Hello from production function!')}", file_conn)
+close(file_conn)
+
+# Update configuration with multiple libraries
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'
+    prod_script_library: '", dir,"/demo/PROD/project1/script_library'"
+  ), file_conn)
+close(file_conn)
+
+# Reload configuration
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+```
+
+## Using Multiple Libraries
+
+```{r}
+# Check search path - now includes both libraries
+# Functions from both libraries are available
+objects()
+
+# Use functions from both libraries
+test()   # From dev library
+test2()  # From prod library
+```
+
+## Understanding Function Conflicts and the Overwrite Parameter
+
+When auto-sourcing functions, you might encounter situations where
+function names conflict with existing objects in your environment. The
+`overwrite` parameter controls how these conflicts are handled.
+
+### Quick Example of Function Conflicts
+
+```{r}
+# Create a function that might conflict
+summary_stats <- function(data) {
+  print("Original summary function")
+}
+
+# Create a script with the same function name
+conflict_dir <- file.path(dir, "conflict_demo")
+dir.create(conflict_dir)
+
+file_conn <- file(file.path(conflict_dir, "stats.R"))
+writeLines(
+"summary_stats <- function(data) {
+  print('Updated summary function from the new conflict_demo script')
+}", file_conn)
+close(file_conn)
+
+# Add to configuration
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'
+    prod_script_library: '", dir,"/demo/PROD/project1/script_library'
+    conflict_demo: '", conflict_dir, "'"
+  ), file_conn)
+close(file_conn)
+
+# When we reload, the auto-sourced version will overwrite the original
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+
+# Test which version we have now
+summary_stats()
+```
+
+The output shows detailed information about what was overwritten,
+helping you track conflicts.
+
+## Environment-Specific Auto-Sourcing
+
+You might want different script libraries for different environments.
+For example, exclude development functions when running in production:
+
+```{r}
+# Configuration that blanks out dev scripts in production
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    dev_script_library: '", dir,"/demo/DEV/username/project1/script_library'
+    prod_script_library: '", dir,"/demo/PROD/project1/script_library'
+
+prod:
+  autos:
+    dev_script_library: NULL"  # NULL disables this library
+  ), file_conn)
+close(file_conn)
+
+# Load production configuration
+envsetup_config <- config::get(file = config_path, config = "prod")
+rprofile(envsetup_config)
+```
+
+So we can see now that only production functions are available:
+
+```{r}
+# Functions from production only
+objects()
+
+# Use functions from production only
+test2()  # From prod library
+```
+
+## How Auto-Sourcing Works
+
+When you call `rprofile()` with autos configuration:
+
+1.  **Script Discovery**: Finds all `.R` files in specified directories
+2.  **Conflict Detection**: Compares new functions with existing global
+    environment objects
+3.  **Automatic Sourcing**: Sources each script into its environment
+4.  **Conflict Resolution**: Based on the `overwrite` parameter: 5 -
+    `overwrite = TRUE` (default): Replaces existing functions and
+    reports what was overwritten
+    -   `overwrite = FALSE`: Preserves existing functions and reports
+        what was skipped . **Metadata Tracking**: Records which script
+        each function came from for debugging
+5.  **Function Availability**: Functions become directly accessible
+
+### Technical Details of Conflict Handling
+
+The auto-sourcing system uses a sophisticated approach to handle
+conflicts:
+
+-   **Temporary Environment**: Each script is first sourced into a
+    temporary environment
+-   **Object Comparison**: New objects are compared against the global
+    environment
+-   **Selective Assignment**: Only specified objects are moved to the
+    global environment
+-   **Metadata Recording**: Each function's source script is recorded in
+    `object_metadata`
+-   **Detailed Reporting**: Users receive clear feedback about what was
+    added, skipped, or overwritten
+-   **Cleanup Integration**: Metadata enables precise cleanup when using
+    `detach_autos()`
+
+The `record_function_metadata()` function creates a comprehensive audit
+trail by maintaining a data frame with:
+
+-   `object_name`: The name of each sourced function
+
+-   `script`: The full path to the source script
+
+-   This is automatically updated when functions are overwritten by
+    newer versions
+
+## Benefits of Auto-Sourcing
+
+1.  **No Manual Sourcing**: Functions are automatically available
+2.  **Organized Libraries**: Separate environments for different script
+    collections
+3.  **Environment Isolation**: Functions don't interfere with each other
+4.  **Dynamic Loading**: Easy to add/remove script libraries
+5.  **Team Collaboration**: Shared function libraries across team
+    members
+6.  **Comprehensive Tracking**: Metadata system tracks function sources
+    for debugging
+7.  **Intelligent Cleanup**: Precise removal of auto-sourced functions
+    via metadata
+
+## Common Use Cases
+
+### Project Utilities
+
+``` yaml
+autos:
+  project_utils: '/project/utilities'
+  data_processing: '/project/data_functions'
+  plotting_functions: '/project/viz_functions'
+```
+
+### Environment-Specific Functions
+
+``` yaml
+default:
+  autos:
+    dev_helpers: '/dev/helper_functions'
+    shared_utils: '/shared/utilities'
+
+prod:
+  autos:
+    shared_utils: '/shared/utilities'
+    # dev_helpers excluded in production
+```
+
+### Team Libraries
+
+``` yaml
+autos:
+  team_functions: '/shared/team_library'
+  personal_utils: '~/my_r_functions'
+  project_specific: './project_functions'
+```
+
+## Managing Function Conflicts with the Overwrite Parameter
+
+The `overwrite` parameter controls how auto-sourcing handles situations
+where functions with the same name already exist in your global
+environment. Understanding this parameter is crucial for managing
+function conflicts effectively.
+
+### Default Behavior: Overwrite = TRUE
+
+By default, auto-sourcing will overwrite existing functions:
+
+```{r}
+# Create a function in global environment
+my_function <- function() {
+  print("Original function from global environment")
+}
+
+# Check it works
+my_function()
+
+# Create a script with the same function name
+dir <- fs::file_temp()
+dir.create(dir)
+script_dir <- file.path(dir, "scripts")
+dir.create(script_dir)
+
+file_conn <- file(file.path(script_dir, "my_function.R"))
+writeLines(
+"my_function <- function() {
+  print('Updated function from auto-sourced script')
+}", file_conn)
+close(file_conn)
+
+# Configuration with default overwrite = TRUE
+config_path <- file.path(dir, "_envsetup.yml")
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    my_scripts: '", script_dir, "'"
+  ), file_conn)
+close(file_conn)
+
+# Load configuration - this will overwrite the existing function
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+
+# The function has been overwritten
+my_function()
+```
+
+### Conservative Behavior: Overwrite = FALSE
+
+When `overwrite = FALSE`, existing functions are preserved:
+
+```{r}
+# clean up previous runs, removing all previously attached autos
+detach_autos()
+
+# Create a function in global environment
+my_function <- function() {
+  print("Original function from global environment")
+}
+
+# Check it works
+my_function()
+
+# Create a script with the same function name
+dir <- fs::file_temp()
+dir.create(dir)
+script_dir <- file.path(dir, "scripts")
+dir.create(script_dir)
+
+file_conn <- file(file.path(script_dir, "my_function.R"))
+writeLines(
+"my_function <- function() {
+  print('Updated function from auto-sourced script')
+}", file_conn)
+close(file_conn)
+
+# Configuration with default overwrite = FALSE
+config_path <- file.path(dir, "_envsetup.yml")
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    my_scripts: '", script_dir, "'"
+  ), file_conn)
+close(file_conn)
+
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config, overwrite = FALSE)
+
+my_function()
+
+```
+
+### Understanding Conflict Detection
+
+The auto-sourcing system provides detailed feedback about what happens
+during sourcing:
+
+```{r}
+# Create multiple functions to demonstrate conflict detection
+existing_func1 <- function() "I exist in global"
+existing_func2 <- function() "I also exist in global"
+
+# Create script with mix of new and conflicting functions
+file_conn <- file(file.path(script_dir, "mixed_functions.R"))
+writeLines(
+"# This will conflict with existing function
+existing_func1 <- function() {
+  'Updated from script'
+}
+
+# This is a new function
+new_func <- function() {
+  'Brand new function'
+}
+
+# This will also conflict
+existing_func2 <- function() {
+  'Also updated from script'
+}", file_conn)
+close(file_conn)
+
+# Update configuration
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    my_scripts: '", script_dir, "'"
+  ), file_conn)
+close(file_conn)
+
+# Reload - watch the detailed output
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+```
+
+## Function Metadata Tracking
+
+The auto-sourcing system includes sophisticated metadata tracking that
+records detailed information about every function that gets sourced.
+This tracking system is invaluable for debugging, auditing, and
+understanding your function ecosystem.
+
+### How Metadata Tracking Works
+
+Every time a function is sourced through the autos system, the
+`record_function_metadata()` function captures:
+
+-   **Object Name**: The name of the function or object
+-   **Source Script**: The full path to the script file that contains
+    the function
+
+This information is stored in a special `object_metadata` data frame
+within the `envsetup_environment`.
+
+### Accessing Function Metadata
+
+```{r}
+# After sourcing functions, you can access the metadata
+# Note: This example shows the concept - actual access depends on envsetup internals
+
+# Create some functions to demonstrate metadata tracking
+metadata_demo_dir <- file.path(dir, "metadata_demo")
+dir.create(metadata_demo_dir)
+
+# Create multiple scripts with different functions
+file_conn <- file(file.path(metadata_demo_dir, "data_functions.R"))
+writeLines(
+"load_data <- function(file) {
+  paste('Loading data from:', file)
+}
+
+clean_data <- function(data) {
+  paste('Cleaning data with', nrow(data), 'rows')
+}", file_conn)
+close(file_conn)
+
+file_conn <- file(file.path(metadata_demo_dir, "plot_functions.R"))
+writeLines(
+"create_plot <- function(data) {
+  paste('Creating plot for', ncol(data), 'variables')
+}
+
+save_plot <- function(plot, filename) {
+  paste('Saving plot to:', filename)
+}", file_conn)
+close(file_conn)
+
+# Update configuration to include metadata demo
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  autos:
+    metadata_demo: '", metadata_demo_dir, "'"
+  ), file_conn)
+close(file_conn)
+
+# Source the functions
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+
+# The system now tracks which script each function came from
+cat("Functions sourced with metadata tracking:")
+knitr::kable(envsetup_environment$object_metadata)
+```
+
+### Benefits of Metadata Tracking
+
+#### 1. **Debugging Function Issues**
+
+When a function isn't working as expected, metadata helps you quickly
+identifyw hich script file contains the function
+
+#### 2. **Audit Trail**
+
+Metadata provides a complete audit trail of your function ecosystem.
+
+### Metadata and the detach_autos() Function
+
+The metadata tracking system integrates closely with cleanup operations:
+
+1. Identify all auto-sourced functions
+2. Remove them from the global environment  
+3. Clean up the metadata records
+
+## Best Practices
+
+Even though your functions are not a part of a package, you should
+follow best practices to ensure your functions work as expected.
+
+1.  **Use Clear Names**: Library names should indicate their purpose
+2.  **Monitor Conflicts**: Regularly check for and resolve function name
+    conflicts
+3.  **Document Functions**: Include roxygen2 comments in your functions
+4.  **Test Functions**: Ensure auto-sourced functions work correctly
+5.  **Package Prefix**: Use package prefix when writing your functions,
+    for example, `dplyr::filter`
+
+```{r echo = FALSE}
+# Clean up
+unlink(dir, recursive=TRUE)
+```

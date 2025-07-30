@@ -84,6 +84,8 @@ get_path <- function(path, envir = getOption("envsetup.path.environment")){
 #' @param envsetup_environ name of the environment you would like to read the file from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
 #'
 #' @importFrom rlang quo_get_expr enquo is_string
 #'
@@ -197,6 +199,8 @@ read_path <- function(lib,
 #' @param filename Name of the file you would like to write
 #' @param envsetup_environ Name of the environment to which you would like to
 #'   write. Defaults to the ENVSETUP_ENVIRON environment variable
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
 #'
 #' @importFrom rlang quo_get_expr enquo is_string
 #'

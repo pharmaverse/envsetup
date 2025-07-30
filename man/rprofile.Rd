@@ -4,10 +4,17 @@
 \alias{rprofile}
 \title{Function used to pass through code to the .Rprofile}
 \usage{
-rprofile(config, envir = getOption("envsetup.path.environment"))
+rprofile(
+  config,
+  envir = getOption("envsetup.path.environment"),
+  overwrite = TRUE
+)
 }
 \arguments{
 \item{config}{configuration object from config::get()}
+
+\item{envir}{The environment to search for the path object. Defaults to the
+value of \code{getOption("envsetup.path.environment")}.}
 
 \item{overwrite}{logical indicating if sourcing of autos should overwrite an object in global if it already exists}
 }

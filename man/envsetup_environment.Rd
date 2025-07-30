@@ -3,7 +3,6 @@
 \docType{data}
 \name{envsetup_environment}
 \alias{envsetup_environment}
-
 \title{Environment Setup Environment}
 \format{
 An environment object created with \code{new.env()}.
@@ -36,6 +35,5 @@ is.environment(envsetup_environment)
 }
 \seealso{
 \code{\link{get_path}}, \code{\link[base]{new.env}}
-
 }
 \keyword{datasets}

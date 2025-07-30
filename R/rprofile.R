@@ -1,7 +1,10 @@
 #' Function used to pass through code to the .Rprofile
 #'
 #' @param config configuration object from config::get()
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
 #' @param overwrite logical indicating if sourcing of autos should overwrite an object in global if it already exists
+#' @importFrom envnames environment_name
 #' @export
 #' @return Called for its side effects.  Directory paths and autos are added to the search path based on your config.
 #'
@@ -24,7 +27,7 @@
 #'
 #' rprofile(config::get(file = file.path(tmpdir, "hierarchy.yml")))
 rprofile <- function(config,
-                     envir = getOption("envsetup.path.environment"), 
+                     envir = getOption("envsetup.path.environment"),
                      overwrite = TRUE) {
 
   # remove autos and pass everything else to "envsetup:paths"
@@ -36,7 +39,7 @@ rprofile <- function(config,
         assign,
         envir = envir)
 
-  message(paste0("Assigned paths to ", envnames::environment_name(envir)))
+  message(paste0("Assigned paths to ", environment_name(envir)))
 
   # store config with a standard name in a standard location
   assign("auto_stored_envsetup_config", config, envir = envir)

@@ -1,0 +1,157 @@
+---
+title: "Basic Path Configuration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic Path Configuration}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Understanding Path Configuration
+
+This guide walks through how to set up basic path configurations in your
+`_envsetup.yml` file.
+
+## Configuration Structure Levels
+
+### Level 1: Execution Environment
+
+Scripts typically execute in different environments depending on your
+workflow:
+
+``` yaml
+default:
+
+dev:
+
+qa:
+
+prod:
+```
+
+### Level 2: Paths and Autos
+
+Each execution environment can have different configurations:
+
+``` yaml
+default:
+  paths:
+  autos:
+
+dev:
+  paths:
+  autos:
+
+qa:
+  paths:
+  autos:
+
+prod:
+  paths:
+  autos:
+```
+
+### Level 3: Specific Configuration
+
+Configure the actual environment settings:
+
+``` yaml
+default:
+  paths:
+    data: "/demo/DEV/username/project1/data"
+    output: "/demo/DEV/username/project1/output"
+    programs: "/demo/DEV/username/project1/programs"
+```
+
+## Working Example
+
+Let's create a practical example for a project called **project1** that
+needs data input, result output, and program storage locations.
+
+```{r}
+library(envsetup)
+
+# Create temporary directory for demonstration
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+# Write a basic config file
+file_conn <- file(config_path)
+writeLines(
+"default:
+  paths:
+    data: '/demo/DEV/username/project1/data'
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'", file_conn)
+close(file_conn)
+```
+
+## Loading and Using the Configuration
+
+```{r}
+# Load the configuration
+envsetup_config <- config::get(file = config_path)
+
+# Apply the configuration to your R session
+rprofile(envsetup_config)
+```
+
+## Accessing Your Configured Paths
+
+Once configured, your paths are available in the `envsetup_environment`
+environment within the envsetup package environment:
+
+```{r echo = TRUE}
+# See all available path objects
+ls(envsetup_environment)
+
+# Access individual paths
+get_path(data)
+get_path(output)
+get_path(programs)
+```
+
+## How It Works
+
+The `rprofile()` function:
+
+1\. Creates a special environment called `envsetup_environment`
+
+2\. Populates it with your configured path objects
+
+3\. Makes these objects accessible in your code via the `get_path()`,
+`read_path()`, and `write_path()`
+
+## Benefits
+
+With this setup:
+
+-   **Consistency**: All team members use the same path structure
+
+-   **Flexibility**: Easy to change paths without modifying code
+
+-   **Clarity**: Path purposes are clearly defined
+
+-   **Maintainability**: Centralized configuration management
+
+```{r echo = FALSE}
+# Clean up
+unlink(dir, recursive=TRUE)
+```
+
+## Next Steps
+
+Now that you understand basic path configuration, the next guide will
+show you how to manage multiple environments (dev, qa, prod) with
+different configurations.
