@@ -1,6 +1,6 @@
 Package: envsetup
 Title: Support the Setup of the R Environment for Clinical Trial Programming Workflows
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: c(
     person("Nicholas", "Masel", email = "nmasel@its.jnj.com", role = c("aut", "cre")),
     person("Mike", "Stackhouse", email = "mike.stackhouse@atorusresearch.com", role = c("aut"), comment = c(ORCID = "0000-0001-6030-723X")),

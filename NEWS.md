@@ -1,3 +1,14 @@
+# envsetup 0.3.0
+
+- `paths` no are no longer attached to the search path
+- `paths` objects default to the global environment now, but they can be changed using the `envsetup.path.environment` option
+- `get_path()` was added to help you retrieve a path with changing the storage environment using the `envsetup.path.environment` option
+- `autos` are no longer attached to the search path, and are sourced to global
+- `rprofile` lets you specify if sourcing of autos should overwrite an object in global if it already exists
+- extensive messaging added to make users aware of autos being attached and conflicts
+- object metadata storage is added to track what functions were sourced from where, see `envsetup_environment$object_metadata`
+- vignettes updated to divide content into smaller chunks
+
 # envsetup 0.2.1
 
 - `set_autos()` will now handle NULL hierarchical paths (#66)
