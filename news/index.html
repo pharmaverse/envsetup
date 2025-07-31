@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">envsetup</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/config.html">Create Your Config</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/basic_paths.html">Basic Path Configuration</a></li>
+    <li><a class="dropdown-item" href="../articles/multiple_environments.html">Managing Multiple Environments</a></li>
+    <li><a class="dropdown-item" href="../articles/dynamic_paths.html">Dynamic Path Management</a></li>
+    <li><a class="dropdown-item" href="../articles/auto_sourcing.html">Automatic Script Sourcing</a></li>
     <li><a class="dropdown-item" href="../articles/tips.html">Tips</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -37,6 +40,22 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="envsetup-030">envsetup 0.3.0<a class="anchor" aria-label="anchor" href="#envsetup-030"></a></h2>
+<ul><li>
+<code>paths</code> no are no longer attached to the search path (<a href="https://github.com/pharmaverse/envsetup/issues/80" class="external-link">#80</a>)</li>
+<li>
+<code>paths</code> objects default to the global environment now, but they can be changed using the <code>envsetup.path.environment</code> option (<a href="https://github.com/pharmaverse/envsetup/issues/80" class="external-link">#80</a>)</li>
+<li>
+<code><a href="../reference/get_path.html">get_path()</a></code> was added to help you retrieve a path with changing the storage environment using the <code>envsetup.path.environment</code> option (<a href="https://github.com/pharmaverse/envsetup/issues/80" class="external-link">#80</a>)</li>
+<li>
+<code>autos</code> are no longer attached to the search path, and are sourced to global (<a href="https://github.com/pharmaverse/envsetup/issues/81" class="external-link">#81</a>)</li>
+<li>
+<code>rprofile</code> lets you specify if sourcing of autos should overwrite an object in global if it already exists (<a href="https://github.com/pharmaverse/envsetup/issues/81" class="external-link">#81</a>)</li>
+<li>extensive messaging added to make users aware of autos being attached and conflicts (<a href="https://github.com/pharmaverse/envsetup/issues/81" class="external-link">#81</a>)</li>
+<li>object metadata storage is added to track what functions were sourced from where, see <code>envsetup_environment$object_metadata</code> (<a href="https://github.com/pharmaverse/envsetup/issues/81" class="external-link">#81</a>)</li>
+<li>vignettes updated to divide content into smaller chunks (<a href="https://github.com/pharmaverse/envsetup/issues/82" class="external-link">#82</a>)</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="envsetup-021">envsetup 0.2.1<a class="anchor" aria-label="anchor" href="#envsetup-021"></a></h2>
 <ul><li>
 <code>set_autos()</code> will now handle NULL hierarchical paths (<a href="https://github.com/pharmaverse/envsetup/issues/66" class="external-link">#66</a>)</li>
@@ -46,7 +65,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="envsetup-020">envsetup 0.2.0<a class="anchor" aria-label="anchor" href="#envsetup-020"></a></h2>
 <ul><li>
-<code><a href="../reference/library.html">library()</a></code> will no longer actively reset autos, instead placing newly attached packages in the correct position that respects existing autos (<a href="https://github.com/pharmaverse/envsetup/issues/59" class="external-link">#59</a>)</li>
+<code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> will no longer actively reset autos, instead placing newly attached packages in the correct position that respects existing autos (<a href="https://github.com/pharmaverse/envsetup/issues/59" class="external-link">#59</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="envsetup-010">envsetup 0.1.0<a class="anchor" aria-label="anchor" href="#envsetup-010"></a></h2>
@@ -63,12 +82,12 @@
 <li>
 <code><a href="../reference/validate_config.html">validate_config()</a></code> added to assist with creating configuration files (<a href="https://github.com/pharmaverse/envsetup/issues/23" class="external-link">#23</a>)</li>
 <li>
-<code><a href="../reference/rprofile.html">rprofile()</a></code> will automatically store your configuration file in a standard location with a standard name, allowing <code><a href="../reference/library.html">library()</a></code> to use this to re-assign autos</li>
+<code><a href="../reference/rprofile.html">rprofile()</a></code> will automatically store your configuration file in a standard location with a standard name, allowing <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to use this to re-assign autos</li>
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-0-0-1">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-1"></a></h3>
 <ul><li>
-<code><a href="../reference/library.html">library()</a></code> will now respect invisible return instead of always returning the list of attached packages (<a href="https://github.com/pharmaverse/envsetup/issues/24" class="external-link">#24</a>)</li>
+<code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> will now respect invisible return instead of always returning the list of attached packages (<a href="https://github.com/pharmaverse/envsetup/issues/24" class="external-link">#24</a>)</li>
 <li>
 <code>set_autos()</code> now expects a different YAML structure for hierarchical filtering based on ENVSETUP_ENVIRON (<a href="https://github.com/pharmaverse/envsetup/issues/28" class="external-link">#28</a>)</li>
 </ul></div>
