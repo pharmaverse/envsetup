@@ -9,3 +9,12 @@ repo:
     user: https://github.com/
 news:
   cran_dates: false
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - basic_paths
+  - multiple_environments
+  - dynamic_paths
+  - auto_sourcing
+  - tips

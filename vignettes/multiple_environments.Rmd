@@ -1,0 +1,188 @@
+---
+title: "Managing Multiple Environments"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Managing Multiple Environments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Multiple Environment Configuration
+
+Real-world projects typically need different configurations for development, quality assurance, and production environments. This guide shows you how to set up environment-specific configurations.
+
+## The Challenge
+
+Consider this common workflow:
+
+-   **Development**: Developers work with data to produce outputs
+
+-   **QA**: Quality assurance independently confirms the results of the developer
+
+-   **Production**: Verified data and final outputs are made available to
+
+Each environment needs different paths, but you don't want to change your code.
+
+## Environment-Specific Configuration
+
+Here's how to set up different configurations for each environment:
+
+``` yaml
+default:
+  paths:
+    data: "/demo/DEV/username/project1/data"
+    output: "/demo/DEV/username/project1/output"
+    programs: "/demo/DEV/username/project1/programs"
+
+qa:
+  paths:
+    data: "/demo/QA/project1/data"
+    output: "/demo/QA/project1/output"
+    programs: "/demo/QA/project1/programs"
+
+prod:
+  paths:
+    data: "/demo/PROD/project1/data"
+    output: "/demo/PROD/project1/output"
+    programs: "/demo/PROD/project1/programs"
+```
+
+## Working Example
+
+Let's create a multi-environment configuration:
+
+```{r}
+library(envsetup)
+
+# Create temporary directory
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+# Write multi-environment config
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  paths:
+    data: '", dir, "/demo/DEV/username/project1/data'
+    output: '", dir, "/demo/DEV/username/project1/output'
+    programs: '", dir, "/demo/DEV/username/project1/programs'
+
+qa:
+  paths:
+    data: '", dir, "/demo/QA/project1/data'
+    output: '", dir, "/demo/QA/project1/output'
+    programs: '", dir, "/demo/QA/project1/programs'
+
+prod:
+  paths:
+    data: '", dir, "/demo/PROD/project1/data'
+    output: '", dir, "/demo/PROD/project1/output'
+    programs: '", dir, "/demo/PROD/project1/programs'"
+  ), file_conn)
+close(file_conn)
+```
+
+## Loading Different Environments
+
+### Default Environment
+
+```{r}
+# Load default configuration (development)
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+
+# Check the paths
+cat("Default environment paths:\n")
+cat("Data:", get_path(data), "\n")
+cat("Output:", get_path(output), "\n")
+```
+
+### QA Environment
+
+```{r}
+# Load QA configuration
+envsetup_config <- config::get(file = config_path, config = "qa")
+rprofile(envsetup_config)
+
+# Check the paths
+cat("QA environment paths:\n")
+cat("Data:", get_path(data), "\n")
+cat("Output:", get_path(output), "\n")
+```
+
+### Production Environment
+
+```{r}
+# Load production configuration
+envsetup_config <- config::get(file = config_path, config = "prod")
+rprofile(envsetup_config)
+
+# Check the paths
+cat("Production environment paths:\n")
+cat("Data:", get_path(data), "\n")
+cat("Output:", get_path(output), "\n")
+```
+
+## Configuration Inheritance
+
+The `config` package supports inheritance, meaning environments can inherit from `default` and only override specific settings:
+
+``` yaml
+default:
+  paths:
+    data: "/demo/DEV/username/project1/data"
+    output: "/demo/DEV/username/project1/output"
+    programs: "/demo/DEV/username/project1/programs"
+    log_level: "DEBUG"
+
+prod:
+  paths:
+    data: "/demo/PROD/project1/data"
+    output: "/demo/PROD/project1/output"
+    log_level: "ERROR"
+    # programs inherits from default
+```
+
+## Environment Selection Strategies
+
+### 1. Environment Variable
+
+``` r
+# Set environment variable
+Sys.setenv(R_CONFIG_ACTIVE = "prod")
+envsetup_config <- config::get(file = "_envsetup.yml")
+```
+
+### 2. Programmatic Selection
+
+``` r
+# Choose environment in code
+environment <- "prod"
+envsetup_config <- config::get(file = "_envsetup.yml", config = environment)
+```
+
+## Best Practices
+
+1.  **Use `default` for development**: Most development work happens here
+2.  **Minimize environment differences**: Only change what's necessary
+3.  **Document environment purposes**: Clear comments in your YAML
+4.  **Test all environments**: Ensure configurations work as expected
+5.  **Version control**: Keep `_envsetup.yml` in your repository
+
+```{r echo = FALSE}
+# Clean up
+unlink(dir, recursive=TRUE)
+```
+
+## Next Steps
+
+The next guide covers advanced path management, including how to handle situations where data might exist in multiple locations and you need smart path resolution.

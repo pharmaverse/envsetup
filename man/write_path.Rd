@@ -7,7 +7,8 @@
 write_path(
   lib,
   filename = NULL,
-  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")
+  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"),
+  envir = getOption("envsetup.path.environment")
 )
 }
 \arguments{
@@ -17,6 +18,9 @@ write_path(
 
 \item{envsetup_environ}{Name of the environment to which you would like to
 write. Defaults to the ENVSETUP_ENVIRON environment variable}
+
+\item{envir}{The environment to search for the path object. Defaults to the
+value of \code{getOption("envsetup.path.environment")}.}
 }
 \value{
 path to write

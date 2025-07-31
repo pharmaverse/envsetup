@@ -1,3 +1,74 @@
+#' Environment Setup Environment
+#'
+#' A dedicated environment object used to store and manage path configurations
+#' and other setup variables for the envsetup package. This environment provides
+#' an isolated namespace for storing path objects that can be retrieved using
+#' the package's path management functions.
+#'
+#' @format An environment object created with \code{new.env()}.
+#'
+#' @details
+#' This environment serves as the default storage location for path objects
+#' when using envsetup package functions. It helps maintain clean separation
+#' between user workspace and package-managed paths.
+#'
+#' @examples
+#' # Store a path in the envsetup environment
+#' assign("project_root", "/path/to/project", envir = envsetup_environment)
+#'
+#' # List objects in the environment
+#' ls(envir = envsetup_environment)
+#'
+#' # Check if the environment exists and is an environment
+#' exists("envsetup_environment")
+#' is.environment(envsetup_environment)
+#'
+#' @seealso \code{\link{get_path}}, \code{\link[base]{new.env}}
+#'
+#' @export
+envsetup_environment <- new.env()
+
+#' Get Path Object from Environment
+#'
+#' Retrieves a path object from the specified environment using non-standard
+#' evaluation. The function uses `substitute()` to capture the unevaluated
+#' expression and `get()` to retrieve the corresponding object.
+#'
+#' @param path An unquoted name of the path object to retrieve from the environment.
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
+#'
+#' @return The path object stored in the specified environment under the given name.
+#'
+#' @examples
+#' # Create a custom environment and store some paths
+#' path_env <- new.env()
+#' assign("data_dir", "/home/user/data", envir = path_env)
+#' assign("output_dir", "/home/user/output", envir = path_env)
+#'
+#' # Set up the option to use our custom environment
+#' options(envsetup.path.environment = path_env)
+#'
+#' # Retrieve paths using the function
+#' data_path <- get_path(data_dir)
+#' output_path <- get_path(output_dir)
+#'
+#' print(data_path)    # "/home/user/data"
+#' print(output_path)  # "/home/user/output"
+#'
+#' # Using with a different environment
+#' temp_env <- new.env()
+#' assign("temp_dir", "/tmp/analysis", envir = temp_env)
+#' temp_path <- get_path(temp_dir, envir = temp_env)
+#' print(temp_path)    # "/tmp/analysis"
+#'
+#' @seealso \code{\link[base]{get}}, \code{\link[base]{substitute}}
+#'
+#' @export
+get_path <- function(path, envir = getOption("envsetup.path.environment")){
+  base::get(substitute(path), envir)
+}
+
 #' Read path
 #'
 #' Check each environment for the file and return the path to the first.
@@ -13,6 +84,8 @@
 #' @param envsetup_environ name of the environment you would like to read the file from;
 #' default values comes from the value in the system variable ENVSETUP_ENVIRON
 #' which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
 #'
 #' @importFrom rlang quo_get_expr enquo is_string
 #'
@@ -53,10 +126,11 @@
 read_path <- function(lib,
                       filename,
                       full.path = TRUE,
-                      envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+                      envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"),
+                      envir = getOption("envsetup.path.environment")) {
 
   # lib can be a object in a different environment
-  # get this directly from envsetup:paths
+  # get this directly from envsetup_environment
   lib_arg <- quo_get_expr(enquo(lib))
 
   if (is_string(lib_arg)) {
@@ -66,7 +140,7 @@ read_path <- function(lib,
     ), call. = FALSE)
   }
 
-  read_lib <- base::get(toString(lib_arg), "envsetup:paths")
+  read_lib <- base::get(toString(lib_arg), envir)
 
   restricted_paths <- read_lib
 
@@ -125,6 +199,8 @@ read_path <- function(lib,
 #' @param filename Name of the file you would like to write
 #' @param envsetup_environ Name of the environment to which you would like to
 #'   write. Defaults to the ENVSETUP_ENVIRON environment variable
+#' @param envir The environment to search for the path object. Defaults to the
+#'   value of `getOption("envsetup.path.environment")`.
 #'
 #' @importFrom rlang quo_get_expr enquo is_string
 #'
@@ -162,7 +238,8 @@ read_path <- function(lib,
 #'
 #' # save data in data folder using write_path
 #' saveRDS(mtcars, write_path(data, "mtcars.rds"))
-write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")) {
+write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"),
+                       envir = getOption("envsetup.path.environment")) {
   # examine lib to ensure it's not a string
   # if it's a string, you end up with an incorrect path
   lib_arg <- quo_get_expr(enquo(lib))
@@ -174,7 +251,7 @@ write_path <- function(lib, filename = NULL, envsetup_environ = Sys.getenv("ENVS
     ), call. = FALSE)
   }
 
-  write_path <- base::get(toString(lib_arg), "envsetup:paths")
+  write_path <- base::get(toString(lib_arg), envir)
   path <- write_path
 
   if (length(write_path) > 1 && envsetup_environ == "") {

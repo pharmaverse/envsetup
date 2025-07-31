@@ -1,0 +1,202 @@
+---
+title: "Dynamic Path Management"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dynamic Path Management}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Advanced Path Resolution
+
+Sometimes data moves between environments during development, or you need to check multiple locations for files. This guide shows you how to set up dynamic path resolution that adapts to your workflow.
+
+## The Problem: Moving Data
+
+Imagine this scenario with our friend Tidy McVerse:
+
+1. She starts programming with data in development: `/demo/DEV/username/project1/data`
+2. Halfway through, the data becomes production-ready and moves to: `/demo/PROD/project1/data`
+3. Her code should work without changes, regardless of where the data lives
+
+## Solution: Multiple Path Locations
+
+Configure paths as lists with multiple possible locations:
+
+```yaml
+default:
+  paths:
+    data: !expr list(DEV = '/demo/DEV/username/project1/data', PROD = '/demo/PROD/project1/data')
+    output: '/demo/DEV/username/project1/output'
+    programs: '/demo/DEV/username/project1/programs'
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
+```
+
+## Working Example Setup
+
+```{r}
+library(envsetup)
+
+# Create temporary directory structure
+dir <- fs::file_temp()
+dir.create(dir)
+config_path <- file.path(dir, "_envsetup.yml")
+
+# Write configuration with multiple data paths
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  paths:
+    data: !expr list(DEV = '", dir,"/demo/DEV/username/project1/data', PROD = '", dir, "/demo/PROD/project1/data')
+    output: '", dir, "/demo/DEV/username/project1/output'
+    programs: '", dir, "/demo/DEV/username/project1/programs'
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'"
+ ), file_conn)
+close(file_conn)
+
+# Load and apply configuration
+envsetup_config <- config::get(file = config_path)
+rprofile(envsetup_config)
+```
+
+## Understanding the Configuration
+
+Let's examine what we now have available:
+
+```{r echo = TRUE}
+# See all configured objects
+ls(envsetup_environment)
+
+# Data is now a named list with multiple locations
+get_path(data)
+get_path(output)
+get_path(programs)
+get_path(envsetup_environ)
+```
+
+## Using read_path() for Smart File Location
+
+The `read_path()` function searches through your path list to find files:
+
+```{r}
+# Create the directory structure
+dir.create(file.path(dir, "/demo/DEV/username/project1/data"), recursive = TRUE)
+dir.create(file.path(dir, "/demo/PROD/project1/data"), recursive = TRUE)
+
+# Add data only to PROD location
+saveRDS(mtcars, file.path(dir, "/demo/PROD/project1/data/mtcars.RDS"))
+
+# read_path() finds the file in PROD
+read_path(data, "mtcars.RDS")
+```
+
+## Path Search Order
+
+When data exists in multiple locations, `read_path()` follows the search order:
+
+```{r}
+# Add the same data to DEV location
+saveRDS(mtcars, file.path(dir, "/demo/DEV/username/project1/data/mtcars.RDS"))
+
+# Now read_path() returns DEV location (first in search order)
+read_path(data, "mtcars.RDS")
+```
+
+## Controlling Search Order with envsetup_environ
+
+The `envsetup_environ` variable controls which paths are searched:
+
+- **DEV**: Searches DEV first, then PROD
+- **PROD**: Searches only PROD (skips DEV)
+
+## Environment-Specific Path Resolution
+
+Let's add a production configuration that changes the search behavior:
+
+```{r}
+# Update config to include prod environment
+file_conn <- file(config_path)
+writeLines(
+  paste0(
+"default:
+  paths:
+    data: !expr list(DEV = '",dir,"/demo/DEV/username/project1/data', PROD = '",dir,"/demo/PROD/project1/data')
+    output: '",dir,"/demo/DEV/username/project1/output'
+    programs: '",dir,"/demo/DEV/username/project1/programs'
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'DEV'); 'DEV'
+
+prod:
+  paths:
+    envsetup_environ: !expr Sys.setenv(ENVSETUP_ENVIRON = 'PROD'); 'PROD'"
+  ), file_conn)
+close(file_conn)
+
+# Load production configuration
+envsetup_config <- config::get(file = config_path, config = "prod")
+rprofile(envsetup_config)
+
+# Check the environment setting
+get_path(envsetup_environ)
+```
+
+## Production Path Resolution
+
+With the production configuration, path resolution behavior changes:
+
+```{r}
+# In production, read_path() returns PROD location even though DEV exists
+read_path(data, "mtcars.RDS")
+```
+
+## Practical Usage Pattern
+
+Here's how you'd typically use this in your code:
+
+```{r eval=FALSE}
+# Instead of hardcoding paths:
+# my_data <- readRDS("/some/hardcoded/path/mtcars.RDS")
+
+# Use dynamic path resolution:
+data_path <- read_path(data, "mtcars.RDS")
+my_data <- readRDS(data_path)
+
+# This works regardless of environment or data location!
+```
+
+## Benefits of Dynamic Paths
+
+1. **Workflow Flexibility**: Code works as data moves through environments
+2. **Environment Awareness**: Different search strategies per environment  
+3. **Fallback Logic**: Automatic fallback to alternative locations
+4. **Code Stability**: No code changes needed when paths change
+
+## Common Patterns
+
+### Development-First Search
+```yaml
+data: !expr list(DEV = '/dev/path', PROD = '/prod/path')
+envsetup_environ: 'DEV'  # Searches all locations starting from DEV
+```
+
+### Production-Only Search  
+```yaml
+data: !expr list(DEV = '/dev/path', PROD = '/prod/path')
+envsetup_environ: 'PROD'  # Searches only PROD location
+```
+
+```{r echo = FALSE}
+# Clean up
+unlink(dir, recursive=TRUE)
+```
+
+## Next Steps
+
+The next guide covers automatic script sourcing, which lets you automatically load custom functions from multiple script libraries across environments.

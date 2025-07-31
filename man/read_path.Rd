@@ -8,7 +8,8 @@ read_path(
   lib,
   filename,
   full.path = TRUE,
-  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON")
+  envsetup_environ = Sys.getenv("ENVSETUP_ENVIRON"),
+  envir = getOption("envsetup.path.environment")
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ read_path(
 \item{envsetup_environ}{name of the environment you would like to read the file from;
 default values comes from the value in the system variable ENVSETUP_ENVIRON
 which can be set by Sys.setenv(ENVSETUP_ENVIRON = "environment name")}
+
+\item{envir}{The environment to search for the path object. Defaults to the
+value of \code{getOption("envsetup.path.environment")}.}
 }
 \value{
 string containing the path of the first directory the file is found
