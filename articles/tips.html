@@ -122,13 +122,13 @@ folder.</p>
 will get an error because of the syntax error in
 <code>test_error.R</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">envsetup</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pharmaverse/envsetup" class="external-link">envsetup</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">envsetup_config</span> <span class="op">&lt;-</span> <span class="fu">config</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/config/reference/get.html" class="external-link">get</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">config_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Assigned paths to __callr_data__Assigned paths to R_GlobalEnv</span></span>
-<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/Rtmp3gwMVh/file200e4715b1d4/demo/PROD/project1/functions/test_error.R'</span></span></span>
+<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/RtmpzNb8iI/file1ea31d6b1281/demo/PROD/project1/functions/test_error.R'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `map2()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In index: 1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> With name: PROD.</span></span>
@@ -146,7 +146,7 @@ error and handle it gracefully.</p>
 <span></span>
 <span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu">safely_rprofile</span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Assigned paths to __callr_data__Assigned paths to R_GlobalEnv</span></span>
-<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/Rtmp3gwMVh/file200e4715b1d4/demo/PROD/project1/functions/test_error.R'</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/RtmpzNb8iI/file1ea31d6b1281/demo/PROD/project1/functions/test_error.R'</span></span></span></code></pre></div>
 <p>We still have an error, but safely allow the setup to continue. We
 can check the result of the <code>safely_rprofile()</code> function to
 see if there was an error, identify the issue and correct the syntax
