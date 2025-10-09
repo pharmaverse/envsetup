@@ -6,7 +6,7 @@ Authors@R: c(
     person("Mike", "Stackhouse", email = "mike.stackhouse@atorusresearch.com", role = c("aut"), comment = c(ORCID = "0000-0001-6030-723X")),
     person("Aidan", "Ceney", email = "aidan.ceney@atorusresearch.com", role = "aut"),
     person("Johnson & Johnson Innovative Medicine", role = c("cph", "fnd")),
-    person("Atorus Research LLC", role = "cph")
+    person("Atorus Research, Inc.", role = "cph")
   )
 Description: The purpose of this package is to support the setup the R environment.  
     The two main features are 'autos', to automatically source files and/or 
