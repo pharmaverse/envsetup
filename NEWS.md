@@ -1,3 +1,5 @@
+# envsetup (development version)
+
 # envsetup 0.3.0
 
 - `paths` no are no longer attached to the search path (#80)
