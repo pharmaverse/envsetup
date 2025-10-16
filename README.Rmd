@@ -93,6 +93,10 @@ print(output)  # Points to your output directory
 
 ## Installation
 
+```{r eval = FALSE}
+install.packages("envsetup")
+```
+
 ### Development version
 
 ```{r eval = FALSE}

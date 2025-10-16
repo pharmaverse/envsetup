@@ -5,10 +5,13 @@
 \alias{envsetup_environment}
 \title{Environment Setup Environment}
 \format{
-An environment object created with \code{new.env()}.
+An object of class \code{environment} of length 0.
 }
 \usage{
 envsetup_environment
+}
+\value{
+An environment object created with \code{new.env()}.
 }
 \description{
 A dedicated environment object used to store and manage path configurations

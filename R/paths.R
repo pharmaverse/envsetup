@@ -5,7 +5,7 @@
 #' an isolated namespace for storing path objects that can be retrieved using
 #' the package's path management functions.
 #'
-#' @format An environment object created with \code{new.env()}.
+#' @returns An environment object created with \code{new.env()}.
 #'
 #' @details
 #' This environment serves as the default storage location for path objects
