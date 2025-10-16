@@ -146,14 +146,14 @@ lives</li>
 <span><span class="co"># Data is now a named list with multiple locations</span></span>
 <span><span class="fu"><a href="../reference/get_path.html">get_path</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $DEV</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/DEV/username/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/DEV/username/project1/data"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $PROD</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/PROD/project1/data"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/PROD/project1/data"</span></span>
 <span><span class="fu"><a href="../reference/get_path.html">get_path</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/DEV/username/project1/output"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/DEV/username/project1/output"</span></span>
 <span><span class="fu"><a href="../reference/get_path.html">get_path</a></span><span class="op">(</span><span class="va">programs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/DEV/username/project1/programs"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/DEV/username/project1/programs"</span></span>
 <span><span class="fu"><a href="../reference/get_path.html">get_path</a></span><span class="op">(</span><span class="va">envsetup_environ</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "DEV"</span></span></code></pre></div>
 </div>
@@ -172,8 +172,8 @@ to find files:</p>
 <span></span>
 <span><span class="co"># read_path() finds the file in PROD</span></span>
 <span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="path-search-order">Path Search Order<a class="anchor" aria-label="anchor" href="#path-search-order"></a>
@@ -186,8 +186,8 @@ follows the search order:</p>
 <span></span>
 <span><span class="co"># Now read_path() returns DEV location (first in search order)</span></span>
 <span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/DEV/username/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/DEV/username/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/DEV/username/project1/data/mtcars.RDS"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="controlling-search-order-with-envsetup_environ">Controlling Search Order with envsetup_environ<a class="anchor" aria-label="anchor" href="#controlling-search-order-with-envsetup_environ"></a>
@@ -241,8 +241,8 @@ changes:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In production, read_path() returns PROD location even though DEV exists</span></span>
 <span><span class="fu"><a href="../reference/read_path.html">read_path</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"mtcars.RDS"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Read Path:/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/PROD/project1/data/mtcars.RDS</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1tYD1R/file1f9f4e2ce19/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; Read Path:/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/PROD/project1/data/mtcars.RDS</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpH1R0cA/file1f9d7e8485d1/demo/PROD/project1/data/mtcars.RDS"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="practical-usage-pattern">Practical Usage Pattern<a class="anchor" aria-label="anchor" href="#practical-usage-pattern"></a>

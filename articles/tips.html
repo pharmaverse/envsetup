@@ -128,7 +128,7 @@ will get an error because of the syntax error in
 <span></span>
 <span><span class="fu"><a href="../reference/rprofile.html">rprofile</a></span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Assigned paths to __callr_data__Assigned paths to R_GlobalEnv</span></span>
-<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/RtmpxJ6JUk/file201027d14047/demo/PROD/project1/functions/test_error.R'</span></span></span>
+<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/Rtmp8rMfy0/file200e2d9866ec/demo/PROD/project1/functions/test_error.R'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `map2()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In index: 1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> With name: PROD.</span></span>
@@ -146,7 +146,7 @@ error and handle it gracefully.</p>
 <span></span>
 <span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu">safely_rprofile</span><span class="op">(</span><span class="va">envsetup_config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Assigned paths to __callr_data__Assigned paths to R_GlobalEnv</span></span>
-<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/RtmpxJ6JUk/file201027d14047/demo/PROD/project1/functions/test_error.R'</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Sourcing file:  <span style="color: #0000BB;">'/tmp/Rtmp8rMfy0/file200e2d9866ec/demo/PROD/project1/functions/test_error.R'</span></span></span></code></pre></div>
 <p>We still have an error, but safely allow the setup to continue. We
 can check the result of the <code>safely_rprofile()</code> function to
 see if there was an error, identify the issue and correct the syntax
