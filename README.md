@@ -3,8 +3,10 @@
 
 # envsetup <img src='man/figures/logo.png' align="right" height="200" style="float:right; height:200px;" />
 
-<!-- start badges -->
+<!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/envsetup)](https://CRAN.R-project.org/package=envsetup)
 [<img src="http://pharmaverse.org/shields/envsetup.svg">](https://pharmaverse.org)
 [![Check
 🛠](https://github.com/pharmaverse/envsetup/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaverse/envsetup/actions/workflows/R-CMD-check.yaml)
